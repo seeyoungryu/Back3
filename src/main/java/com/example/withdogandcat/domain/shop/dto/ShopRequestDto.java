@@ -27,7 +27,8 @@ public class ShopRequestDto {
     private MultipartFile imageUrl;
 
     public ShopRequestDto(String shopName, String shopTime, String shopTel,
-                          String shopAddress, ShopType shopType, String shopDescribe, MultipartFile imageUrl) {
+                          String shopAddress, ShopType shopType,
+                          String shopDescribe, MultipartFile imageUrl) {
         this.shopName = shopName;
         this.shopTime = shopTime;
         this.shopTel = shopTel;

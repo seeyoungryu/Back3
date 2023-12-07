@@ -9,6 +9,7 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.List;
 
+// TODO 너무 과함, 분리할 수 있는 방법 찾기
 @Getter
 @Builder
 public class ShopResponseDto {

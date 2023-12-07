@@ -24,12 +24,12 @@ public class ShopService {
 
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
-    private final ImageService imageService;
+    private final S3Upload s3Upload;
 
     // 가게 등록
     @Transactional
     public ShopResponseDto createShop(ShopRequestDto shopRequestDto, MultipartFile imageUrl) throws IOException {
-        String image = imageService.uploadImage(imageUrl);
+        String image = s3Upload.upload(imageUrl);
         Shop shop = Shop.of(shopRequestDto, image);
         shopRepository.save(shop);
         return ShopResponseDto.from(shop);
@@ -75,7 +75,7 @@ public class ShopService {
         Shop shop = shopRepository.findById(shopId).orElseThrow(
                 () -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
 
-        String image = imageService.updateImage(imageUrl, shop.getImageUrl());
+        String image = s3Upload.upload(imageUrl, shop.getImageUrl());
 
         shop.updateShopDetails(
                 shopRequestDto.getShopName(),
