@@ -7,18 +7,18 @@ import lombok.Getter;
 @Getter
 public class LoginResponseDto {
 
-    private final Long id;
+    private final Long userId;
     private final String nickname;
 
     @Builder
-    private LoginResponseDto(Long id, String nickname) {
-        this.id = id;
+    private LoginResponseDto(Long userId, String nickname) {
+        this.userId = userId;
         this.nickname = nickname;
     }
 
     public static LoginResponseDto from(User user) {
         return LoginResponseDto.builder()
-                .id(user.getId())
+                .userId(user.getUserId())
                 .nickname(user.getNickname())
                 .build();
     }

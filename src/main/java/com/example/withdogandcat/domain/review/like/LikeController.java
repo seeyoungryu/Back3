@@ -15,14 +15,14 @@ public class LikeController {
 
     @PostMapping
     public ResponseEntity<Void> createLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getId();
+        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         likeService.createLike(userId, reviewId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getId();
+        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         likeService.deleteLike(userId, reviewId);
         return ResponseEntity.noContent().build();
     }

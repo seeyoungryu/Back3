@@ -66,13 +66,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRole role = userDetails.getUser().getRole();
         String nickname = userDetails.getUser().getNickname();
 
-        // JWT 토큰 생성
         String token = jwtUtil.createToken(email, role);
 
-        // JWT 토큰을 HTTP 헤더에 추가
         jwtUtil.addJwtToHeader(token, response);
 
-        // 닉네임을 JSON 형식으로 응답에 추가
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(nickname)));
         response.setStatus(HttpServletResponse.SC_OK);

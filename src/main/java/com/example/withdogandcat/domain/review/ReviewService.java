@@ -36,7 +36,7 @@ public class ReviewService {
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getReviewId(), user.getId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
+        return new ReviewResponseDto(review.getReviewId(), user.getUserId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
     }
 
     @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class ReviewService {
         return reviews.stream()
                 .map(review -> {
                     int likeCount = likeRepository.countByReview(review);
-                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getId(), review.getUser().getNickname(), review.getComment(), likeCount, review.getCreatedAt());
+                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getUserId(), review.getUser().getNickname(), review.getComment(), likeCount, review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
     }
@@ -61,7 +61,7 @@ public class ReviewService {
         Review review = reviewRepository.findByReviewIdAndShop(reviewId, shop)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        if (!review.getUser().getId().equals(userId)) {
+        if (!review.getUser().getUserId().equals(userId)) {
             throw new CustomException(ErrorCode.ACCESS_DENIED);
         }
 

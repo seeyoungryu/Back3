@@ -60,27 +60,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // CSRF 설정
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        // 기본 설정인 Session 방식은 사용하지 않고, JWT 방식을 사용하기 위한 설정
         http.sessionManagement((sessionManagement) ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        // 접근 권한 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
 
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/open/naver/news","/api/shops/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/open/naver/news").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .anyRequest().authenticated());
 
-
-        // 필터 -> 순서 중요
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 
@@ -92,11 +88,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5173",
-                "https://meal-serve-fe.vercel.app/",
-                "https://meal-serve-fe-git-main-joonyoung-hongs-projects.vercel.app/",
-                "https://meal-serve-i7bfshst2-joonyoung-hongs-projects.vercel.app/"
-        ));
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
