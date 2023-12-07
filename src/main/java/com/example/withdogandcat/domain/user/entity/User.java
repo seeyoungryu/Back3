@@ -34,7 +34,8 @@ public class User {
     private UserRole role;
 
     @Builder
-    private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
+    private User(String email, String password,
+                 String phoneNumber, String nickname, UserRole role) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;

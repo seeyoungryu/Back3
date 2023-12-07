@@ -28,5 +28,4 @@ public class S3Upload {
         amazonS3.putObject(bucketName, s3FileName, multipartFile.getInputStream(), objMeta);
         return amazonS3.getUrl(bucketName, s3FileName).toString();
     }
-
 }

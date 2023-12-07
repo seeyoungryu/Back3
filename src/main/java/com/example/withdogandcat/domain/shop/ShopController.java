@@ -35,7 +35,6 @@ public class ShopController {
         return ResponseEntity.ok(response);
     }
 
-
     // 가게 등록
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
@@ -62,32 +61,5 @@ public class ShopController {
     public ResponseEntity<List<ShopResponseDto>> getAllShops() {
         List<ShopResponseDto> responseBody = shopService.getAllShops();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    // 가게 상세 조회
-    @GetMapping("/{shopId}")
-    public ResponseEntity<ShopResponseDto> getShopDetails(@PathVariable Long shopId) {
-        ShopResponseDto shopResponseDto = shopService.getShopDetails(shopId);
-        return ResponseEntity.status(HttpStatus.OK).body(shopResponseDto);
-    }
-
-    // 특정 가게 수정
-    @PutMapping("/{shopId}")
-    @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<Void> updateShop(
-            @PathVariable Long shopId,
-            @RequestParam("shopName") String shopName,
-            @RequestParam("shopTime") String shopTime,
-            @RequestParam("shopTel") String shopTel,
-            @RequestParam("shopAddress") String shopAddress,
-            @RequestParam("shopType") ShopType shopType,
-            @RequestParam("shopDescribe") String shopDescribe,
-            @RequestParam(value = "imageUrl", required = false) MultipartFile image) throws IOException {
-
-        ShopRequestDto shopRequestDto = new ShopRequestDto(
-                shopName, shopTime, shopTel, shopAddress, shopType, shopDescribe, image);
-
-        shopService.updateShop(shopId, shopRequestDto, image);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

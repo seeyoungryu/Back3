@@ -55,7 +55,7 @@ public class ShopResponseDto {
         this.reviews = Collections.emptyList();
     }
 
-    public static ShopResponseDto from(Shop shop, List<ReviewResponseDto> reviews) {
+    public static ShopResponseDto of(Shop shop, List<ReviewResponseDto> reviews) {
         return ShopResponseDto.builder()
                 .shopId(shop.getShopId())
                 .userId(shop.getUser().getUserId())
