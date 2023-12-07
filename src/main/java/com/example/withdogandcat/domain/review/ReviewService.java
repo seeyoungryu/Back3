@@ -4,7 +4,7 @@ import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.review.like.LikeRepository;
-import com.example.withdogandcat.domain.shop.entitiy.Shop;
+import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.ShopRepository;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.domain.user.UserRepository;

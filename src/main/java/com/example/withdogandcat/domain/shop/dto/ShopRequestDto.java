@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.shop.dto;
 
-import com.example.withdogandcat.domain.shop.entitiy.ShopType;
+import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.global.config.s3.validation.FileExtension;
 import com.example.withdogandcat.global.config.s3.validation.FileSize;
 import jakarta.validation.constraints.NotBlank;
@@ -26,13 +26,8 @@ public class ShopRequestDto {
     @FileExtension(ext = "png,jpg,jpeg", message = "이미지 파일은 png, jpg, jpeg 형식이어야 합니다")
     private MultipartFile imageUrl;
 
-    public ShopRequestDto(String shopName,
-                          String shopTime,
-                          String shopTel,
-                          String shopAddress,
-                          ShopType shopType,
-                          String shopDescribe,
-                          MultipartFile imageUrl) {
+    public ShopRequestDto(String shopName, String shopTime, String shopTel,
+                          String shopAddress, ShopType shopType, String shopDescribe, MultipartFile imageUrl) {
         this.shopName = shopName;
         this.shopTime = shopTime;
         this.shopTel = shopTel;
@@ -40,6 +35,5 @@ public class ShopRequestDto {
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
         this.imageUrl = imageUrl;
-
     }
 }
