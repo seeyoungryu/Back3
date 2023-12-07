@@ -1,55 +1,42 @@
 name: Deploy to Amazon EC2
-
 on:
   push:
     branches:
       - main
-
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: petserver
   CODE_DEPLOY_APPLICATION_NAME: pet-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: pet-app-deployment-group
-
 permissions:
   contents: read
-
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Create application.properties from secrets
-        run: |
-          touch ./src/main/resources/application.properties
+      - run: |
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-
       - name: Make gradlew executable
         run: chmod +x gradlew
-
       - name: Build with Gradle
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
           arguments: clean build -x test
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-
       - name: Upload to AWS S3
         run: |
           aws deploy push \
@@ -57,7 +44,6 @@ jobs:
             --ignore-hidden-files \
             --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
             --source .
-
       - name: Deploy to AWS EC2 from S3
         run: |
           aws deploy create-deployment \
