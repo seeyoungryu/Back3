@@ -26,12 +26,12 @@ public class PetController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PetResponseDto> registerPet(
-            @PathVariable(value = "id") Long userId,
+            @PathVariable(value = "userId") Long userId,
             @RequestParam("petName") String petName,
             @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl) throws IOException {
 
-        PetRequestDto requestDto = new PetRequestDto(petName, imageUrl); // 여기서 DTO를 수동으로 생성합니다.
-        PetResponseDto responseDto = petService.registerPet(userId, requestDto); // DTO를 서비스 메서드에 전달합니다.
+        PetRequestDto requestDto = new PetRequestDto(petName, imageUrl);
+        PetResponseDto responseDto = petService.registerPet(userId, requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
@@ -39,30 +39,27 @@ public class PetController {
     // 애완동물 정보 조회
     @GetMapping("/{petId}")
     public ResponseEntity<PetResponseDto> getPet(
-            @PathVariable("id") Long userId,
+            @PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId) {
         PetResponseDto petResponseDto = petService.getPet(userId, petId);
 
         if (petResponseDto == null) {
-            return ResponseEntity.notFound().build(); // 404 Not Found 반환
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(petResponseDto); // 200 OK 반환
+        return ResponseEntity.ok(petResponseDto);
     }
 
     @PutMapping(value = "/{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PetResponseDto> updatePet(
-            @PathVariable("id") Long userId,
+            @PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId,
             @RequestParam("petName") String petName,
             @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl) throws IOException {
 
-        // PetRequestDto 객체를 생성합니다.
         PetRequestDto requestDto = new PetRequestDto(petName, imageUrl);
 
-        // 서비스 메서드를 호출하여 PetResponseDto 객체를 받습니다.
         PetResponseDto responseDto = petService.updatePet(petId, requestDto);
 
-        // 성공적으로 업데이트되었다면, HTTP 200 OK 상태 코드와 함께 업데이트된 데이터를 반환합니다.
         return ResponseEntity.ok(responseDto);
     }
 }

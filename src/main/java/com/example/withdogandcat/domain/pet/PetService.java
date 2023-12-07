@@ -21,7 +21,7 @@ public class PetService {
     private final PetRepository petRepository;
     private final S3Upload s3Upload;
 
-    private static final String PETINFO_BUCKET = "petinfo-pet"; // PetService에서 사용할 버킷 이름
+    private static final String PETINFO_BUCKET = "petinfo-pet";
 
     @Transactional
     public PetResponseDto registerPet(Long userId, PetRequestDto requestDto) throws IOException {
@@ -53,13 +53,11 @@ public class PetService {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
 
-        // 이미지가 제공된 경우 업데이트
         if (requestDto.getImageUrl() != null && !requestDto.getImageUrl().isEmpty()) {
             String imageUrl = s3Upload.upload(requestDto.getImageUrl(), PETINFO_BUCKET);
             pet.updateImage(imageUrl, requestDto.getImageUrl().getOriginalFilename());
         }
 
-        // 이름 변경이 요청된 경우 업데이트
         if (requestDto.getPetName() != null && !requestDto.getPetName().isEmpty()) {
             validateDuplicatePet(requestDto.getPetName());
             pet.updateName(requestDto.getPetName());
@@ -67,8 +65,6 @@ public class PetService {
 
         return PetResponseDto.from(pet);
     }
-
-    // ... (기타 메서드들)
 
     private void validateDuplicatePet(String name) {
         if (petRepository.existsByName(name)) {

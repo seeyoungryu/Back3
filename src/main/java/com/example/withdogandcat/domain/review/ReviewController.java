@@ -17,7 +17,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<ReviewResponseDto> createReview(@PathVariable("shopId") Long shopId,
                                                           @RequestBody ReviewRequestDto requestDto, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
@@ -25,7 +25,7 @@ public class ReviewController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<ReviewResponseDto>> getAllReviews(@PathVariable("shopId") Long shopId) {
         List<ReviewResponseDto> reviews = reviewService.getAllReviews(shopId);
         return ResponseEntity.ok(reviews);
