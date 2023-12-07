@@ -37,7 +37,7 @@ public class ShopController {
     // 가게 등록
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<Void> createShop(
+    public ResponseEntity<ShopResponseDto> createShop(
             @RequestParam("shopName") String shopName,
             @RequestParam("shopTime") String shopTime,
             @RequestParam("shopTel") String shopTel,
@@ -50,9 +50,9 @@ public class ShopController {
         ShopRequestDto shopRequestDto = new ShopRequestDto(
                 shopName, shopTime, shopTel, shopAddress, shopType, shopDescribe, image);
 
-        shopService.createShop(shopRequestDto, image, currentUser);
+        ShopResponseDto createdShop = shopService.createShop(shopRequestDto, image, currentUser);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdShop);
     }
 
     // 전체 가게 조회
