@@ -1,8 +1,8 @@
 package com.example.withdogandcat.domain.shop.dto;
 
 import com.example.withdogandcat.domain.shop.entitiy.ShopType;
-import com.example.withdogandcat.domain.shop.validation.FileExtension;
-import com.example.withdogandcat.domain.shop.validation.FileSize;
+import com.example.withdogandcat.global.config.s3.validation.FileExtension;
+import com.example.withdogandcat.global.config.s3.validation.FileSize;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;

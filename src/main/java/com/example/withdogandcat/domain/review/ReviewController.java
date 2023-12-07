@@ -1,6 +1,6 @@
-package com.example.withdogandcat.domain.review.controller;
+package com.example.withdogandcat.domain.review;
 
-import com.example.withdogandcat.domain.review.service.ReviewService;
+import com.example.withdogandcat.domain.review.ReviewService;
 import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;

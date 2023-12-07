@@ -1,8 +1,8 @@
-package com.example.withdogandcat.domain.user.service;
+package com.example.withdogandcat.domain.user;
 
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.domain.user.repository.UserRepository;
+import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
 import org.springframework.transaction.annotation.Transactional;

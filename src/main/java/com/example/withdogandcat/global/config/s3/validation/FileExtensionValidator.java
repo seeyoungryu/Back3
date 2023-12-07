@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.shop.validation;
+package com.example.withdogandcat.global.config.s3.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

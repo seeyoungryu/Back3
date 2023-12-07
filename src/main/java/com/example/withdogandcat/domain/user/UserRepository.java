@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.user.repository;
+package com.example.withdogandcat.domain.user;
 
 import com.example.withdogandcat.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

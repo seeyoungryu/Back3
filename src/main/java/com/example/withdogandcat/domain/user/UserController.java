@@ -1,6 +1,5 @@
-package com.example.withdogandcat.domain.user.controller;
+package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.user.service.UserService;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

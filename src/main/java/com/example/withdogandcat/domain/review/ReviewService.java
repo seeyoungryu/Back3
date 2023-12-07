@@ -1,14 +1,13 @@
-package com.example.withdogandcat.domain.review.service;
+package com.example.withdogandcat.domain.review;
 
 import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.review.like.LikeRepository;
-import com.example.withdogandcat.domain.review.repository.ReviewRepository;
 import com.example.withdogandcat.domain.shop.entitiy.Shop;
-import com.example.withdogandcat.domain.shop.repository.ShopRepository;
+import com.example.withdogandcat.domain.shop.ShopRepository;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.domain.user.repository.UserRepository;
+import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +33,10 @@ public class ReviewService {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Review review = Review.createReview(user, requestDto.getReview(), shop);
+        Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getReviewId(), user.getId(), user.getNickname(), review.getReview(), 0, review.getCreatedAt());
+        return new ReviewResponseDto(review.getReviewId(), user.getId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +48,7 @@ public class ReviewService {
         return reviews.stream()
                 .map(review -> {
                     int likeCount = likeRepository.countByReview(review);
-                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getId(), review.getUser().getNickname(), review.getReview(), likeCount, review.getCreatedAt());
+                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getId(), review.getUser().getNickname(), review.getComment(), likeCount, review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
     }

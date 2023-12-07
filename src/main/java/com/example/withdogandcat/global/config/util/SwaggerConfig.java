@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.config;
+package com.example.withdogandcat.global.config.util;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

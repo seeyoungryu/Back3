@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.pet.dto;
 
-import com.example.withdogandcat.domain.shop.validation.FileExtension;
-import com.example.withdogandcat.domain.shop.validation.FileSize;
+import com.example.withdogandcat.global.config.s3.validation.FileExtension;
+import com.example.withdogandcat.global.config.s3.validation.FileSize;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;

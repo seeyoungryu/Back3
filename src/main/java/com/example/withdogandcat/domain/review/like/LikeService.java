@@ -1,9 +1,9 @@
 package com.example.withdogandcat.domain.review.like;
 
-import com.example.withdogandcat.domain.review.repository.ReviewRepository;
+import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.domain.user.repository.UserRepository;
+import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

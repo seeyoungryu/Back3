@@ -22,7 +22,7 @@ public class Review extends Timestamped {
     private Long reviewId;
 
     @Column(nullable = false)
-    private String review;
+    private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -36,16 +36,16 @@ public class Review extends Timestamped {
     private Set<Like> likes;
 
     @Builder
-    private Review(User user, String review, Shop shop) {
+    private Review(User user, String comment, Shop shop) {
         this.user = user;
-        this.review = review;
+        this.comment = comment;
         this.shop = shop;
     }
 
-    public static Review createReview(User user, String reviewContent, Shop shop) {
+    public static Review createReview(User user, String commentContent, Shop shop) {
         return Review.builder()
                 .user(user)
-                .review(reviewContent)
+                .comment(commentContent)
                 .shop(shop)
                 .build();
     }

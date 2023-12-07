@@ -1,6 +1,6 @@
 package com.example.withdogandcat.global.security.impl;
 
-import com.example.withdogandcat.domain.user.repository.UserRepository;
+import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;

@@ -1,9 +1,9 @@
-package com.example.withdogandcat.domain.shop.service;
+package com.example.withdogandcat.domain.shop;
 
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entitiy.Shop;
-import com.example.withdogandcat.domain.shop.repository.ShopRepository;
+import com.example.withdogandcat.domain.shop.ShopRepository;
 import com.example.withdogandcat.global.config.s3.S3Upload;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
