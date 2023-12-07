@@ -8,18 +8,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 애완동물 엔티티 클래스
- */
+
 @Entity
 @Getter
-@Table
+@Table(name = "pets")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long petId;
 
     @Column(nullable = false)
     private String name;
