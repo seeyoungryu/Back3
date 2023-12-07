@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.review.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,9 @@ public class ReviewResponseDto {
     private int likeCount;
     private LocalDateTime createdAt;
 
-    public ReviewResponseDto(Long reviewId, Long userId, String nickname, String comment, int likeCount, LocalDateTime createdAt) {
+    @Builder
+    public ReviewResponseDto(Long reviewId, Long userId, String nickname,
+                             String comment, int likeCount, LocalDateTime createdAt) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.nickname = nickname;

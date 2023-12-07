@@ -48,7 +48,7 @@ public class Shop {
 
     }
 
-    public static Shop of(ShopRequestDto shopRequestDto, String imageUrl) {
+    public static Shop of(ShopRequestDto shopRequestDto, String imageUrl, User user) {
         return Shop.builder()
                 .shopName(shopRequestDto.getShopName())
                 .shopTime(shopRequestDto.getShopTime())
@@ -57,6 +57,7 @@ public class Shop {
                 .shopType(shopRequestDto.getShopType())
                 .shopDescribe(shopRequestDto.getShopDescribe())
                 .imageUrl(imageUrl)
+                .user(user)
                 .build();
     }
 

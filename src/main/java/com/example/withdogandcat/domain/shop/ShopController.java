@@ -3,7 +3,9 @@ package com.example.withdogandcat.domain.shop;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
+import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.dto.ApiResponseDto;
+import com.example.withdogandcat.global.tool.LoginAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,12 +46,13 @@ public class ShopController {
             @RequestParam("shopAddress") String shopAddress,
             @RequestParam("shopType") ShopType shopType,
             @RequestParam("shopDescribe") String shopDescribe,
-            @RequestParam("imageUrl") MultipartFile image) throws IOException {
+            @RequestParam("imageUrl") MultipartFile image,
+            @LoginAccount User currentUser) throws IOException {
 
         ShopRequestDto shopRequestDto = new ShopRequestDto(
                 shopName, shopTime, shopTel, shopAddress, shopType, shopDescribe, image);
 
-        shopService.createShop(shopRequestDto, image);
+        shopService.createShop(shopRequestDto, image, currentUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

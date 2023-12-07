@@ -5,6 +5,7 @@ import com.example.withdogandcat.domain.shop.entity.Shop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +13,6 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByShop(Shop shop);
     Optional<Review> findByReviewIdAndShop(Long reviewId, Shop shop);
+    List<Review> findByShop_ShopId(Long shopId);
+
 }

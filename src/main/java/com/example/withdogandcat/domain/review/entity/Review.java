@@ -49,4 +49,9 @@ public class Review extends Timestamped {
                 .shop(shop)
                 .build();
     }
+
+    public int getLikeCount() {
+        return likes.size();
+    }
 }
+
