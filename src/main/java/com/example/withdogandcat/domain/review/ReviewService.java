@@ -45,10 +45,14 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         List<Review> reviews = reviewRepository.findAllByShop(shop);
-        return reviews.stream()
-                .map(review -> {
+        return reviews.stream().map(review -> {
                     int likeCount = likeRepository.countByReview(review);
-                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getUserId(), review.getUser().getNickname(), review.getComment(), likeCount, review.getCreatedAt());
+                    return new ReviewResponseDto(review.getReviewId(),
+                            review.getUser().getUserId(),
+                            review.getUser().getNickname(),
+                            review.getComment(),
+                            likeCount,
+                            review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
     }

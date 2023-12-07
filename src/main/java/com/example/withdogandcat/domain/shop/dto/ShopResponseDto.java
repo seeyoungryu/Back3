@@ -9,7 +9,6 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.List;
 
-// TODO 너무 과함, 분리할 수 있는 방법 찾기
 @Getter
 @Builder
 public class ShopResponseDto {
@@ -24,6 +23,8 @@ public class ShopResponseDto {
     private final String shopDescribe;
     private final String imageUrl;
     private final List<ReviewResponseDto> reviews;
+
+    // TODO 너무 과함, 분리할 수 있는 방법 찾기
 
     public ShopResponseDto(Long shopId, Long userId, String shopName, String shopTime, String shopTel,
                            String shopAddress, ShopType shopType, String shopDescribe,

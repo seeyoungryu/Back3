@@ -43,7 +43,7 @@ public class User {
         this.role = role;
     }
 
-    public static User from(SignupRequestDto requestDto, String password) {
+    public static User of(SignupRequestDto requestDto, String password) {
         return User.builder()
                 .email(requestDto.getEmail())
                 .password(password)

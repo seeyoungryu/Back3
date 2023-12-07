@@ -61,15 +61,4 @@ public class Shop {
                 .build();
     }
 
-    public void updateShopDetails(String shopName, String shopTime, String shopTel,
-                                  ShopType shopType, String shopAddress,
-                                  String shopDescribe, String imageUrl) {
-        this.shopName = shopName;
-        this.shopTime = shopTime;
-        this.shopTel = shopTel;
-        this.shopAddress = shopAddress;
-        this.shopType = shopType;
-        this.shopDescribe = shopDescribe;
-        this.imageUrl = imageUrl;
-    }
 }

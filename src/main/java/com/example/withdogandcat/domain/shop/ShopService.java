@@ -59,4 +59,6 @@ public class ShopService {
                 .map(ShopResponseDto::from).collect(Collectors.toList());
     }
 
+    // TODO 가게 상세 조회, 가게 수정, 가게 삭제
+
 }

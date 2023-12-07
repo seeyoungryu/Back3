@@ -15,6 +15,7 @@ public class ShopRequestDto {
 
     @NotBlank(message = "가게명을 입력해주세요")
     private String shopName;
+
     private String shopTime;
     private String shopTel;
     private String shopAddress;
