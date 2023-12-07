@@ -28,10 +28,9 @@ public class ShopController {
     // TODO RequestParam 줄일 수 있는 방법 찾기
 
     // 마이페이지 가게 조회
-    @GetMapping("/mypage/{userId}")
-    @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByUserId(@PathVariable Long userId) {
-        ApiResponseDto<List<ShopResponseDto>> response = shopService.getShopsByUserId(userId);
+    @GetMapping("/mypage")
+    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCurrentUser(@LoginAccount User currentUser) {
+        ApiResponseDto<List<ShopResponseDto>> response = shopService.getShopsByUserId(currentUser.getUserId());
         return ResponseEntity.ok(response);
     }
 

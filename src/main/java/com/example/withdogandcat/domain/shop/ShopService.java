@@ -1,15 +1,11 @@
 package com.example.withdogandcat.domain.shop;
 
-import com.example.withdogandcat.domain.review.ReviewRepository;
-import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.config.s3.S3Upload;
 import com.example.withdogandcat.global.dto.ApiResponseDto;
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
 import com.example.withdogandcat.global.tool.LoginAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
