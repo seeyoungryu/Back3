@@ -15,7 +15,7 @@ env:
 
 
 permissions:
-  contents: readname: Deploy to Amazon EC2
+  contents: read
 on:
   push:
     branches:
