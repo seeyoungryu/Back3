@@ -30,11 +30,11 @@ public class PetResponseDto {
 
     public static PetResponseDto from(Pet pet) {
         return PetResponseDto.builder()
-                .petId(pet.getId())
+                .petId(pet.getPetId())
                 .nickname(pet.getUser().getNickname())
-                .petName(pet.getName())
-                .petGender(pet.getGender().name())
-                .petKind(pet.getKind().name())
+                .petName(pet.getPetName())
+                .petGender(pet.getPetGender().name())
+                .petKind(pet.getPetKind().name())
                 .petInfo(pet.getPetInfo())
                 .imageUrl(pet.getImageUrl())
                 .build();
