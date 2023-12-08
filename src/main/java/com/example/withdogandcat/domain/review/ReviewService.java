@@ -36,7 +36,14 @@ public class ReviewService {
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getReviewId(), user.getUserId(), shop.getShopId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
+        return new ReviewResponseDto(
+                review.getReviewId(),
+                user.getUserId(),
+                shop.getShopId(),
+                user.getNickname(),
+                review.getComment(),
+                0,
+                review.getCreatedAt());
     }
 
     @Transactional(readOnly = true)

@@ -65,7 +65,7 @@ public class ShopController {
 
     // 가게 상세 조회
     @GetMapping("/{shopId}")
-    public ResponseEntity<ShopDetailResponseDto> getShop(@PathVariable Long shopId) {
+    public ResponseEntity<ShopDetailResponseDto> getShop(@PathVariable("shopId") Long shopId) {
         ShopDetailResponseDto shopDetail = shopService.getShopById(shopId);
         return ResponseEntity.ok(shopDetail);
     }
@@ -74,18 +74,28 @@ public class ShopController {
     @PutMapping("/{shopId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<ShopResponseDto> updateShop(
-            @PathVariable Long shopId,
-            @ModelAttribute ShopRequestDto shopRequestDto,
+            @PathVariable("shopId") Long shopId,
+            @RequestParam("shopName") String shopName,
+            @RequestParam("shopTime") String shopTime,
+            @RequestParam("shopTel") String shopTel,
+            @RequestParam("shopAddress") String shopAddress,
+            @RequestParam("shopType") ShopType shopType,
+            @RequestParam("shopDescribe") String shopDescribe,
+            @RequestParam("imageUrl") MultipartFile image,
             @LoginAccount User currentUser) throws IOException {
 
-        ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, shopRequestDto.getImageUrl(), currentUser);
-        return ResponseEntity.ok(updatedShop);
+        ShopRequestDto shopRequestDto = new ShopRequestDto(
+                shopName, shopTime, shopTel, shopAddress, shopType, shopDescribe, image);
+
+        ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, image, currentUser);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedShop);
     }
 
     // 가게 삭제
     @DeleteMapping("/{shopId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<Void> deleteShop(@PathVariable Long shopId, @LoginAccount User currentUser) {
+    public ResponseEntity<Void> deleteShop(@PathVariable("shopId") Long shopId, @LoginAccount User currentUser) {
         shopService.deleteShop(shopId, currentUser);
         return ResponseEntity.noContent().build();
     }

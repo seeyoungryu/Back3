@@ -73,7 +73,7 @@ public class ShopService {
                 .map(review -> new ReviewResponseDto(
                         review.getReviewId(),
                         review.getUser().getUserId(),
-                        review.getShop().getShopId(), // shopId 추가
+                        review.getShop().getShopId(),
                         review.getUser().getNickname(),
                         review.getComment(),
                         likeRepository.countByReview(review),
@@ -83,8 +83,7 @@ public class ShopService {
         if (reviews.isEmpty()) {
             return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, "리뷰가 아직 없습니다.");
         } else {
-            // 리뷰가 있을 경우, 메시지를 포함하지 않는 생성자를 호출하지 않고, null로 처리
-            return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, null);
+            return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, "리뷰 조회 완료");
         }
     }
 

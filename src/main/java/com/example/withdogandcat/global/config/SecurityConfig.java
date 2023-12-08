@@ -85,7 +85,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/open/naver/news").permitAll()
                         // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/pets").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
                         .anyRequest().authenticated());
 
 

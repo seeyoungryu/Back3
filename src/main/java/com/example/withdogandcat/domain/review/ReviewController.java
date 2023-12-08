@@ -19,7 +19,8 @@ public class ReviewController {
 
     @PostMapping("")
     public ResponseEntity<ReviewResponseDto> createReview(@PathVariable("shopId") Long shopId,
-                                                          @RequestBody ReviewRequestDto requestDto, Authentication authentication) {
+                                                          @RequestBody ReviewRequestDto requestDto,
+                                                          Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         ReviewResponseDto responseDto = reviewService.createReview(userId, shopId, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -33,7 +34,8 @@ public class ReviewController {
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(@PathVariable("shopId") Long shopId,
-                                             @PathVariable("reviewId") Long reviewId, Authentication authentication) {
+                                             @PathVariable("reviewId") Long reviewId,
+                                             Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         reviewService.deleteReview(userId, shopId, reviewId);
         return ResponseEntity.noContent().build();
