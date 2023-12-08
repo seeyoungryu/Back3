@@ -6,6 +6,7 @@ import com.example.withdogandcat.domain.pet.entity.PetGender;
 import com.example.withdogandcat.domain.pet.entity.PetKind;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.tool.LoginAccount;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,14 +17,11 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/pets")
 public class PetController {
+
     private final PetService petService;
-
-    public PetController(PetService petService) {
-        this.petService = petService;
-    }
-
 
     //반려동물 등록
     @PostMapping("")

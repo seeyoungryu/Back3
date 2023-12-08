@@ -9,6 +9,8 @@ import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.config.s3.S3Upload;
 import com.example.withdogandcat.global.dto.ApiResponseDto;
+import com.example.withdogandcat.global.exception.CustomException;
+import com.example.withdogandcat.global.exception.ErrorCode;
 import com.example.withdogandcat.global.tool.LoginAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,7 +68,7 @@ public class ShopService {
     @Transactional(readOnly = true)
     public ShopDetailResponseDto getShopById(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
 
         List<ReviewResponseDto> reviews = reviewRepository.findAllByShop(shop)
                 .stream()
@@ -93,10 +95,10 @@ public class ShopService {
     @Transactional
     public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto, MultipartFile imageUrl, @LoginAccount User currentUser) throws IOException {
         Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
 
         if (!shop.getUser().equals(currentUser)) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
+            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
         String image = s3Upload.upload(imageUrl, SHOP_BUCKET);
@@ -108,10 +110,10 @@ public class ShopService {
     @Transactional
     public void deleteShop(Long shopId, @LoginAccount User currentUser) {
         Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다. shopId=" + shopId));
+                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
 
         if (!shop.getUser().equals(currentUser)) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
         shopRepository.delete(shop);
