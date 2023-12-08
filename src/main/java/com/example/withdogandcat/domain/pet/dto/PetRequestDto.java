@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PetRequestDto {
     private String petName;
-    private PetGender petGender; // Enum
-    private PetKind petKind; // Enum
+    private PetGender petGender;
+    private PetKind petKind;
     private String petInfo;
 
     @FileSize(max = 1048576, message = "이미지 파일은 1MB 이하이어야 합니다")

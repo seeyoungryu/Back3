@@ -53,7 +53,7 @@ public class PetController {
 
     //반려동물 상세조회
     @GetMapping("/{petId}")
-    public ResponseEntity<PetResponseDto> getPet(@PathVariable Long petId) {
+    public ResponseEntity<PetResponseDto> getPet(@PathVariable("petId") Long petId) {
         PetResponseDto petResponseDto = petService.getPet(petId);
         return ResponseEntity.ok(petResponseDto);
     }
@@ -63,7 +63,7 @@ public class PetController {
     //반려동물 삭제
     @DeleteMapping("/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<Void> deletePet(@PathVariable Long petId) {
+    public ResponseEntity<Void> deletePet(@PathVariable("petId") Long petId) {
         petService.deletePet(petId);
         return ResponseEntity.noContent().build();
     }
@@ -74,7 +74,7 @@ public class PetController {
     @PutMapping("/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<PetResponseDto> updatePet(
-            @PathVariable Long petId,
+            @PathVariable("petId") Long petId,
             @RequestParam("petName") String petName,
             @RequestParam("petGender") PetGender petGender,
             @RequestParam("petKind") PetKind petKind,
