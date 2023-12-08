@@ -82,4 +82,31 @@ public class PetService {
         petRepository.delete(pet);
     }
 
+    //반려동물 수정
+    @Transactional
+    public PetResponseDto updatePet(Long petId,
+                                    PetRequestDto petRequestDto,
+                                    MultipartFile image,
+                                    @LoginAccount User currentUser)
+            throws IOException {
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+
+//        if (!pet.getUser().equals(currentUser)) {
+//            throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
+//        }
+
+        String imageUrl = (image != null && !image.isEmpty()) ? s3Upload.upload(image, PETINFO_BUCKET) : pet.getImageUrl();
+
+        pet.updateName(petRequestDto.getPetName());
+        pet.updatePetInfo(petRequestDto.getPetInfo());
+        pet.updatePetGender(petRequestDto.getPetGender());
+        pet.updatePetKind(petRequestDto.getPetKind());
+        pet.updateImage(imageUrl);
+
+        return PetResponseDto.from(pet);
+    }
+
+
 }

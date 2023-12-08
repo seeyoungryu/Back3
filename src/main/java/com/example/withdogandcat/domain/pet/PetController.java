@@ -68,4 +68,23 @@ public class PetController {
         return ResponseEntity.noContent().build();
     }
 
+
+
+    //반려동물 수정
+    @PutMapping("/{petId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<PetResponseDto> updatePet(
+            @PathVariable Long petId,
+            @RequestParam("petName") String petName,
+            @RequestParam("petGender") PetGender petGender,
+            @RequestParam("petKind") PetKind petKind,
+            @RequestParam("petInfo") String petInfo,
+            @RequestParam(value = "imageUrl", required = false) MultipartFile image,
+            @LoginAccount User currentUser) throws IOException {
+
+        PetRequestDto petRequestDto = new PetRequestDto(petName, petGender, petKind, petInfo, image);
+        PetResponseDto updatedPet = petService.updatePet(petId, petRequestDto, image, currentUser);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedPet);
+    }
+
 }

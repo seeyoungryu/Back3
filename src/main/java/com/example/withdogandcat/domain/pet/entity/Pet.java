@@ -58,31 +58,28 @@ public class Pet {
                 .imageUrl(imageUrl)
                 .build();
     }
+
+    public void updatePetKind(PetKind petKind) {
+        this.petKind = petKind;
+
+    }
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateName(String petName) {
+        this.petName = petName;
+    }
+
+    public void updatePetInfo(String petInfo) {
+        this.petInfo = petInfo;
+    }
+
+    public void updatePetGender(PetGender petGender) {
+        this.petGender = petGender;
+    }
+
 }
 
 
-//수정 백업
-//
-//
-//    public void updateImage(String imageUrl, String originalFilename) {
-//        this.imageUrl = imageUrl;
-//
-//    }
-//
-//    public void updateName(String petName) {
-//        this.petName = petName;
-//    }
-//
-//
-//    public void updatePetInfo(String petInfo) {
-//        this.petInfo = petInfo;
-//    }
-//
-//    public void updatePetGender(PetGender gender) {
-//        this.petGender = gender;
-//    }      //확인필요
-//
-//    public void updatePetKind(PetKind kind) {
-//        this.petKind = kind;
-//    }              //확인필요
-//}
+
