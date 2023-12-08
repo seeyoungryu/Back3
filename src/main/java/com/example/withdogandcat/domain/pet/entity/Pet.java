@@ -61,7 +61,7 @@ public class Pet {
 }
 
 
-//
+//수정 백업
 //
 //
 //    public void updateImage(String imageUrl, String originalFilename) {
