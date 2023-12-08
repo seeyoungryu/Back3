@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.shop;
 
+import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
@@ -64,9 +65,9 @@ public class ShopController {
 
     // 가게 상세 조회
     @GetMapping("/{shopId}")
-    public ResponseEntity<ShopResponseDto> getShop(@PathVariable Long shopId) {
-        ShopResponseDto shop = shopService.getShopById(shopId);
-        return ResponseEntity.ok(shop);
+    public ResponseEntity<ShopDetailResponseDto> getShop(@PathVariable Long shopId) {
+        ShopDetailResponseDto shopDetail = shopService.getShopById(shopId);
+        return ResponseEntity.ok(shopDetail);
     }
 
     // 가게 수정

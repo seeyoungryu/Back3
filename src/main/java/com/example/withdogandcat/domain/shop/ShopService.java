@@ -1,5 +1,8 @@
 package com.example.withdogandcat.domain.shop;
 
+import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
+import com.example.withdogandcat.domain.review.like.LikeRepository;
+import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.withdogandcat.domain.review.ReviewRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +26,8 @@ public class ShopService {
 
     private final ShopRepository shopRepository;
     private final S3Upload s3Upload;
+    private final ReviewRepository reviewRepository;
+    private final LikeRepository likeRepository;
 
     private static final String SHOP_BUCKET = "shop-pet";
 
@@ -58,17 +64,34 @@ public class ShopService {
 
     // 가게 상세 조회
     @Transactional(readOnly = true)
-    public ShopResponseDto getShopById(Long shopId) {
+    public ShopDetailResponseDto getShopById(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다. shopId=" + shopId));
-        return ShopResponseDto.from(shop);
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+
+        List<ReviewResponseDto> reviews = reviewRepository.findAllByShop(shop)
+                .stream()
+                .map(review -> new ReviewResponseDto(
+                        review.getReviewId(),
+                        review.getUser().getUserId(),
+                        review.getShop().getShopId(), // shopId 추가
+                        review.getUser().getNickname(),
+                        review.getComment(),
+                        likeRepository.countByReview(review),
+                        review.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        String reviewMessage = reviews.isEmpty() ? "리뷰가 아직 없습니다." : null;
+
+        return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, reviewMessage);
     }
+
+
 
     // 가게 수정
     @Transactional
     public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto, MultipartFile imageUrl, @LoginAccount User currentUser) throws IOException {
         Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다. shopId=" + shopId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
 
         if (!shop.getUser().equals(currentUser)) {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
