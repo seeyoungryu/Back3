@@ -35,6 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token)) {
             logger.info("토큰 확인용 : " + token);
             if (!jwtUtil.validateToken(token)) {
+                res.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
             Claims info = jwtUtil.getUserInfoFromToken(token);

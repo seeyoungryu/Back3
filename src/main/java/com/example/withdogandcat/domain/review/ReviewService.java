@@ -36,7 +36,7 @@ public class ReviewService {
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(review.getReviewId(), user.getUserId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
+        return new ReviewResponseDto(review.getReviewId(), user.getUserId(), shop.getShopId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +49,7 @@ public class ReviewService {
                     int likeCount = likeRepository.countByReview(review);
                     return new ReviewResponseDto(review.getReviewId(),
                             review.getUser().getUserId(),
+                            review.getShop().getShopId(),
                             review.getUser().getNickname(),
                             review.getComment(),
                             likeCount,
