@@ -15,7 +15,7 @@ public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long petId;                                              //확인필요
+    private Long petId;                                             
 
     private String petName;
     private String petInfo;

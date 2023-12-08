@@ -25,8 +25,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
@@ -35,6 +35,13 @@ public class SecurityConfig {
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html",
             "/api/user/**", "/open/naver/news"
     };
+
+    private static final String[] CHAT_WHITELIST = {
+            "/chat/room/**", "/chat/message", "/chat/rooms/**",
+            "/sub/chat/**", "/pub/chat/**", "/ws-stomp", "/chat/roomdetail",
+            "/sub/chat/room", "/ws-stomp/**", "/ws-stomp/info/**"
+    };
+
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
@@ -73,11 +80,16 @@ public class SecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(CHAT_WHITELIST).permitAll()
+                        // 뉴스 검색 모두 허용
                         .requestMatchers(HttpMethod.GET, "/open/naver/news").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
+                        // 가게, 애견 조회
+                        .requestMatchers(HttpMethod.GET,"/api/shops").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/pets").permitAll()
                         .anyRequest().authenticated());
 
+
+        // 필터 -> 순서 중요
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 
@@ -91,6 +103,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        //config.setAllowedHeaders(List.of("Authorization"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
 
