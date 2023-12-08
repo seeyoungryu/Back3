@@ -15,77 +15,74 @@ public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long petId;                                              //확인필요
 
-    @Column(nullable = false)
-    private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PetGender gender;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PetKind kind;
+    private String petName;
+    private String petInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private PetGender petGender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PetKind petKind;
+
     private String imageUrl;
 
-    @Column(nullable = false)
-    private String imageName;
-
-    @Column(length = 500) // petInfo 필드의 길이를 지정합니다.
-    private String petInfo;
 
     @Builder
-    public Pet(User user, String name, PetGender petGender, PetKind petKind, String imageUrl, String imageName, String petInfo) {
+    public Pet(User user, String petName, PetGender petGender,
+               PetKind petKind, String petInfo,
+               String imageUrl) {
         this.user = user;
-        this.name = name;
-        this.gender = petGender;
-        this.kind = petKind;
+        this.petName = petName;
+        this.petGender = petGender;
+        this.petKind = petKind;
         this.imageUrl = imageUrl;
-        this.imageName = imageName;
         this.petInfo = petInfo;
     }
 
 
-    public static Pet createPet(PetRequestDto requestDto, User user, String imageUrl, String imageName) {
+    public static Pet of(PetRequestDto petRequestDto, String imageUrl, User user) {
         return Pet.builder()
+                .petKind(petRequestDto.getPetKind())
+                .petGender(petRequestDto.getPetGender())
+                .petInfo(petRequestDto.getPetInfo())
+                .petName(petRequestDto.getPetName())
                 .user(user)
-                .name(requestDto.getPetName())
                 .imageUrl(imageUrl)
-                .imageName(imageName)
-                .petInfo(requestDto.getPetInfo())
-                .petGender(requestDto.getPetGender())
-                .petKind(requestDto.getPetKind())
                 .build();
     }
-
-
-    public void updateImage(String imageUrl, String originalFilename) {
-        this.imageUrl = imageUrl;
-        this.imageName = originalFilename;
-
-    }
-
-    public void updateName(String petName) {
-        this.name = petName;
-    }
-
-
-    public void updatePetInfo(String petInfo) {
-        this.petInfo = petInfo;
-    }
-
-    public void updatePetGender(PetGender gender) {
-        this.gender = gender;
-    }
-
-    public void updatePetKind(PetKind kind) {
-        this.kind = kind;
-    }
 }
+
+
+//
+//
+//
+//    public void updateImage(String imageUrl, String originalFilename) {
+//        this.imageUrl = imageUrl;
+//
+//    }
+//
+//    public void updateName(String petName) {
+//        this.petName = petName;
+//    }
+//
+//
+//    public void updatePetInfo(String petInfo) {
+//        this.petInfo = petInfo;
+//    }
+//
+//    public void updatePetGender(PetGender gender) {
+//        this.petGender = gender;
+//    }      //확인필요
+//
+//    public void updatePetKind(PetKind kind) {
+//        this.petKind = kind;
+//    }              //확인필요
+//}
