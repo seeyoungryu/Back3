@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(nullable = false, unique = true)
@@ -34,8 +33,7 @@ public class User {
     private UserRole role;
 
     @Builder
-    private User(String email, String password,
-                 String phoneNumber, String nickname, UserRole role) {
+    private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -43,7 +41,7 @@ public class User {
         this.role = role;
     }
 
-    public static User of(SignupRequestDto requestDto, String password) {
+    public static User from(SignupRequestDto requestDto, String password) {
         return User.builder()
                 .email(requestDto.getEmail())
                 .password(password)

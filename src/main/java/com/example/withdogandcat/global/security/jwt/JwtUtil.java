@@ -18,10 +18,9 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
-    private final long TOKEN_TIME = 60 * 60 * 1000L;
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -36,7 +35,6 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // 토큰 생성
     public String createToken(String username, UserRole role) {
         Date date = new Date();
 
@@ -49,12 +47,10 @@ public class JwtUtil {
                 .compact();
     }
 
-    // JWT 헤더에 추가
     public void addJwtToHeader(String token, HttpServletResponse response) {
         response.setHeader(AUTHORIZATION_HEADER, token);
     }
 
-    // 토큰 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
