@@ -5,7 +5,7 @@ import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
-import org.springframework.transaction.annotation.Transactional;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         checkIfEmailExist(email);
-        User user = User.of(requestDto, password);
+        User user = User.from(requestDto, password);
         userRepository.save(user);
     }
 
@@ -32,5 +32,4 @@ public class UserService {
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
     }
-
 }
