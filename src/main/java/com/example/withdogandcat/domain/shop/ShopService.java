@@ -80,9 +80,12 @@ public class ShopService {
                         review.getCreatedAt()))
                 .collect(Collectors.toList());
 
-        String reviewMessage = reviews.isEmpty() ? "리뷰가 아직 없습니다." : null;
-
-        return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, reviewMessage);
+        if (reviews.isEmpty()) {
+            return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, "리뷰가 아직 없습니다.");
+        } else {
+            // 리뷰가 있을 경우, 메시지를 포함하지 않는 생성자를 호출하지 않고, null로 처리
+            return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, null);
+        }
     }
 
 
