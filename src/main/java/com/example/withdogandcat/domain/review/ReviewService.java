@@ -4,7 +4,7 @@ import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.review.like.LikeRepository;
-import com.example.withdogandcat.domain.shop.entitiy.Shop;
+import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.ShopRepository;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.domain.user.UserRepository;
@@ -45,10 +45,14 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         List<Review> reviews = reviewRepository.findAllByShop(shop);
-        return reviews.stream()
-                .map(review -> {
+        return reviews.stream().map(review -> {
                     int likeCount = likeRepository.countByReview(review);
-                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getUserId(), review.getUser().getNickname(), review.getComment(), likeCount, review.getCreatedAt());
+                    return new ReviewResponseDto(review.getReviewId(),
+                            review.getUser().getUserId(),
+                            review.getUser().getNickname(),
+                            review.getComment(),
+                            likeCount,
+                            review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
     }

@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.shop.entitiy;
+package com.example.withdogandcat.domain.shop.entity;
 
 public enum ShopType {
     GROOMING,

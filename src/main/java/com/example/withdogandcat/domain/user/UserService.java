@@ -23,7 +23,7 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         checkIfEmailExist(email);
-        User user = User.from(requestDto, password);
+        User user = User.of(requestDto, password);
         userRepository.save(user);
     }
 
@@ -33,9 +33,4 @@ public class UserService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
-    }
 }

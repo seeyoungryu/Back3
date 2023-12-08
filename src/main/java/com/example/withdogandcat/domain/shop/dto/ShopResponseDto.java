@@ -1,14 +1,16 @@
 package com.example.withdogandcat.domain.shop.dto;
 
-import com.example.withdogandcat.domain.shop.entitiy.Shop;
-import com.example.withdogandcat.domain.shop.entitiy.ShopType;
+import com.example.withdogandcat.domain.shop.entity.Shop;
+import com.example.withdogandcat.domain.shop.entity.ShopType;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ShopResponseDto {
 
     private final Long shopId;
+    private final Long userId;
     private final String shopName;
     private final String shopTime;
     private final String shopTel;
@@ -17,11 +19,10 @@ public class ShopResponseDto {
     private final String shopDescribe;
     private final String imageUrl;
 
-    @Builder
-    public ShopResponseDto(Long shopId, String shopName, String shopTime, String shopTel,
-                           String shopAddress, ShopType shopType, String shopDescribe,
-                           String imageUrl) {
+    public ShopResponseDto(Long shopId, Long userId, String shopName, String shopTime, String shopTel,
+                           String shopAddress, ShopType shopType, String shopDescribe, String imageUrl) {
         this.shopId = shopId;
+        this.userId = userId;
         this.shopName = shopName;
         this.shopTime = shopTime;
         this.shopTel = shopTel;
@@ -34,6 +35,7 @@ public class ShopResponseDto {
     public static ShopResponseDto from(Shop shop) {
         return ShopResponseDto.builder()
                 .shopId(shop.getShopId())
+                .userId(shop.getUser().getUserId())
                 .shopName(shop.getShopName())
                 .shopTime(shop.getShopTime())
                 .shopTel(shop.getShopTel())

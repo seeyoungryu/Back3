@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.review;
 
-import com.example.withdogandcat.domain.review.ReviewService;
 import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
@@ -18,21 +17,23 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping
-    public ResponseEntity<ReviewResponseDto> createReview(@PathVariable("shopId") Long shopId, @RequestBody ReviewRequestDto requestDto, Authentication authentication) {
+    @PostMapping("")
+    public ResponseEntity<ReviewResponseDto> createReview(@PathVariable("shopId") Long shopId,
+                                                          @RequestBody ReviewRequestDto requestDto, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         ReviewResponseDto responseDto = reviewService.createReview(userId, shopId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<ReviewResponseDto>> getAllReviews(@PathVariable("shopId") Long shopId) {
         List<ReviewResponseDto> reviews = reviewService.getAllReviews(shopId);
         return ResponseEntity.ok(reviews);
     }
 
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable("shopId") Long shopId, @PathVariable("reviewId") Long reviewId, Authentication authentication) {
+    public ResponseEntity<Void> deleteReview(@PathVariable("shopId") Long shopId,
+                                             @PathVariable("reviewId") Long reviewId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         reviewService.deleteReview(userId, shopId, reviewId);
         return ResponseEntity.noContent().build();
