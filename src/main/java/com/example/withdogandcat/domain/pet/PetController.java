@@ -2,20 +2,21 @@ package com.example.withdogandcat.domain.pet;
 
 import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
-import jakarta.validation.Valid;
+import com.example.withdogandcat.domain.pet.entity.PetGender;
+import com.example.withdogandcat.domain.pet.entity.PetKind;
+import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.global.tool.LoginAccount;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/user/{id}/pets")
+@RequestMapping("/api/pets")
 public class PetController {
     private final PetService petService;
 
@@ -24,42 +25,66 @@ public class PetController {
     }
 
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    //반려동물 등록
+    @PostMapping("")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<PetResponseDto> registerPet(
-            @PathVariable(value = "userId") Long userId,
             @RequestParam("petName") String petName,
-            @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl) throws IOException {
+            @RequestParam("petGender") PetGender petGender,
+            @RequestParam("petKind") PetKind petKind,
+            @RequestParam("petInfo") String petInfo,
+            @RequestParam("imageUrl") MultipartFile image,
+            @LoginAccount User currentUser) throws IOException {
 
-        PetRequestDto requestDto = new PetRequestDto(petName, imageUrl);
-        PetResponseDto responseDto = petService.registerPet(userId, requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        PetRequestDto petRequestDto = new PetRequestDto(petName, petGender, petKind, petInfo, image);
+        PetResponseDto registeredPet = petService.registerPet(petRequestDto, image, currentUser);
+        return ResponseEntity.status(HttpStatus.OK).body(registeredPet);
     }
 
 
-    // 애완동물 정보 조회
-    @GetMapping("/{petId}")
-    public ResponseEntity<PetResponseDto> getPet(
-            @PathVariable("userId") Long userId,
-            @PathVariable("petId") Long petId) {
-        PetResponseDto petResponseDto = petService.getPet(userId, petId);
 
-        if (petResponseDto == null) {
-            return ResponseEntity.notFound().build();
-        }
+    //반려동물 전체조회
+    @GetMapping("")
+    public ResponseEntity<List<PetResponseDto>> getAllPets() {
+        List<PetResponseDto> responseBody = petService.getAllPets();
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+
+    //반려동물 상세조회
+    @GetMapping("/{petId}")
+    public ResponseEntity<PetResponseDto> getPet(@PathVariable("petId") Long petId) {
+        PetResponseDto petResponseDto = petService.getPet(petId);
         return ResponseEntity.ok(petResponseDto);
     }
 
-    @PutMapping(value = "/{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+
+    //반려동물 삭제
+    @DeleteMapping("/{petId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<Void> deletePet(@PathVariable("petId") Long petId) {
+        petService.deletePet(petId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+    //반려동물 수정
+    @PutMapping("/{petId}")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<PetResponseDto> updatePet(
-            @PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId,
             @RequestParam("petName") String petName,
-            @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl) throws IOException {
+            @RequestParam("petGender") PetGender petGender,
+            @RequestParam("petKind") PetKind petKind,
+            @RequestParam("petInfo") String petInfo,
+            @RequestParam(value = "imageUrl", required = false) MultipartFile image,
+            @LoginAccount User currentUser) throws IOException {
 
-        PetRequestDto requestDto = new PetRequestDto(petName, imageUrl);
-
-        PetResponseDto responseDto = petService.updatePet(petId, requestDto);
-
-        return ResponseEntity.ok(responseDto);
+        PetRequestDto petRequestDto = new PetRequestDto(petName, petGender, petKind, petInfo, image);
+        PetResponseDto updatedPet = petService.updatePet(petId, petRequestDto, image, currentUser);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedPet);
     }
+
 }
