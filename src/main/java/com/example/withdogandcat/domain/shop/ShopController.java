@@ -61,4 +61,32 @@ public class ShopController {
         List<ShopResponseDto> responseBody = shopService.getAllShops();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
+
+    // 가게 상세 조회
+    @GetMapping("/{shopId}")
+    public ResponseEntity<ShopResponseDto> getShop(@PathVariable Long shopId) {
+        ShopResponseDto shop = shopService.getShopById(shopId);
+        return ResponseEntity.ok(shop);
+    }
+
+    // 가게 수정
+    @PutMapping("/{shopId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<ShopResponseDto> updateShop(
+            @PathVariable Long shopId,
+            @ModelAttribute ShopRequestDto shopRequestDto,
+            @LoginAccount User currentUser) throws IOException {
+
+        ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, shopRequestDto.getImageUrl(), currentUser);
+        return ResponseEntity.ok(updatedShop);
+    }
+
+    // 가게 삭제
+    @DeleteMapping("/{shopId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<Void> deleteShop(@PathVariable Long shopId, @LoginAccount User currentUser) {
+        shopService.deleteShop(shopId, currentUser);
+        return ResponseEntity.noContent().build();
+    }
+
 }

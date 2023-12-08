@@ -55,6 +55,40 @@ public class ShopService {
                 .map(ShopResponseDto::from).collect(Collectors.toList());
     }
 
-    // TODO 가게 상세 조회, 가게 수정, 가게 삭제
 
+    // 가게 상세 조회
+    @Transactional(readOnly = true)
+    public ShopResponseDto getShopById(Long shopId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다. shopId=" + shopId));
+        return ShopResponseDto.from(shop);
+    }
+
+    // 가게 수정
+    @Transactional
+    public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto, MultipartFile imageUrl, @LoginAccount User currentUser) throws IOException {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다. shopId=" + shopId));
+
+        if (!shop.getUser().equals(currentUser)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        String image = s3Upload.upload(imageUrl, SHOP_BUCKET);
+        shop.update(shopRequestDto, image);
+        return ShopResponseDto.from(shop);
+    }
+
+    // 가게 삭제
+    @Transactional
+    public void deleteShop(Long shopId, @LoginAccount User currentUser) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다. shopId=" + shopId));
+
+        if (!shop.getUser().equals(currentUser)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        shopRepository.delete(shop);
+    }
 }

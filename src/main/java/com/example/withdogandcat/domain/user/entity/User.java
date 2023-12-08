@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @Table(name = "users")
@@ -41,6 +43,19 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.nickname = nickname;
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId); // id는 User 클래스의 고유 식별자 필드
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId);
     }
 
     public static User of(SignupRequestDto requestDto, String password) {

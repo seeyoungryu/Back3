@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shop {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shopId;
 
     private String shopName;
@@ -35,8 +36,7 @@ public class Shop {
     @Builder
     private Shop(String shopName, String shopTime, String shopTel,
                  String shopAddress, ShopType shopType,
-                 String shopDescribe, String imageUrl, User user)
-    {
+                 String shopDescribe, String imageUrl, User user) {
         this.shopName = shopName;
         this.shopTime = shopTime;
         this.shopTel = shopTel;
@@ -61,4 +61,13 @@ public class Shop {
                 .build();
     }
 
+    public void update(ShopRequestDto shopRequestDto, String imageUrl) {
+        this.shopName = shopRequestDto.getShopName();
+        this.shopTime = shopRequestDto.getShopTime();
+        this.shopTel = shopRequestDto.getShopTel();
+        this.shopAddress = shopRequestDto.getShopAddress();
+        this.shopType = shopRequestDto.getShopType();
+        this.shopDescribe = shopRequestDto.getShopDescribe();
+        this.imageUrl = imageUrl;
+    }
 }
