@@ -1,4 +1,5 @@
 package com.example.withdogandcat.domain.pet.entity;
+import com.example.withdogandcat.domain.image.Image;
 import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -6,6 +7,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,52 +36,50 @@ public class Pet {
     @Column(nullable = false)
     private PetKind petKind;
 
-    private String imageUrl;
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
 
 
     @Builder
     public Pet(User user, String petName, PetGender petGender,
                PetKind petKind, String petInfo,
-               String imageUrl) {
+               List<Image> images) {
         this.user = user;
         this.petName = petName;
         this.petGender = petGender;
         this.petKind = petKind;
-        this.imageUrl = imageUrl;
         this.petInfo = petInfo;
+        this.images.addAll(images);
     }
 
 
-    public static Pet of(PetRequestDto petRequestDto, String imageUrl, User user) {
+    public static Pet of(PetRequestDto petRequestDto, User user) {
         return Pet.builder()
                 .petKind(petRequestDto.getPetKind())
                 .petGender(petRequestDto.getPetGender())
                 .petInfo(petRequestDto.getPetInfo())
                 .petName(petRequestDto.getPetName())
                 .user(user)
-                .imageUrl(imageUrl)
+                .images(new ArrayList<>())
                 .build();
     }
 
-    public void updatePetKind(PetKind petKind) {
-        this.petKind = petKind;
 
-    }
-    public void updateImage(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void updateName(String petName) {
+    public void updatePetDetails(String petName, String petInfo,
+                                 PetKind petKind, PetGender petGender) {
         this.petName = petName;
-    }
-
-    public void updatePetInfo(String petInfo) {
+        this.petKind = petKind;
         this.petInfo = petInfo;
+        this.petGender = petGender;
+
     }
 
-    public void updatePetGender(PetGender petGender) {
-        this.petGender = petGender;
+    public void addImage(Image image) {
+        images.add(image);
+        image.setPet(this);
     }
+
+    public void clearImages() {this.images.clear();}
 
 }
 

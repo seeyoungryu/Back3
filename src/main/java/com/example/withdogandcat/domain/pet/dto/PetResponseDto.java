@@ -1,34 +1,42 @@
 package com.example.withdogandcat.domain.pet.dto;
 
 import com.example.withdogandcat.domain.pet.entity.Pet;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PetResponseDto {
-    private Long petId;
-    private String nickname;
-    private String petName;
-    private String petGender;
-    private String petKind;
-    private String petInfo;
-    private String imageUrl;
+    private final Long petId;
+    private final String nickname;
+    private final String petName;
+    private final String petGender;
+    private final String petKind;
+    private final String petInfo;
+    private final List<String> imageUrls;
 
     @Builder
-    public PetResponseDto(Long petId, String nickname, String petName, String petGender, String petKind, String petInfo, String imageUrl) {
+    public PetResponseDto(Long petId, String nickname, String petName,
+                          String petGender, String petKind,
+                          String petInfo, List<String> imageUrls) {
         this.petId = petId;
         this.nickname = nickname;
         this.petName = petName;
         this.petGender = petGender;
         this.petKind = petKind;
         this.petInfo = petInfo;
-        this.imageUrl = imageUrl;
+        this.imageUrls = imageUrls;
     }
 
     public static PetResponseDto from(Pet pet) {
+
+        List<String> imageUrls = pet.getImages().stream()
+                .map(image -> image.getStoredImagePath())
+                .collect(Collectors.toList());
+
         return PetResponseDto.builder()
                 .petId(pet.getPetId())
                 .nickname(pet.getUser().getNickname())
@@ -36,7 +44,7 @@ public class PetResponseDto {
                 .petGender(pet.getPetGender().name())
                 .petKind(pet.getPetKind().name())
                 .petInfo(pet.getPetInfo())
-                .imageUrl(pet.getImageUrl())
+                .imageUrls(imageUrls)
                 .build();
     }
 }
