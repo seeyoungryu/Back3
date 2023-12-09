@@ -71,6 +71,7 @@ public class ShopService {
                 .map(review -> ReviewResponseDto.builder()
                         .reviewId(review.getReviewId())
                         .userId(review.getUser().getUserId())
+                        .shopId(review.getShop().getShopId())
                         .nickname(review.getUser().getNickname())
                         .comment(review.getComment())
                         .likeCount(review.getLikeCount())
