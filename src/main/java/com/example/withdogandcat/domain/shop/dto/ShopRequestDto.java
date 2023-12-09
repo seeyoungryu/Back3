@@ -1,13 +1,15 @@
 package com.example.withdogandcat.domain.shop.dto;
 
 import com.example.withdogandcat.domain.shop.entity.ShopType;
-import com.example.withdogandcat.global.config.s3.validation.FileExtension;
-import com.example.withdogandcat.global.config.s3.validation.FileSize;
+import com.example.withdogandcat.domain.image.validation.FileExtension;
+import com.example.withdogandcat.domain.image.validation.FileSize;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,20 +24,17 @@ public class ShopRequestDto {
     private ShopType shopType;
     private String shopDescribe;
 
-
-    @FileSize(max = 1048576, message = "이미지 파일은 1MB 이하이어야 합니다")
-    @FileExtension(ext = "png,jpg,jpeg", message = "이미지 파일은 png, jpg, jpeg 형식이어야 합니다")
-    private MultipartFile imageUrl;
+    private List<MultipartFile> imageFiles;
 
     public ShopRequestDto(String shopName, String shopTime, String shopTel,
-                          String shopAddress, ShopType shopType,
-                          String shopDescribe, MultipartFile imageUrl) {
+                          String shopAddress, ShopType shopType, String shopDescribe,
+                          List<MultipartFile> imageFiles) {
         this.shopName = shopName;
         this.shopTime = shopTime;
         this.shopTel = shopTel;
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
-        this.imageUrl = imageUrl;
+        this.imageFiles = imageFiles;
     }
 }

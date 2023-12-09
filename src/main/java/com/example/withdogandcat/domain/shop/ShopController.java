@@ -5,7 +5,7 @@ import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.dto.ApiResponseDto;
+import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.tool.LoginAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,78 +26,59 @@ public class ShopController {
 
     private final ShopService shopService;
 
-    // TODO RequestParam 줄일 수 있는 방법 찾기
-
     // 마이페이지 가게 조회
-    @GetMapping("/mypage")
-    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCurrentUser(@LoginAccount User currentUser) {
-        ApiResponseDto<List<ShopResponseDto>> response = shopService.getShopsByUserId(currentUser.getUserId());
+    @GetMapping("/mypage/{userId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCurrentUser(@PathVariable("userId") Long userId) {
+        ApiResponseDto<List<ShopResponseDto>> response = shopService.getShopsByUserId(userId);
         return ResponseEntity.ok(response);
     }
 
     // 가게 등록
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<ShopResponseDto> createShop(
-            @RequestParam("shopName") String shopName,
-            @RequestParam("shopTime") String shopTime,
-            @RequestParam("shopTel") String shopTel,
-            @RequestParam("shopAddress") String shopAddress,
-            @RequestParam("shopType") ShopType shopType,
-            @RequestParam("shopDescribe") String shopDescribe,
-            @RequestParam("imageUrl") MultipartFile image,
+    public ResponseEntity<ApiResponseDto<ShopResponseDto>> createShop(
+            @ModelAttribute ShopRequestDto shopRequestDto,
+            @RequestPart("imageUrl") List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
-        ShopRequestDto shopRequestDto = new ShopRequestDto(
-                shopName, shopTime, shopTel, shopAddress, shopType, shopDescribe, image);
-
-        ShopResponseDto createdShop = shopService.createShop(shopRequestDto, image, currentUser);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdShop);
+        ShopResponseDto createdShop = shopService.createShop(shopRequestDto, imageFiles, currentUser);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponseDto<>("가게 등록 성공", createdShop));
     }
 
-    // 전체 가게 조회
+    // 가게 전체 조회
     @GetMapping("")
-    public ResponseEntity<List<ShopResponseDto>> getAllShops() {
-        List<ShopResponseDto> responseBody = shopService.getAllShops();
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getAllShops() {
+        ApiResponseDto<List<ShopResponseDto>> response = shopService.getAllShops();
+        return ResponseEntity.ok(response);
     }
 
     // 가게 상세 조회
     @GetMapping("/{shopId}")
-    public ResponseEntity<ShopDetailResponseDto> getShop(@PathVariable("shopId") Long shopId) {
-        ShopDetailResponseDto shopDetail = shopService.getShopById(shopId);
-        return ResponseEntity.ok(shopDetail);
+    public ResponseEntity<ApiResponseDto<ShopDetailResponseDto>> getShopDetails(@PathVariable("shopId") Long shopId) {
+        ShopDetailResponseDto shopDetailResponseDto = shopService.getShopDetails(shopId);
+        return ResponseEntity.ok(new ApiResponseDto<>("가게 상세 조회 성공", shopDetailResponseDto));
     }
 
     // 가게 수정
     @PutMapping("/{shopId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<ShopResponseDto> updateShop(
+    public ResponseEntity<ApiResponseDto<ShopResponseDto>> updateShop(
             @PathVariable("shopId") Long shopId,
-            @RequestParam("shopName") String shopName,
-            @RequestParam("shopTime") String shopTime,
-            @RequestParam("shopTel") String shopTel,
-            @RequestParam("shopAddress") String shopAddress,
-            @RequestParam("shopType") ShopType shopType,
-            @RequestParam("shopDescribe") String shopDescribe,
-            @RequestParam("imageUrl") MultipartFile image,
+            @ModelAttribute ShopRequestDto shopRequestDto,
+            @RequestPart("imageUrl") List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
-        ShopRequestDto shopRequestDto = new ShopRequestDto(
-                shopName, shopTime, shopTel, shopAddress, shopType, shopDescribe, image);
-
-        ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, image, currentUser);
-
-        return ResponseEntity.status(HttpStatus.OK).body(updatedShop);
+        ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, imageFiles, currentUser);
+        return ResponseEntity.ok(new ApiResponseDto<>("가게 수정 성공", updatedShop));
     }
 
     // 가게 삭제
     @DeleteMapping("/{shopId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<Void> deleteShop(@PathVariable("shopId") Long shopId, @LoginAccount User currentUser) {
-        shopService.deleteShop(shopId, currentUser);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ApiResponseDto<String>> deleteShop(@PathVariable Long shopId) {
+        shopService.deleteShop(shopId);
+        return ResponseEntity.ok(new ApiResponseDto<>("가게 삭제 완료", null));
     }
-
 }

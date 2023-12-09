@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.shop.entity;
 
+import com.example.withdogandcat.domain.image.Image;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -8,14 +9,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "shops")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shop {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shopId;
 
     private String shopName;
@@ -24,31 +27,31 @@ public class Shop {
     private String shopAddress;
     private String shopDescribe;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Enumerated(EnumType.STRING)
     private ShopType shopType;
 
-    private String imageUrl;
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
 
     @Builder
-    private Shop(String shopName, String shopTime, String shopTel,
-                 String shopAddress, ShopType shopType,
-                 String shopDescribe, String imageUrl, User user) {
+    public Shop(String shopName, String shopTime, String shopTel,
+                String shopAddress, ShopType shopType,
+                String shopDescribe, User user, List<Image> images) {
         this.shopName = shopName;
         this.shopTime = shopTime;
         this.shopTel = shopTel;
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
-        this.imageUrl = imageUrl;
         this.user = user;
-
+        this.images.addAll(images);
     }
 
-    public static Shop of(ShopRequestDto shopRequestDto, String imageUrl, User user) {
+    public static Shop of(ShopRequestDto shopRequestDto, User user) {
         return Shop.builder()
                 .shopName(shopRequestDto.getShopName())
                 .shopTime(shopRequestDto.getShopTime())
@@ -56,18 +59,28 @@ public class Shop {
                 .shopAddress(shopRequestDto.getShopAddress())
                 .shopType(shopRequestDto.getShopType())
                 .shopDescribe(shopRequestDto.getShopDescribe())
-                .imageUrl(imageUrl)
                 .user(user)
+                .images(new ArrayList<>())
                 .build();
     }
 
-    public void update(ShopRequestDto shopRequestDto, String imageUrl) {
-        this.shopName = shopRequestDto.getShopName();
-        this.shopTime = shopRequestDto.getShopTime();
-        this.shopTel = shopRequestDto.getShopTel();
-        this.shopAddress = shopRequestDto.getShopAddress();
-        this.shopType = shopRequestDto.getShopType();
-        this.shopDescribe = shopRequestDto.getShopDescribe();
-        this.imageUrl = imageUrl;
+    public void updateShopDetails(String shopName, String shopTime, String shopTel,
+                                  ShopType shopType, String shopAddress,
+                                  String shopDescribe) {
+        this.shopName = shopName;
+        this.shopTime = shopTime;
+        this.shopTel = shopTel;
+        this.shopAddress = shopAddress;
+        this.shopType = shopType;
+        this.shopDescribe = shopDescribe;
+    }
+
+    public void addImage(Image image) {
+        images.add(image);
+        image.setShop(this);
+    }
+
+    public void clearImages() {
+        this.images.clear();
     }
 }

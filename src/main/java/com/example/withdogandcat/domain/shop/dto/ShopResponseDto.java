@@ -5,8 +5,10 @@ import com.example.withdogandcat.domain.shop.entity.ShopType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
-@Builder
 public class ShopResponseDto {
 
     private final Long shopId;
@@ -17,10 +19,12 @@ public class ShopResponseDto {
     private final String shopAddress;
     private final ShopType shopType;
     private final String shopDescribe;
-    private final String imageUrl;
+    private final List<String> imageUrls;
 
-    public ShopResponseDto(Long shopId, Long userId, String shopName, String shopTime, String shopTel,
-                           String shopAddress, ShopType shopType, String shopDescribe, String imageUrl) {
+    @Builder
+    public ShopResponseDto(Long shopId, Long userId, String shopName, String shopTime,
+                           String shopTel, String shopAddress, ShopType shopType,
+                           String shopDescribe, List<String> imageUrls) {
         this.shopId = shopId;
         this.userId = userId;
         this.shopName = shopName;
@@ -29,10 +33,15 @@ public class ShopResponseDto {
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
-        this.imageUrl = imageUrl;
+        this.imageUrls = imageUrls;
     }
 
     public static ShopResponseDto from(Shop shop) {
+
+        List<String> imageUrls = shop.getImages().stream()
+                .map(image -> image.getStoredImagePath())
+                .collect(Collectors.toList());
+
         return ShopResponseDto.builder()
                 .shopId(shop.getShopId())
                 .userId(shop.getUser().getUserId())
@@ -42,7 +51,7 @@ public class ShopResponseDto {
                 .shopAddress(shop.getShopAddress())
                 .shopType(shop.getShopType())
                 .shopDescribe(shop.getShopDescribe())
-                .imageUrl(shop.getImageUrl())
+                .imageUrls(imageUrls)
                 .build();
     }
 }

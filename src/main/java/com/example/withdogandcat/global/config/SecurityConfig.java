@@ -33,15 +33,8 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html",
-            "/api/user/**", "/open/naver/news"
+            "/api/user/**"
     };
-
-    private static final String[] CHAT_WHITELIST = {
-            "/chat/room/**", "/chat/message", "/chat/rooms/**",
-            "/sub/chat/**", "/pub/chat/**", "/ws-stomp", "/chat/roomdetail",
-            "/sub/chat/room", "/ws-stomp/**", "/ws-stomp/info/**"
-    };
-
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
@@ -72,24 +65,17 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         http.sessionManagement((sessionManagement) ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
 
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers(CHAT_WHITELIST).permitAll()
-                        // 뉴스 검색 모두 허용
-                        .requestMatchers(HttpMethod.GET, "/open/naver/news").permitAll()
-                        // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
                         .anyRequest().authenticated());
 
-
-        // 필터 -> 순서 중요
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 
@@ -103,7 +89,6 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        //config.setAllowedHeaders(List.of("Authorization"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
 

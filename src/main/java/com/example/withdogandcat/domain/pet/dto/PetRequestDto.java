@@ -1,8 +1,8 @@
 package com.example.withdogandcat.domain.pet.dto;
 import com.example.withdogandcat.domain.pet.entity.PetGender;
 import com.example.withdogandcat.domain.pet.entity.PetKind;
-import com.example.withdogandcat.global.config.s3.validation.FileExtension;
-import com.example.withdogandcat.global.config.s3.validation.FileSize;
+import com.example.withdogandcat.domain.image.validation.FileExtension;
+import com.example.withdogandcat.domain.image.validation.FileSize;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 

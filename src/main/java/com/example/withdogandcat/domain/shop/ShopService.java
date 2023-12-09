@@ -1,14 +1,15 @@
 package com.example.withdogandcat.domain.shop;
 
+import com.example.withdogandcat.domain.image.Image;
+import com.example.withdogandcat.domain.image.ImageS3Service;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
-import com.example.withdogandcat.domain.review.like.LikeRepository;
+import com.example.withdogandcat.domain.like.LikeRepository;
 import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.config.s3.S3Upload;
-import com.example.withdogandcat.global.dto.ApiResponseDto;
+import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
 import com.example.withdogandcat.global.tool.LoginAccount;
@@ -27,95 +28,93 @@ import java.util.stream.Collectors;
 public class ShopService {
 
     private final ShopRepository shopRepository;
-    private final S3Upload s3Upload;
     private final ReviewRepository reviewRepository;
-    private final LikeRepository likeRepository;
-
-    private static final String SHOP_BUCKET = "shop-pet";
+    private final ImageS3Service imageS3Service;
 
     // 마이페이지 가게 조회
     public ApiResponseDto<List<ShopResponseDto>> getShopsByUserId(Long userId) {
         List<Shop> shops = shopRepository.findByUser_UserId(userId);
-
         String message = shops.isEmpty() ? "등록된 가게가 없습니다" : "가게 목록 조회 성공";
         List<ShopResponseDto> shopDtos = shops.stream()
-                .map(ShopResponseDto::from)
-                .collect(Collectors.toList());
-
+                .map(ShopResponseDto::from).collect(Collectors.toList());
         return new ApiResponseDto<>(message, shopDtos);
     }
 
     // 가게 등록
     @Transactional
-    public ShopResponseDto createShop(ShopRequestDto shopRequestDto, MultipartFile imageUrl,
-                                      @LoginAccount User currentUser) throws IOException {
-        String image = s3Upload.upload(imageUrl, SHOP_BUCKET);
-        Shop shop = Shop.of(shopRequestDto, image, currentUser);
+    public ShopResponseDto createShop(ShopRequestDto shopRequestDto, List<MultipartFile> imageFiles, User user) throws IOException {
+        Shop shop = Shop.of(shopRequestDto, user);
+        List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
+        uploadedImages.forEach(shop::addImage);
         shopRepository.save(shop);
         return ShopResponseDto.from(shop);
     }
 
-
     // 가게 전체 조회
     @Transactional(readOnly = true)
-    public List<ShopResponseDto> getAllShops() {
-        return shopRepository.findAll().stream()
+    public ApiResponseDto<List<ShopResponseDto>> getAllShops() {
+        List<ShopResponseDto> shops = shopRepository.findAll().stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
-    }
 
+        String message = shops.isEmpty() ? "등록된 가게가 없습니다" : "가게 전체 조회 성공";
+        return new ApiResponseDto<>(message, shops);
+    }
 
     // 가게 상세 조회
     @Transactional(readOnly = true)
-    public ShopDetailResponseDto getShopById(Long shopId) {
+    public ShopDetailResponseDto getShopDetails(Long shopId) {
+
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
 
-        List<ReviewResponseDto> reviews = reviewRepository.findAllByShop(shop)
-                .stream()
-                .map(review -> new ReviewResponseDto(
-                        review.getReviewId(),
-                        review.getUser().getUserId(),
-                        review.getShop().getShopId(),
-                        review.getUser().getNickname(),
-                        review.getComment(),
-                        likeRepository.countByReview(review),
-                        review.getCreatedAt()))
-                .collect(Collectors.toList());
+        List<ReviewResponseDto> reviews = reviewRepository.findByShopId(shopId).stream()
+                .map(review -> ReviewResponseDto.builder()
+                        .reviewId(review.getReviewId())
+                        .userId(review.getUser().getUserId())
+                        .nickname(review.getUser().getNickname())
+                        .comment(review.getComment())
+                        .likeCount(review.getLikeCount())
+                        .createdAt(review.getCreatedAt())
+                        .build()).collect(Collectors.toList());
 
-        if (reviews.isEmpty()) {
-            return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, "리뷰가 아직 없습니다.");
-        } else {
-            return new ShopDetailResponseDto(ShopResponseDto.from(shop), reviews, "리뷰 조회 완료");
-        }
+        ShopResponseDto shopResponse = ShopResponseDto.from(shop);
+
+        return ShopDetailResponseDto.builder().shopResponseDto(shopResponse).reviews(reviews).build();
     }
-
-
 
     // 가게 수정
     @Transactional
-    public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto, MultipartFile imageUrl, @LoginAccount User currentUser) throws IOException {
+    public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto,
+                                      List<MultipartFile> imageFiles, User currentUser) throws IOException {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
-
-        if (!shop.getUser().equals(currentUser)) {
+        if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        String image = s3Upload.upload(imageUrl, SHOP_BUCKET);
-        shop.update(shopRequestDto, image);
-        return ShopResponseDto.from(shop);
+        imageS3Service.deleteImages(shop.getImages());
+        shop.clearImages();
+        List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
+        newImages.forEach(shop::addImage);
+
+        shop.updateShopDetails(
+                shopRequestDto.getShopName(),
+                shopRequestDto.getShopTime(),
+                shopRequestDto.getShopTel(),
+                shopRequestDto.getShopType(),
+                shopRequestDto.getShopAddress(),
+                shopRequestDto.getShopDescribe());
+        return ShopResponseDto.from(shopRepository.save(shop));
     }
 
     // 가게 삭제
     @Transactional
-    public void deleteShop(Long shopId, @LoginAccount User currentUser) {
+    public void deleteShop(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
 
-        if (!shop.getUser().equals(currentUser)) {
-            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-
+        imageS3Service.deleteImages(shop.getImages());
+        reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
     }
 }

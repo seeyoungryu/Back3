@@ -3,7 +3,7 @@ package com.example.withdogandcat.domain.review;
 import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
-import com.example.withdogandcat.domain.review.like.LikeRepository;
+import com.example.withdogandcat.domain.like.LikeRepository;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.ShopRepository;
 import com.example.withdogandcat.domain.user.entity.User;
@@ -36,14 +36,7 @@ public class ReviewService {
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
-        return new ReviewResponseDto(
-                review.getReviewId(),
-                user.getUserId(),
-                shop.getShopId(),
-                user.getNickname(),
-                review.getComment(),
-                0,
-                review.getCreatedAt());
+        return new ReviewResponseDto(review.getReviewId(), user.getUserId(), user.getNickname(), review.getComment(), 0, review.getCreatedAt());
     }
 
     @Transactional(readOnly = true)
@@ -54,13 +47,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByShop(shop);
         return reviews.stream().map(review -> {
                     int likeCount = likeRepository.countByReview(review);
-                    return new ReviewResponseDto(review.getReviewId(),
-                            review.getUser().getUserId(),
-                            review.getShop().getShopId(),
-                            review.getUser().getNickname(),
-                            review.getComment(),
-                            likeCount,
-                            review.getCreatedAt());
+                    return new ReviewResponseDto(review.getReviewId(), review.getUser().getUserId(), review.getUser().getNickname(), review.getComment(), likeCount, review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
     }

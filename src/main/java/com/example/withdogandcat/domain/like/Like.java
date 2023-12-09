@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.review.like;
+package com.example.withdogandcat.domain.like;
 
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.user.entity.User;
@@ -11,8 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Like {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,7 +22,6 @@ public class Like {
     @JoinColumn(name = "review_id")
     private Review review;
 
-    @Builder
     public Like(User user, Review review) {
         this.user = user;
         this.review = review;

@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.review.entity;
 
-import com.example.withdogandcat.domain.review.like.Like;
+import com.example.withdogandcat.domain.like.Like;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -17,8 +17,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends Timestamped {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
     @Column(nullable = false)
@@ -50,4 +49,7 @@ public class Review extends Timestamped {
                 .build();
     }
 
+    public int getLikeCount() {
+        return likes.size();
+    }
 }

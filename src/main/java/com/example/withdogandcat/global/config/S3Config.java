@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.config.s3;
+package com.example.withdogandcat.global.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

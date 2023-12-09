@@ -7,20 +7,19 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ReviewResponseDto {
+
     private Long reviewId;
     private Long userId;
-    private Long shopId;
     private String nickname;
     private String comment;
     private int likeCount;
     private LocalDateTime createdAt;
 
     @Builder
-    public ReviewResponseDto(Long reviewId, Long userId, Long shopId, String nickname,
+    public ReviewResponseDto(Long reviewId, Long userId, String nickname,
                              String comment, int likeCount, LocalDateTime createdAt) {
         this.reviewId = reviewId;
         this.userId = userId;
-        this.shopId = shopId;
         this.nickname = nickname;
         this.comment = comment;
         this.likeCount = likeCount;

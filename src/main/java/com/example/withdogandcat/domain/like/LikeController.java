@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.review.like;
+package com.example.withdogandcat.domain.like;
 
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
