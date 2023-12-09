@@ -6,6 +6,8 @@ import com.example.withdogandcat.domain.image.validation.FileSize;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PetRequestDto {
@@ -14,20 +16,19 @@ public class PetRequestDto {
     private PetKind petKind;
     private String petInfo;
 
-    @FileSize(max = 1048576, message = "이미지 파일은 1MB 이하이어야 합니다")
-    @FileExtension(ext = "png,jpg,jpeg", message = "이미지 파일은 png, jpg, jpeg 형식이어야 합니다")
-    private MultipartFile imageUrl;
+    private List<MultipartFile> imageFiles;
+
 
     @Builder
     public PetRequestDto(String petName,
                          PetGender petGender,
                          PetKind petKind,
                          String petInfo,
-                         MultipartFile imageUrl) {
+                         List<MultipartFile> imageFiles) {
         this.petName = petName;
         this.petGender = petGender;
         this.petKind = petKind;
         this.petInfo = petInfo;
-        this.imageUrl = imageUrl;
+        this.imageFiles = imageFiles;
     }
 }

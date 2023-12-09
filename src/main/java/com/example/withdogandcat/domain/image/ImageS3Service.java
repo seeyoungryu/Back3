@@ -3,6 +3,7 @@ package com.example.withdogandcat.domain.image;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,34 @@ public class ImageS3Service {
 
         return imageRepository.save(image);
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public List<Image> uploadMultipleImages(List<MultipartFile> multipartFiles, Pet pet) throws IOException {
+        if (multipartFiles == null || multipartFiles.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return multipartFiles.stream()
+                .map(multipartFile -> uploadSingleImage(multipartFile, pet))
+                .collect(Collectors.toList());
+    }
+
+    private Image uploadSingleImage(MultipartFile multipartFile, Pet pet) {
+        String storedImagePath = uploadFileToS3(multipartFile);
+        String originName = multipartFile.getOriginalFilename();
+
+        Image image = Image.builder()
+                .originName(originName)
+                .storedImagePath(storedImagePath)
+                .pet(pet)
+                .build();
+
+        return imageRepository.save(image);
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private String uploadFileToS3(MultipartFile image) {
         String originName = image.getOriginalFilename();
