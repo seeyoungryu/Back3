@@ -86,6 +86,8 @@ public class SecurityConfig {
                         // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/pets/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/pets/**").permitAll()
                         .anyRequest().authenticated());
 
 
