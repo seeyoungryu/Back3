@@ -27,8 +27,8 @@ public class PetService {
 
     // 마이페이지 반려동물 조회
     @Transactional(readOnly = true)
-    public ApiResponseDto<List<PetResponseDto>> getUserPets(Long userId) {
-        List<Pet> pets = petRepository.findByUser_UserId(userId);
+    public ApiResponseDto<List<PetResponseDto>> getUserPets(User currentUser) {
+        List<Pet> pets = petRepository.findByUser(currentUser);
         String message = pets.isEmpty() ? "반려동물 없음" : "반려동물 조회 성공";
         List<PetResponseDto> petDtos = pets.stream()
                 .map(PetResponseDto::from)
