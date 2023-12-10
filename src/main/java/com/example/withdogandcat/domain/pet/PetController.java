@@ -22,6 +22,14 @@ public class PetController {
 
     private final PetService petService;
 
+    // 마이페이지 반려동물 조회
+    @GetMapping("/mypage/{userId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<ApiResponseDto<List<PetResponseDto>>> getUserPets(@PathVariable("userId") Long userId) {
+        ApiResponseDto<List<PetResponseDto>> response = petService.getUserPets(userId);
+        return ResponseEntity.ok(response);
+    }
+
     //반려동물 등록
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
@@ -35,7 +43,6 @@ public class PetController {
                 .body(new ApiResponseDto<>("왈왈이 등록 성공", createdPet));
     }
 
-
     //반려동물 전체조회
     @GetMapping("")
     public ResponseEntity<ApiResponseDto<List<PetResponseDto>>> getAllPets() {
@@ -43,16 +50,12 @@ public class PetController {
         return ResponseEntity.ok(response);
     }
 
-
     //반려동물 상세조회
     @GetMapping("/{petId}")
     public ResponseEntity<PetResponseDto> getPet(@PathVariable("petId") Long petId) {
         PetResponseDto petResponseDto = petService.getPet(petId);
         return ResponseEntity.ok(petResponseDto);
     }
-
-
-
 
     //반려동물 수정
     @PutMapping("/{petId}")
@@ -66,7 +69,6 @@ public class PetController {
         PetResponseDto updatedPet = petService.updatePet(petId, petRequestDto, imageFiles, currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPet);
     }
-
 
     //반려동물 삭제
     @DeleteMapping("/{petId}")

@@ -5,13 +5,10 @@ import com.example.withdogandcat.domain.image.ImageS3Service;
 import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
-import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
-import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
-import com.example.withdogandcat.global.tool.LoginAccount;
+import com.example.withdogandcat.global.tool.ApiResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +25,18 @@ public class PetService {
     private final PetRepository petRepository;
     private final ImageS3Service imageS3Service;
 
-    //반려동물 등록
+    // 마이페이지 반려동물 조회
+    @Transactional(readOnly = true)
+    public ApiResponseDto<List<PetResponseDto>> getUserPets(Long userId) {
+        List<Pet> pets = petRepository.findByUser_UserId(userId);
+        String message = pets.isEmpty() ? "반려동물 없음" : "반려동물 조회 성공";
+        List<PetResponseDto> petDtos = pets.stream()
+                .map(PetResponseDto::from)
+                .collect(Collectors.toList());
+        return new ApiResponseDto<>(message, petDtos);
+    }
+
+    // 반려동물 등록
     @Transactional
     public PetResponseDto createPet(PetRequestDto petRequestDto ,List<MultipartFile> imageFiles,
                                       User user) throws IOException {
@@ -39,8 +47,7 @@ public class PetService {
         return PetResponseDto.from(pet);
     }
 
-
-    //반려동물 전체 조회
+    // 반려동물 전체 조회
     @Transactional(readOnly = true)
     public ApiResponseDto<List<PetResponseDto>> getAllPets() {
         List<PetResponseDto> pets = petRepository.findAll().stream()
@@ -50,7 +57,7 @@ public class PetService {
         return new ApiResponseDto<>(message, pets);
     }
 
-    //반려동물 상세조회
+    // 반려동물 상세조회
     @Transactional(readOnly = true)
     public PetResponseDto getPet(Long petId) {
         Pet pet = petRepository.findById(petId)
@@ -59,10 +66,7 @@ public class PetService {
         return PetResponseDto.from(pet);
     }
 
-
-
-
-    //반려동물 수정
+    // 반려동물 수정
     @Transactional
     public PetResponseDto updatePet(Long petId, PetRequestDto petRequestDto,
                                     List<MultipartFile> imageFiles, User currentUser) throws IOException {
@@ -87,7 +91,7 @@ public class PetService {
         return PetResponseDto.from(petRepository.save(pet));
     }
 
-    //반려동물 삭제
+    // 반려동물 삭제
     @Transactional
     public void deletePet(Long petId) {
         Pet pet = petRepository.findById(petId)
@@ -96,5 +100,4 @@ public class PetService {
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
     }
-
 }

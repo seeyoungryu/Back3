@@ -39,7 +39,6 @@ public class Pet {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
-
     @Builder
     public Pet(User user, String petName, PetGender petGender,
                PetKind petKind, String petInfo,
@@ -52,7 +51,6 @@ public class Pet {
         this.images.addAll(images);
     }
 
-
     public static Pet of(PetRequestDto petRequestDto, User user) {
         return Pet.builder()
                 .petKind(petRequestDto.getPetKind())
@@ -63,7 +61,6 @@ public class Pet {
                 .images(new ArrayList<>())
                 .build();
     }
-
 
     public void updatePetDetails(String petName, String petInfo,
                                  PetKind petKind, PetGender petGender) {
@@ -82,6 +79,3 @@ public class Pet {
     public void clearImages() {this.images.clear();}
 
 }
-
-
-
