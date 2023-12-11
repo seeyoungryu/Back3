@@ -33,8 +33,8 @@ public class ShopService {
     private final ImageS3Service imageS3Service;
 
     // 마이페이지 가게 조회
-    public ApiResponseDto<List<ShopResponseDto>> getShopsByUserId(Long userId) {
-        List<Shop> shops = shopRepository.findByUser_UserId(userId);
+    public ApiResponseDto<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
+        List<Shop> shops = shopRepository.findByUser(currentUser);
         String message = shops.isEmpty() ? "등록된 가게가 없습니다" : "가게 목록 조회 성공";
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
