@@ -21,7 +21,10 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petId;
 
+    @Column(nullable = false)
     private String petName;
+
+    @Column(nullable = false)
     private String petInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)

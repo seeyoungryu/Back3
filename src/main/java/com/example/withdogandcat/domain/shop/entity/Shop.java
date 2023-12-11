@@ -21,10 +21,19 @@ public class Shop {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shopId;
 
+    @Column(nullable = false)
     private String shopName;
+
+    @Column(nullable = false)
     private String shopTime;
+
+    @Column(nullable = false)
     private String shopTel;
+
+    @Column(nullable = false)
     private String shopAddress;
+
+    @Column(nullable = false)
     private String shopDescribe;
 
     @ManyToOne(fetch = FetchType.EAGER)

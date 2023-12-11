@@ -8,6 +8,7 @@ import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
+import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.exception.CustomException;
@@ -117,5 +118,19 @@ public class ShopService {
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
+    }
+
+    // 카테고리별 가게 조회
+    @Transactional(readOnly = true)
+    public List<ShopResponseDto> getShopsByCategory(ShopType shopType) {
+        List<Shop> shops = shopRepository.findAllByShopType(shopType);
+
+        if (shops.isEmpty()) {
+            throw new CustomException(ErrorCode.SHOP_NOT_FOUND);
+        }
+
+        return shops.stream()
+                .map(ShopResponseDto::from)
+                .collect(Collectors.toList());
     }
 }

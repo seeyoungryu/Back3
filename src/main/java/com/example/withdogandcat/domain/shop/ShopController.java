@@ -7,6 +7,7 @@ import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.tool.LoginAccount;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class ShopController {
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<ApiResponseDto<ShopResponseDto>> createShop(
-            @ModelAttribute ShopRequestDto shopRequestDto,
+            @Valid @ModelAttribute ShopRequestDto shopRequestDto,
             @RequestPart("imageUrl") List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
@@ -80,5 +81,13 @@ public class ShopController {
     public ResponseEntity<ApiResponseDto<String>> deleteShop(@PathVariable Long shopId) {
         shopService.deleteShop(shopId);
         return ResponseEntity.ok(new ApiResponseDto<>("가게 삭제 완료", null));
+    }
+
+    // 카테고리별 가게 조회
+    @GetMapping("/category/{shopType}")
+    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCategory(
+            @PathVariable("shopType") ShopType shopType) {
+        List<ShopResponseDto> shops = shopService.getShopsByCategory(shopType);
+        return ResponseEntity.ok(new ApiResponseDto<>("카테고리별 가게 조회 성공", shops));
     }
 }
