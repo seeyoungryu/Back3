@@ -35,7 +35,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "토큰이 만료되었습니다."),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "리프레시 토큰이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED.value(), "토큰이 유효하지 않습니다."),
-    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "리프레시 토큰이 유효하지 않습니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "지원되지 않는 JWT 토큰 입니다."),
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST.value(), "유효하지 않은 수량입니다."),
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED.value(), "엑세스 토큰을 찾을 수 없습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN.value(), "접근 권한이 없습니다."),
