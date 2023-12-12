@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
     private final ObjectMapper objectMapper;

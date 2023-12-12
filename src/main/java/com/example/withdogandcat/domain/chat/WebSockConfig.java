@@ -12,6 +12,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocket
 public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
+    // stomp로 Pub/sub 구현해놓은 상태라 redis 로 변경 필요
+
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/sub");
         config.setApplicationDestinationPrefixes("/pub");

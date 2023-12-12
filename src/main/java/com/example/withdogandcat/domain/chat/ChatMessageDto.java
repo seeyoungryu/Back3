@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class ChatMessageDto {
 
+    // TODO enum 클래스 분리 + 채팅방 나가는 상태 추가
     public enum MessageType {
         ENTER, TALK
     }

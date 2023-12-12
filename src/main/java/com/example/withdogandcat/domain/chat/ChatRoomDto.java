@@ -10,6 +10,9 @@ import java.util.UUID;
 @Setter
 @Builder
 public class ChatRoomDto {
+
+    // 채팅관련 클래스들은 jpa에서 영속성데이터로 관리하지 않기때문에 Entity, Jparepository 필요 X
+
     private String roomId;
     private String name;
 

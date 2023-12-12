@@ -11,6 +11,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 @EnableWebSocketMessageBroker
 public class ChatController {
 
+    // TODO 채팅방 나가는 메세지 추가하기
     private final SimpMessageSendingOperations messagingTemplate;
 
     @MessageMapping("/chat/message")
