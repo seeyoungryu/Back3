@@ -77,11 +77,12 @@ public class PetService {
             throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        imageS3Service.deleteImages(pet.getImages());
-        pet.clearImages();
-        List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
-        newImages.forEach(pet::addImage);
-
+        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+            imageS3Service.deleteImages(pet.getImages());
+            pet.clearImages();
+            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
+            newImages.forEach(pet::addImage);
+        }
 
         pet.updatePetDetails(
                 petRequestDto.getPetName(),

@@ -67,7 +67,7 @@ public class PetController {
     public ResponseEntity<PetResponseDto> updatePet(
             @PathVariable("petId") Long petId,
             @ModelAttribute PetRequestDto petRequestDto,
-            @RequestPart("imageUrl") List<MultipartFile> imageFiles,
+            @RequestPart(value = "imageUrl", required = false) List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
         PetResponseDto updatedPet = petService.updatePet(petId, petRequestDto, imageFiles, currentUser);
