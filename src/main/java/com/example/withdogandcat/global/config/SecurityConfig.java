@@ -33,8 +33,15 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html",
-            "/api/user/**"
+            "/api/user/**", "/application/**"
     };
+
+    private static final String[] CHAT_WHITELIST = {
+            "/chat/room/**", "/chat/message", "/chat/rooms/**",
+            "/sub/chat/**", "/pub/chat/**", "/ws-stomp", "/chat/roomdetail",
+            "/sub/chat/room", "/ws-stomp/**", "/ws-stomp/info/**", "/webjars/**"
+    };
+
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
@@ -72,8 +79,11 @@ public class SecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(CHAT_WHITELIST).permitAll()
+                        // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
+                        .requestMatchers("/application/**").permitAll()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
