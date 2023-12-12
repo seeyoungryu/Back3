@@ -72,7 +72,7 @@ public class ShopController {
     public ResponseEntity<ApiResponseDto<ShopResponseDto>> updateShop(
             @PathVariable("shopId") Long shopId,
             @ModelAttribute ShopRequestDto shopRequestDto,
-            @RequestPart("imageUrl") List<MultipartFile> imageFiles,
+            @RequestParam(value = "imageUrl", required = false) List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
         ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, imageFiles, currentUser);
