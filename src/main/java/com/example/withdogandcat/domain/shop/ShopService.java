@@ -94,10 +94,12 @@ public class ShopService {
             throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        imageS3Service.deleteImages(shop.getImages());
-        shop.clearImages();
-        List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
-        newImages.forEach(shop::addImage);
+        if (!imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+            imageS3Service.deleteImages(shop.getImages());
+            shop.clearImages();
+            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
+            newImages.forEach(shop::addImage);
+        }
 
         shop.updateShopDetails(
                 shopRequestDto.getShopName(),
