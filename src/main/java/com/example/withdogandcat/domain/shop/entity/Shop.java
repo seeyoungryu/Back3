@@ -43,7 +43,7 @@ public class Shop {
     @Enumerated(EnumType.STRING)
     private ShopType shopType;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
     @Builder
