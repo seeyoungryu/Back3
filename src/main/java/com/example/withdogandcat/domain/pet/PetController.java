@@ -67,6 +67,7 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedPet);
     }
 
+    //
 
     //반려동물 삭제
     @DeleteMapping("/{petId}")
