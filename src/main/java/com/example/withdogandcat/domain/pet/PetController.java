@@ -77,8 +77,8 @@ public class PetController {
     //반려동물 삭제
     @DeleteMapping("/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<Void> deletePet(@PathVariable("petId") Long petId) {
-        petService.deletePet(petId);
+    public ResponseEntity<Void> deletePet(@PathVariable("petId") Long petId, @LoginAccount User currentUser) {
+        petService.deletePet(petId, currentUser);
         return ResponseEntity.noContent().build();
     }
 }
