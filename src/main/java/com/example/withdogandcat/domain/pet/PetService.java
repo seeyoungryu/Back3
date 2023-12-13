@@ -89,9 +89,14 @@ public class PetService {
 
     //반려동물 삭제
     @Transactional
-    public void deletePet(Long petId) {
+    public void deletePet(Long petId, User currentUser) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+
+        // 현재 로그인한 사용자가 반려동물의 소유자인지 확인
+        if (!pet.getUser().equals(currentUser)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED);
+        }
 
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
