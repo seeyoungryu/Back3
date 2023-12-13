@@ -21,4 +21,8 @@ hooks:
     - location: scripts/start.sh
       timeout: 60
       runas: ubuntu
+    - location: scripts/switch.sh
+      timeout: 60
+      runas: ubuntu
+  
 
