@@ -5,13 +5,16 @@ import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.tool.LoginAccount;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +30,12 @@ public class ShopController {
     private final ShopService shopService;
 
     // 마이페이지 가게 조회
-    @GetMapping("/mypage/{userId}")
+    @GetMapping("/mypage")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCurrentUser(@PathVariable("userId") Long userId) {
-        ApiResponseDto<List<ShopResponseDto>> response = shopService.getShopsByUserId(userId);
+    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCurrentUser(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User currentUser = userDetails.getUser();
+        ApiResponseDto<List<ShopResponseDto>> response = shopService.getShopsByCurrentUser(currentUser);
         return ResponseEntity.ok(response);
     }
 
@@ -38,7 +43,7 @@ public class ShopController {
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<ApiResponseDto<ShopResponseDto>> createShop(
-            @ModelAttribute ShopRequestDto shopRequestDto,
+            @Valid @ModelAttribute ShopRequestDto shopRequestDto,
             @RequestPart("imageUrl") List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
@@ -67,7 +72,7 @@ public class ShopController {
     public ResponseEntity<ApiResponseDto<ShopResponseDto>> updateShop(
             @PathVariable("shopId") Long shopId,
             @ModelAttribute ShopRequestDto shopRequestDto,
-            @RequestPart("imageUrl") List<MultipartFile> imageFiles,
+            @RequestParam(value = "imageUrl", required = false) List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
         ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, imageFiles, currentUser);
@@ -80,5 +85,13 @@ public class ShopController {
     public ResponseEntity<ApiResponseDto<String>> deleteShop(@PathVariable Long shopId) {
         shopService.deleteShop(shopId);
         return ResponseEntity.ok(new ApiResponseDto<>("가게 삭제 완료", null));
+    }
+
+    // 카테고리별 가게 조회
+    @GetMapping("/category/{shopType}")
+    public ResponseEntity<ApiResponseDto<List<ShopResponseDto>>> getShopsByCategory(
+            @PathVariable("shopType") ShopType shopType) {
+        List<ShopResponseDto> shops = shopService.getShopsByCategory(shopType);
+        return ResponseEntity.ok(new ApiResponseDto<>("카테고리별 가게 조회 성공", shops));
     }
 }

@@ -1,9 +1,11 @@
 package com.example.withdogandcat.domain.pet.dto;
+
 import com.example.withdogandcat.domain.pet.entity.PetGender;
 import com.example.withdogandcat.domain.pet.entity.PetKind;
-import com.example.withdogandcat.domain.image.validation.FileExtension;
-import com.example.withdogandcat.domain.image.validation.FileSize;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,7 +19,6 @@ public class PetRequestDto {
     private String petInfo;
 
     private List<MultipartFile> imageFiles;
-
 
     @Builder
     public PetRequestDto(String petName,

@@ -1,5 +1,7 @@
 package com.example.withdogandcat.global.security.filter;
 
+import com.example.withdogandcat.global.exception.CustomException;
+import com.example.withdogandcat.global.exception.ErrorResponse;
 import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -27,22 +29,25 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
             throws ServletException, IOException {
         String token = jwtUtil.getTokenFromRequest(req);
-
         if (StringUtils.hasText(token)) {
-            logger.info("토큰 확인용 : " + token);
-            if (!jwtUtil.validateToken(token)) {
-                res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            try {
+                jwtUtil.validateToken(token);
+                Claims info = jwtUtil.getUserInfoFromToken(token);
+                setAuthentication(info.getSubject());
+            } catch (CustomException e) {
+                logger.error(e.getMessage());
+                ErrorResponse errorResponse = ErrorResponse.toResponseEntity(e.getErrorCode()).getBody();
+                res.setStatus(e.getErrorCode().getHttpStatus());
+                res.setContentType("application/json;charset=UTF-8");
+                res.getWriter().write(errorResponse.toString());
                 return;
             }
-            Claims info = jwtUtil.getUserInfoFromToken(token);
-
-            setAuthentication(info.getSubject());
         }
-        logger.info(req.getRequestURI());
         filterChain.doFilter(req, res);
     }
 

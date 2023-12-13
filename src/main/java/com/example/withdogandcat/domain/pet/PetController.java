@@ -3,12 +3,14 @@ package com.example.withdogandcat.domain.pet;
 import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.tool.LoginAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,16 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
+
+    // 마이페이지 반려동물 조회
+    @GetMapping("/mypage")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<ApiResponseDto<List<PetResponseDto>>> getUserPets(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User currentUser = userDetails.getUser();
+        ApiResponseDto<List<PetResponseDto>> response = petService.getUserPets(currentUser);
+        return ResponseEntity.ok(response);
+    }
 
     //반려동물 등록
     @PostMapping("")
@@ -35,14 +47,12 @@ public class PetController {
                 .body(new ApiResponseDto<>("왈왈이 등록 성공", createdPet));
     }
 
-
     //반려동물 전체조회
     @GetMapping("")
     public ResponseEntity<ApiResponseDto<List<PetResponseDto>>> getAllPets() {
         ApiResponseDto<List<PetResponseDto>> response = petService.getAllPets();
         return ResponseEntity.ok(response);
     }
-
 
     //반려동물 상세조회
     @GetMapping("/{petId}")
@@ -51,23 +61,18 @@ public class PetController {
         return ResponseEntity.ok(petResponseDto);
     }
 
-
-
-
     //반려동물 수정
     @PutMapping("/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<PetResponseDto> updatePet(
             @PathVariable("petId") Long petId,
             @ModelAttribute PetRequestDto petRequestDto,
-            @RequestPart("imageUrl") List<MultipartFile> imageFiles,
+            @RequestPart(value = "imageUrl", required = false) List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
         PetResponseDto updatedPet = petService.updatePet(petId, petRequestDto, imageFiles, currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPet);
     }
-
-    //
 
     //반려동물 삭제
     @DeleteMapping("/{petId}")

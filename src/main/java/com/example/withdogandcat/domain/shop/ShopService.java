@@ -8,6 +8,7 @@ import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
+import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.tool.ApiResponseDto;
 import com.example.withdogandcat.global.exception.CustomException;
@@ -32,8 +33,8 @@ public class ShopService {
     private final ImageS3Service imageS3Service;
 
     // 마이페이지 가게 조회
-    public ApiResponseDto<List<ShopResponseDto>> getShopsByUserId(Long userId) {
-        List<Shop> shops = shopRepository.findByUser_UserId(userId);
+    public ApiResponseDto<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
+        List<Shop> shops = shopRepository.findByUser(currentUser);
         String message = shops.isEmpty() ? "등록된 가게가 없습니다" : "가게 목록 조회 성공";
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
@@ -71,6 +72,7 @@ public class ShopService {
                 .map(review -> ReviewResponseDto.builder()
                         .reviewId(review.getReviewId())
                         .userId(review.getUser().getUserId())
+                        .shopId(review.getShop().getShopId())
                         .nickname(review.getUser().getNickname())
                         .comment(review.getComment())
                         .likeCount(review.getLikeCount())
@@ -92,10 +94,12 @@ public class ShopService {
             throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        imageS3Service.deleteImages(shop.getImages());
-        shop.clearImages();
-        List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
-        newImages.forEach(shop::addImage);
+        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+            imageS3Service.deleteImages(shop.getImages());
+            shop.clearImages();
+            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
+            newImages.forEach(shop::addImage);
+        }
 
         shop.updateShopDetails(
                 shopRequestDto.getShopName(),
@@ -116,5 +120,19 @@ public class ShopService {
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
+    }
+
+    // 카테고리별 가게 조회
+    @Transactional(readOnly = true)
+    public List<ShopResponseDto> getShopsByCategory(ShopType shopType) {
+        List<Shop> shops = shopRepository.findAllByShopType(shopType);
+
+        if (shops.isEmpty()) {
+            throw new CustomException(ErrorCode.SHOP_NOT_FOUND);
+        }
+
+        return shops.stream()
+                .map(ShopResponseDto::from)
+                .collect(Collectors.toList());
     }
 }
