@@ -13,6 +13,8 @@ public enum ErrorCode {
     CONNECTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 연결 실패"),
     SERVER_RESPONSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 응답 에러"),
     FAIL_TO_JSON(HttpStatus.BAD_REQUEST.value(),"JSON 파싱 요류"),
+    INVALID_VERIFICATION_CODE(HttpStatus.BAD_REQUEST.value(),"이메일 인증 실패, 이메일과 인증코드를 다시 한번 확인해 주세요."),
+    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "이메일 인증을 해주세요."),
 
     EMAIL_DIFFERENT_FORMAT(HttpStatus.BAD_REQUEST.value(), "이메일 형식이 올바르지 않습니다."),
     PASSWORD_DIFFERENT_FORMAT(HttpStatus.BAD_REQUEST.value(), "비밀번호는 8~15자리로, 알파벳 대소문자, 숫자, 특수문자를 포함해야 합니다."),
