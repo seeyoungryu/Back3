@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.tool;
+package com.example.withdogandcat.global.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

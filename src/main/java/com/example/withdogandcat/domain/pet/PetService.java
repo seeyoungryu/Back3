@@ -8,7 +8,7 @@ import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.exception.CustomException;
 import com.example.withdogandcat.global.exception.ErrorCode;
-import com.example.withdogandcat.global.tool.ApiResponseDto;
+import com.example.withdogandcat.global.common.ApiResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,6 +2,7 @@ package com.example.withdogandcat.global.security.filter;
 
 import com.example.withdogandcat.domain.user.dto.LoginRequestDto;
 import com.example.withdogandcat.domain.user.entity.UserRole;
+import com.example.withdogandcat.global.common.ApiResponseDto;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +28,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.jwtUtil = jwtUtil;
         setFilterProcessesUrl("/api/user/login");
     }
-
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -66,15 +66,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRole role = userDetails.getUser().getRole();
         String nickname = userDetails.getUser().getNickname();
 
-        String token = jwtUtil.createToken(email, role);
+        String accessToken = jwtUtil.createAccessToken(email, role);
+        String refreshToken = jwtUtil.createRefreshToken(email);
 
-        jwtUtil.addJwtToHeader(token, response);
+        // 헤더에 액세스 토큰과 리프레시 토큰 추가
+        jwtUtil.addTokensToHeaders(accessToken, refreshToken, response);
 
+        ApiResponseDto<String> successResponse = new ApiResponseDto<>("로그인 성공", nickname);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(nickname)));
+        response.getWriter().write(objectMapper.writeValueAsString(successResponse));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    // 인증 실패 처리
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response,
@@ -83,27 +87,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         log.info("로그인 실패: {}", failed.getMessage());
 
+        ApiResponseDto<String> errorResponse = new ApiResponseDto<>("로그인 실패", null);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(new ErrorResponse("로그인 실패")));
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    }
-
-
-    @Getter
-    private static class SimpleResponse {
-        private final String nickname;
-
-        public SimpleResponse(String nickname) {
-            this.nickname = nickname;
-        }
-    }
-
-    @Getter
-    private static class ErrorResponse {
-        private final String message;
-
-        public ErrorResponse(String message) {
-            this.message = message;
-        }
     }
 }
