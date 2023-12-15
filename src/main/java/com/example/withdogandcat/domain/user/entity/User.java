@@ -80,8 +80,4 @@ public class User {
                 .role(UserRole.USER)
                 .build();
     }
-
-
-
-
 }

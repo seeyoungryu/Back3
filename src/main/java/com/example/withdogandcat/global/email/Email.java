@@ -43,14 +43,14 @@ public class Email {
     }
 
     public boolean isEmailVerified() {
-        return emailVerified; // 필드 값 반환
+        return emailVerified;
     }
 
     public LocalDateTime getExpiryDate() {
-        return expiryDate; // 필드 값 반환
+        return expiryDate;
     }
 
     public boolean isRegistrationComplete() {
-        return registrationComplete; // 필드 값 반환
+        return registrationComplete;
     }
 }
