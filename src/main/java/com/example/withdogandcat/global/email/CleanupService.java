@@ -1,8 +1,11 @@
 package com.example.withdogandcat.global.email;
+
 import com.example.withdogandcat.domain.user.UserRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
+
 import com.example.withdogandcat.domain.user.UserService;
 
 
@@ -23,7 +26,6 @@ public class CleanupService {
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupUnverifiedEmails() {
         LocalDateTime now = LocalDateTime.now();
-        // 이메일 인증이 완료되지 않고 만료된 레코드 찾아서 삭제
         emailRepository.findAll().forEach(email -> {
             if (!email.isEmailVerified() && email.getExpiryDate().isBefore(now)) {
                 emailRepository.delete(email);
@@ -34,8 +36,8 @@ public class CleanupService {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupIncompleteRegistrations() {
-    LocalDateTime now = LocalDateTime.now();
-   userService.deleteUnverifiedEmails(now);
-}
+        LocalDateTime now = LocalDateTime.now();
+        userService.deleteUnverifiedEmails(now);
+    }
 }
 
