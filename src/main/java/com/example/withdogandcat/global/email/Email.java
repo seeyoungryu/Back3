@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Email {
 
+
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long emailId;
@@ -21,8 +24,10 @@ public class Email {
     private String email;
 
     private String verificationCode;
-
     private LocalDateTime expiryDate;
+    private boolean registrationComplete;
+
+
 
     @Column(nullable = false)
     private boolean emailVerified = false;
@@ -35,5 +40,17 @@ public class Email {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified; // 필드 값 반환
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate; // 필드 값 반환
+    }
+
+    public boolean isRegistrationComplete() {
+        return registrationComplete; // 필드 값 반환
     }
 }
