@@ -1,15 +1,15 @@
 package com.example.withdogandcat.global.email;
 
 import com.example.withdogandcat.domain.user.UserRepository;
+import com.example.withdogandcat.domain.user.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import com.example.withdogandcat.domain.user.UserService;
-
-
 @Service
+@Transactional
 public class CleanupService {
 
     private final EmailRepository emailRepository;
