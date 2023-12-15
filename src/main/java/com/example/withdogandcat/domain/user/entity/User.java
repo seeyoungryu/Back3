@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +15,10 @@ import java.util.Objects;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+
+    private boolean emailVerified;
+    private LocalDateTime expiryDate;
+    private boolean registrationComplete;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -75,4 +80,8 @@ public class User {
                 .role(UserRole.USER)
                 .build();
     }
+
+
+
+
 }
