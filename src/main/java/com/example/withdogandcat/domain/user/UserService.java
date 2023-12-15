@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +60,16 @@ public class UserService {
             throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
         }
         userRepository.delete(user);
+    }
+
+
+    @Transactional
+    public void deleteUnverifiedEmails(LocalDateTime now) {
+        List<Email> emails = emailRepository.findAll();
+        for (Email email : emails) {
+            if (email.isEmailVerified() && !email.isRegistrationComplete() && email.getExpiryDate().isBefore(now)) {
+                emailRepository.delete(email);
+            }
+        }
     }
 }

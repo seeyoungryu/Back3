@@ -49,7 +49,6 @@ public class ImageS3Service {
         return imageRepository.save(image);
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public List<Image> uploadMultipleImages(List<MultipartFile> multipartFiles, Pet pet) throws IOException {
         if (multipartFiles == null || multipartFiles.isEmpty()) {
@@ -74,7 +73,6 @@ public class ImageS3Service {
         return imageRepository.save(image);
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     private String uploadFileToS3(MultipartFile image) {
