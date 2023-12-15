@@ -49,4 +49,15 @@ public class UserService {
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
     }
+
+    @Transactional
+    public void deactivateAccount(Long userId, String inputPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
+        }
+        userRepository.delete(user);
+    }
 }

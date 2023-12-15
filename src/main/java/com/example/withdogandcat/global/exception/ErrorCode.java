@@ -22,6 +22,9 @@ public enum ErrorCode {
 
     INVALID_EMAIL_PASSWORD(HttpStatus.BAD_REQUEST.value(), "이메일 또는 비밀번호가 정확하지 않습니다."),
 
+    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
+
+
     NOT_YET_COMMENT(HttpStatus.NO_CONTENT.value(), "등록된 댓글이 없습니다"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "게시물이 존재하지 않습니다."),
     SHOP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "가게가 존재하지 않습니다."),
