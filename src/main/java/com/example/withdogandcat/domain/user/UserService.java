@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,28 @@ public class UserService {
     private void checkIfEmailExist(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+    }
+
+    @Transactional
+    public void deactivateAccount(Long userId, String inputPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
+        }
+        userRepository.delete(user);
+    }
+
+
+    @Transactional
+    public void deleteUnverifiedEmails(LocalDateTime now) {
+        List<Email> emails = emailRepository.findAll();
+        for (Email email : emails) {
+            if (email.isEmailVerified() && !email.isRegistrationComplete() && email.getExpiryDate().isBefore(now)) {
+                emailRepository.delete(email);
+            }
         }
     }
 }

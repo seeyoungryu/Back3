@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +15,10 @@ import java.util.Objects;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+
+    private boolean emailVerified;
+    private LocalDateTime expiryDate;
+    private boolean registrationComplete;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -33,6 +38,9 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @Column(nullable = false)
+    private boolean isActive = true;
 
     @Builder
     private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
@@ -74,5 +82,9 @@ public class User {
                 .nickname(requestDto.getNickname())
                 .role(UserRole.USER)
                 .build();
+    }
+
+    public void deactivate() {
+        this.isActive = false;
     }
 }
