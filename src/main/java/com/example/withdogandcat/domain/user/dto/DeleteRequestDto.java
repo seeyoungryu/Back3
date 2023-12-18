@@ -3,7 +3,7 @@ package com.example.withdogandcat.domain.user.dto;
 import lombok.Getter;
 
 @Getter
-public class DeactivateRequestDto {
+public class DeleteRequestDto {
     private String password;
 
 
