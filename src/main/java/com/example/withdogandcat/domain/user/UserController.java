@@ -1,8 +1,7 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.user.dto.DeactivateRequestDto;
+import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
-import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.email.EmailRequestDto;
 import com.example.withdogandcat.global.email.EmailService;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
@@ -33,12 +32,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/deactivate")
-    public ResponseEntity<Void> deactivateAccount(@RequestBody DeactivateRequestDto request, Authentication authentication) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deactivateAccount(@RequestBody DeleteRequestDto request, Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        userService.deactivateAccount(userDetails.getUser().getUserId(), request.getPassword());
+        userService.deleteAccount(userDetails.getUser().getUserId(), request.getPassword());
         return ResponseEntity.noContent().build();
     }
-
-
 }

@@ -52,7 +52,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deactivateAccount(Long userId, String inputPassword) {
+    public void deleteAccount(Long userId, String inputPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
 
