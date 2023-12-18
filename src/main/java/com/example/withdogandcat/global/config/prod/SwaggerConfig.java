@@ -20,30 +20,36 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.Collections;
 
-@Profile("!Prod")
 @Configuration
 public class SwaggerConfig {
 
-    private static final String SECURITY_SCHEME_NAME = "JWTAuth";
+    private static final String JWT_AUTH_SCHEME_NAME = "JWTAuth";
+    private static final String REFRESH_TOKEN_SCHEME_NAME = "RefreshToken";
 
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes(SECURITY_SCHEME_NAME,
-                        new SecurityScheme()
-                                .name(SECURITY_SCHEME_NAME)
-                                .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER)
-                                .name("Authorization")))
-                .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
+                .components(new Components()
+                        .addSecuritySchemes(JWT_AUTH_SCHEME_NAME,
+                                new SecurityScheme()
+                                        .name(JWT_AUTH_SCHEME_NAME)
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("Authorization"))
+                        .addSecuritySchemes(REFRESH_TOKEN_SCHEME_NAME,
+                                new SecurityScheme()
+                                        .name(REFRESH_TOKEN_SCHEME_NAME)
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("Refresh-Token")))
+                .addSecurityItem(new SecurityRequirement().addList(JWT_AUTH_SCHEME_NAME))
+                .addSecurityItem(new SecurityRequirement().addList(REFRESH_TOKEN_SCHEME_NAME))
 
                 .schema("LoginRequestDto", new Schema<>()
                         .type("object")
-                        .addProperty("email", new StringSchema().example("user@example.com"))
-                        .addProperty("password", new StringSchema().example("password123!"))
+                        .addProperty("email", new StringSchema().example("minhee610@kakao.com"))
+                        .addProperty("password", new StringSchema().example("123123"))
                 )
-
-                // 로그인 수동경로 지정
                 .path("/api/user/login", new PathItem()
                         .post(new Operation()
                                 .summary("로그인")
@@ -69,29 +75,35 @@ public class SwaggerConfig {
                 .build();
     }
 
-    // 네이버 검색 컨트롤러
-    @Bean
-    public GroupedOpenApi naverApi() {
-        return GroupedOpenApi.builder()
-                .group("naver-search")
-                .pathsToMatch("/open/naver/news")
-                .build();
-    }
-
     @Bean
     public GroupedOpenApi shopApi() {
         return GroupedOpenApi.builder()
-                .group("shop-crud")
+                .group("SHOP-CRUD")
                 .pathsToMatch("/api/shops/**")
                 .build();
     }
 
     @Bean
-    public GroupedOpenApi reviewApi() {
+    public GroupedOpenApi petApi() {
         return GroupedOpenApi.builder()
-                .group("review-crud")
+                .group("PET-CRUD")
+                .pathsToMatch("/api/pets/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi likesApi() {
+        return GroupedOpenApi.builder()
+                .group("Likes-CRUD")
                 .pathsToMatch("/api/reviews/**")
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi chatApi() {
+        return GroupedOpenApi.builder()
+                .group("Chat-CRUD")
+                .pathsToMatch("/chat/**")
+                .build();
+    }
 }

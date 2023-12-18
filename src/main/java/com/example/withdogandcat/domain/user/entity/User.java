@@ -39,6 +39,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(nullable = false)
+    private boolean isActive = true;
 
     @Builder
     private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
@@ -47,6 +49,16 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.nickname = nickname;
         this.role = role;
+    }
+
+    public static User of(SignupRequestDto requestDto, String password) {
+        return User.builder()
+                .email(requestDto.getEmail())
+                .password(password)
+                .phoneNumber(requestDto.getPhoneNumber())
+                .nickname(requestDto.getNickname())
+                .role(UserRole.USER)
+                .build();
     }
 
     @Override
@@ -62,23 +74,7 @@ public class User {
         return Objects.hash(userId);
     }
 
-    public static User of(SignupRequestDto requestDto, String password) {
-        return User.builder()
-                .email(requestDto.getEmail())
-                .password(password)
-                .phoneNumber(requestDto.getPhoneNumber())
-                .nickname(requestDto.getNickname())
-                .role(UserRole.USER)
-                .build();
-    }
-
-    public static User from(SignupRequestDto requestDto, String password) {
-        return User.builder()
-                .email(requestDto.getEmail())
-                .password(password)
-                .phoneNumber(requestDto.getPhoneNumber())
-                .nickname(requestDto.getNickname())
-                .role(UserRole.USER)
-                .build();
+    public void deactivate() {
+        this.isActive = false;
     }
 }

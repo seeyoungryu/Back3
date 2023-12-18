@@ -1,7 +1,8 @@
-package com.example.withdogandcat.global.email;
+package com.example.withdogandcat.domain.email;
 
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,18 +11,12 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CleanupService {
 
     private final EmailRepository emailRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-
-    public CleanupService(EmailRepository emailRepository, UserRepository userRepository, UserService userService) {
-        this.emailRepository = emailRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
-
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupUnverifiedEmails() {
@@ -33,11 +28,9 @@ public class CleanupService {
         });
     }
 
-
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupIncompleteRegistrations() {
         LocalDateTime now = LocalDateTime.now();
         userService.deleteUnverifiedEmails(now);
     }
 }
-

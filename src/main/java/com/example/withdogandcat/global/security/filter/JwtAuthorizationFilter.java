@@ -1,9 +1,10 @@
 package com.example.withdogandcat.global.security.filter;
 
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorResponse;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -41,12 +42,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Claims info = jwtUtil.getUserInfoFromToken(token);
                 setAuthentication(info.getSubject());
 
-            } catch (CustomException e) {
-                logger.error(e.getMessage());
-                ErrorResponse errorResponse = ErrorResponse.toResponseEntity(e.getErrorCode()).getBody();
-                res.setStatus(e.getErrorCode().getHttpStatus());
+            } catch (Exception e) { // 변경된 부분
+                logger.error("JWT validation error: {}", e.getMessage());
+                BaseResponse<Void> errorResponse = new BaseResponse<>(BaseResponseStatus.AUTHENTICATION_FAILED, "로그인 성공", null);
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 res.setContentType("application/json;charset=UTF-8");
-                res.getWriter().write(errorResponse.toString());
+                res.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
                 return;
             }
         }

@@ -4,8 +4,8 @@ import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.domain.user.UserRepository;
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +21,12 @@ public class LikeService {
     @Transactional
     public void createLike(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.REVIEW_NOT_FOUND));
 
         reviewLikeRepository.findByUserAndReview(user, review)
-                .ifPresent(like -> { throw new CustomException(ErrorCode.ALREADY_LIKED); });
+                .ifPresent(like -> { throw new BaseException(BaseResponseStatus.ALREADY_LIKED); });
 
         reviewLikeRepository.save(new Like(user, review));
     }
@@ -34,12 +34,12 @@ public class LikeService {
     @Transactional
     public void deleteLike(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.REVIEW_NOT_FOUND));
 
         Like like = reviewLikeRepository.findByUserAndReview(user, review)
-                .orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.LIKE_NOT_FOUND));
 
         reviewLikeRepository.delete(like);
     }

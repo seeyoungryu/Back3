@@ -9,9 +9,8 @@ import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.ApiResponseDto;
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +30,18 @@ public class ShopService {
     private final ImageS3Service imageS3Service;
 
     // 마이페이지 가게 조회
-    public ApiResponseDto<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
+    @Transactional(readOnly = true)
+    public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
         List<Shop> shops = shopRepository.findByUser(currentUser);
-        String message = shops.isEmpty() ? "등록된 가게가 없습니다" : "가게 목록 조회 성공";
+        if (shops.isEmpty()) {
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
+        }
+
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new ApiResponseDto<>(message, shopDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDtos);
     }
+
 
     // 가게 등록
     @Transactional
@@ -51,20 +55,21 @@ public class ShopService {
 
     // 가게 전체 조회
     @Transactional(readOnly = true)
-    public ApiResponseDto<List<ShopResponseDto>> getAllShops() {
+    public BaseResponse<List<ShopResponseDto>> getAllShops() {
         List<ShopResponseDto> shops = shopRepository.findAll().stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
 
-        String message = shops.isEmpty() ? "등록된 가게가 없습니다" : "가게 전체 조회 성공";
-        return new ApiResponseDto<>(message, shops);
+        if (shops.isEmpty()) {
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shops);
     }
 
     // 가게 상세 조회
     @Transactional(readOnly = true)
-    public ShopDetailResponseDto getShopDetails(Long shopId) {
-
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
+    public BaseResponse<ShopDetailResponseDto> getShopDetails(Long shopId) {
+        Shop shop = shopRepository.findById(shopId).orElseThrow();
 
         List<ReviewResponseDto> reviews = reviewRepository.findByShopId(shopId).stream()
                 .map(review -> ReviewResponseDto.builder()
@@ -75,24 +80,29 @@ public class ShopService {
                         .comment(review.getComment())
                         .likeCount(review.getLikeCount())
                         .createdAt(review.getCreatedAt())
-                        .build()).collect(Collectors.toList());
+                        .build())
+                .collect(Collectors.toList());
 
         ShopResponseDto shopResponse = ShopResponseDto.from(shop);
+        ShopDetailResponseDto detailResponse = ShopDetailResponseDto.builder()
+                .shopResponseDto(shopResponse)
+                .reviews(reviews)
+                .build();
 
-        return ShopDetailResponseDto.builder().shopResponseDto(shopResponse).reviews(reviews).build();
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", detailResponse);
     }
 
     // 가게 수정
     @Transactional
-    public ShopResponseDto updateShop(Long shopId, ShopRequestDto shopRequestDto,
-                                      List<MultipartFile> imageFiles, User currentUser) throws IOException {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
+    public BaseResponse<ShopResponseDto> updateShop(Long shopId, ShopRequestDto shopRequestDto,
+                                                    List<MultipartFile> imageFiles, User currentUser) throws IOException {
+        Shop shop = shopRepository.findById(shopId).orElseThrow();
+
         if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
+            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "로그인 성공", null);
         }
 
-        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+        if (imageFiles != null && !imageFiles.isEmpty()) {
             imageS3Service.deleteImages(shop.getImages());
             shop.clearImages();
             List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
@@ -106,31 +116,32 @@ public class ShopService {
                 shopRequestDto.getShopType(),
                 shopRequestDto.getShopAddress(),
                 shopRequestDto.getShopDescribe());
-        return ShopResponseDto.from(shopRepository.save(shop));
+        Shop updatedShop = shopRepository.save(shop);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", ShopResponseDto.from(updatedShop));
     }
+
 
     // 가게 삭제
     @Transactional
-    public void deleteShop(Long shopId) {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SHOP_NOT_FOUND));
+    public BaseResponse<Void> deleteShop(Long shopId) {
+        Shop shop = shopRepository.findById(shopId).orElseThrow();
 
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
     }
 
     // 카테고리별 가게 조회
     @Transactional(readOnly = true)
-    public List<ShopResponseDto> getShopsByCategory(ShopType shopType) {
+    public BaseResponse<List<ShopResponseDto>> getShopsByCategory(ShopType shopType) {
         List<Shop> shops = shopRepository.findAllByShopType(shopType);
-
         if (shops.isEmpty()) {
-            throw new CustomException(ErrorCode.SHOP_NOT_FOUND);
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
         }
 
-        return shops.stream()
-                .map(ShopResponseDto::from)
-                .collect(Collectors.toList());
+        List<ShopResponseDto> shopDtos = shops.stream()
+                .map(ShopResponseDto::from).collect(Collectors.toList());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDtos);
     }
 }

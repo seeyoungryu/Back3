@@ -1,8 +1,8 @@
 package com.example.withdogandcat.global.security.jwt;
 
 import com.example.withdogandcat.domain.user.entity.UserRole;
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -18,7 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Base64;
@@ -98,19 +97,21 @@ public class JwtUtil {
         return req.getHeader(AUTHORIZATION_HEADER);
     }
 
-    public void validateToken(String token) throws CustomException {
+    public BaseResponse<String> validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
+            return new BaseResponse<>(BaseResponseStatus.INVALID_TOKEN, "로그인 성공", "Invalid token");
         } catch (ExpiredJwtException e) {
-            throw new CustomException(ErrorCode.EXPIRED_TOKEN);
+            return new BaseResponse<>(BaseResponseStatus.EXPIRED_TOKEN, "로그인 성공", "Expired token");
         } catch (UnsupportedJwtException e) {
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+            return new BaseResponse<>(BaseResponseStatus.INVALID_REFRESH_TOKEN, "로그인 성공", "Unsupported token");
         } catch (IllegalArgumentException e) {
-            throw new CustomException(ErrorCode.NOT_FOUND_TOKEN);
+            return new BaseResponse<>(BaseResponseStatus.NOT_FOUND_TOKEN, "로그인 성공", "Token not found");
         }
     }
+
 
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();

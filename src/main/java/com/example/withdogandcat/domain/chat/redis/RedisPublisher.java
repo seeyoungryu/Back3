@@ -1,13 +1,13 @@
-package com.example.withdogandcat.domain.chat.config;
+package com.example.withdogandcat.domain.chat.redis;
 
-import com.example.withdogandcat.domain.chat.model.ChatMessage;
+import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class RedisPublisher {
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -15,4 +15,5 @@ public class RedisPublisher {
     public void publish(ChannelTopic topic, ChatMessage message) {
         redisTemplate.convertAndSend(topic.getTopic(), message);
     }
+
 }
