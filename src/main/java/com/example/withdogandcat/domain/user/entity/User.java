@@ -39,8 +39,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Column(nullable = false)
-    private boolean isActive = true;
 
     @Builder
     private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
@@ -82,9 +80,5 @@ public class User {
                 .nickname(requestDto.getNickname())
                 .role(UserRole.USER)
                 .build();
-    }
-
-    public void deactivate() {
-        this.isActive = false;
     }
 }

@@ -39,6 +39,4 @@ public class UserController {
         userService.deactivateAccount(userDetails.getUser().getUserId(), request.getPassword());
         return ResponseEntity.noContent().build();
     }
-
-
 }

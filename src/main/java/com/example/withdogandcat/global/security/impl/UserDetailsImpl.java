@@ -49,7 +49,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.isActive();
+        return true;
     }
-
 }
