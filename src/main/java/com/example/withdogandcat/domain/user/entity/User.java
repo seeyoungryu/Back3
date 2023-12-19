@@ -74,7 +74,7 @@ public class User {
         return Objects.hash(userId);
     }
 
-    public void deactivate() {
+    public void delete() {
         this.isActive = false;
     }
 }

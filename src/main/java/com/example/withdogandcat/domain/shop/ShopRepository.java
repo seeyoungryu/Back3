@@ -12,4 +12,6 @@ import java.util.List;
 public interface ShopRepository extends JpaRepository<Shop, Long> {
     List<Shop> findByUser(User user);
     List<Shop> findAllByShopType(ShopType shopType);
+
+    void deleteByUser(User user);
 }

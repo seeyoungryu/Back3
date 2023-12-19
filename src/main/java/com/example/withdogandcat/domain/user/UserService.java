@@ -1,11 +1,22 @@
 package com.example.withdogandcat.domain.user;
 
+import com.example.withdogandcat.domain.image.Image;
+import com.example.withdogandcat.domain.image.ImageRepository;
+import com.example.withdogandcat.domain.image.ImageS3Service;
+import com.example.withdogandcat.domain.like.LikeRepository;
+import com.example.withdogandcat.domain.pet.PetRepository;
+import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.withdogandcat.domain.review.ReviewRepository;
+import com.example.withdogandcat.domain.shop.ShopRepository;
+import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.UserRole;
 import com.example.withdogandcat.domain.email.Email;
 import com.example.withdogandcat.domain.email.EmailRepository;
 import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +29,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private final LikeRepository likeRepository;
+    private final ReviewRepository reviewRepository;
+    private final PetRepository petRepository;
+    private final ImageRepository imageRepository;
+    private final ImageS3Service imageS3Service;
+    private final ShopRepository shopRepository;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -55,17 +73,6 @@ public class UserService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
     }
 
-    @Transactional
-    public BaseResponse<Void> deactivateAccount(Long userId, String inputPassword) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("Account not found"));
-
-        if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
-            return new BaseResponse<>(BaseResponseStatus.PASSWORD_MISMATCH, "로그인 성공", null);
-        }
-        userRepository.delete(user);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
-    }
 
     @Transactional
     public void deleteUnverifiedEmails(LocalDateTime now) {
@@ -75,5 +82,34 @@ public class UserService {
                 emailRepository.delete(email);
             }
         }
+    }
+
+    @Transactional
+    public void deleteAccount(Long userId, String inputPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
+            throw new BaseException(BaseResponseStatus.PASSWORD_MISMATCH);
+        }
+
+        // 댓글과 좋아요 삭제
+        likeRepository.deleteByUser(user);
+        reviewRepository.deleteByUser(user);
+
+        // 사용자와 관련된 모든 이미지 조회
+        List<Image> userImages = imageRepository.findByUserId(userId);
+
+        // S3와 데이터베이스에서 이미지 삭제
+        imageS3Service.deleteImages(userImages);
+
+        // 펫 삭제
+        petRepository.deleteByUser(user);
+
+        // 샵 삭제
+        shopRepository.deleteByUser(user);
+
+        // 유저 삭제
+        userRepository.delete(user);
     }
 }

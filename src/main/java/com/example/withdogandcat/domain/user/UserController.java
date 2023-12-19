@@ -8,6 +8,8 @@ import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,10 +36,10 @@ public class UserController {
                 .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
     }
 
-    @DeleteMapping("/deactivate")
-    public ResponseEntity<BaseResponse<Void>> deactivateAccount(@RequestBody DeleteRequestDto request, Authentication authentication) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<BaseResponse<Void>> deleteAccount(@RequestBody DeleteRequestDto request, Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        userService.deactivateAccount(userDetails.getUser().getUserId(), request.getPassword());
+        userService.deleteAccount(userDetails.getUser().getUserId(), request.getPassword());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
     }
 }
