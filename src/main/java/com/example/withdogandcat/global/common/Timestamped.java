@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.review.entity;
+package com.example.withdogandcat.global.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

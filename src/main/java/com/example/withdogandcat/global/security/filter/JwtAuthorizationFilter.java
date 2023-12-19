@@ -1,9 +1,10 @@
 package com.example.withdogandcat.global.security.filter;
 
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorResponse;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,29 +30,30 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = jwtUtil.getTokenFromRequest(req);
+
+        String token = jwtUtil.resolveToken(req);
+
         if (StringUtils.hasText(token)) {
             try {
                 jwtUtil.validateToken(token);
                 Claims info = jwtUtil.getUserInfoFromToken(token);
                 setAuthentication(info.getSubject());
-            } catch (CustomException e) {
-                logger.error(e.getMessage());
-                ErrorResponse errorResponse = ErrorResponse.toResponseEntity(e.getErrorCode()).getBody();
-                res.setStatus(e.getErrorCode().getHttpStatus());
+
+            } catch (Exception e) { // 변경된 부분
+                logger.error("JWT validation error: {}", e.getMessage());
+                BaseResponse<Void> errorResponse = new BaseResponse<>(BaseResponseStatus.AUTHENTICATION_FAILED, "로그인 성공", null);
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 res.setContentType("application/json;charset=UTF-8");
-                res.getWriter().write(errorResponse.toString());
+                res.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
                 return;
             }
         }
         filterChain.doFilter(req, res);
     }
 
-    // 인증 처리
     public void setAuthentication(String email) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = null;
@@ -66,7 +68,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(context);
     }
 
-    // 인증 객체 생성
     private Authentication createAuthentication(String email) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

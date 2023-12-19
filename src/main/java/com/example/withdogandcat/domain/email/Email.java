@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.email;
+package com.example.withdogandcat.domain.email;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,9 +12,6 @@ import java.time.LocalDateTime;
 @Table(name = "email")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Email {
-
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +50,5 @@ public class Email {
     public boolean isRegistrationComplete() {
         return registrationComplete;
     }
+
 }

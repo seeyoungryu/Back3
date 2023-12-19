@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.email;
+package com.example.withdogandcat.domain.email;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,7 +1,5 @@
-package com.example.withdogandcat.global.email;
+package com.example.withdogandcat.domain.email;
 
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -65,15 +63,15 @@ public class EmailService {
     }
 
     public boolean verifyEmail(String userEmail, String verificationCode) {
-        Email email = emailRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_VERIFICATION_CODE));
-
-        if (email.getVerificationCode().equals(verificationCode) &&
-                email.getExpiryDate().isAfter(LocalDateTime.now())) {
-            email.setEmailVerified(true);
-            emailRepository.save(email);
-            return true;
-        }
-        return false;
+        return emailRepository.findByEmail(userEmail)
+                .map(email -> {
+                    if (email.getVerificationCode().equals(verificationCode) && email.getExpiryDate().isAfter(LocalDateTime.now())) {
+                        email.setEmailVerified(true);
+                        emailRepository.save(email);
+                        return true;
+                    }
+                    return false;
+                })
+                .orElse(false);
     }
 }

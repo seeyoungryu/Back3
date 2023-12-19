@@ -36,6 +36,11 @@ public class SecurityConfig {
             "/api/user/**"
     };
 
+    private static final String[] CHAT_WHITELIST = {
+            "/chat/room/**", "/chat/message", "/chat/rooms/**","/ws/chat/**",
+            "/sub/chat/**", "/pub/chat/**", "/ws-stomp", "/ws-stomp/**"
+    };
+
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -72,8 +77,12 @@ public class SecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(CHAT_WHITELIST).permitAll()
+                        // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
+                        // 채팅관련 접근 임시로 모두 허용
+                        .requestMatchers("/chat/room/**").permitAll()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.config.util;
+package com.example.withdogandcat.global.config.prod;
 
 import com.p6spy.engine.logging.Category;
 import com.p6spy.engine.spy.P6SpyOptions;

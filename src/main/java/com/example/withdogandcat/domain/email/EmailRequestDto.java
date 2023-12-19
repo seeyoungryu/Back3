@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.email;
+package com.example.withdogandcat.domain.email;
 
 import lombok.AccessLevel;
 import lombok.Getter;

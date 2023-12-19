@@ -27,6 +27,15 @@ repositories {
 
 dependencies {
 
+    implementation 'org.webjars:sockjs-client:1.5.1'
+
+    // WebSocket Stomp
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:stomp-websocket:2.3.4'
+
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // AWS Java SDK for S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 

@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 @Getter
 public class PetResponseDto {
+
+    private final Long userId;
     private final Long petId;
     private final String nickname;
     private final String petName;
@@ -18,9 +20,10 @@ public class PetResponseDto {
     private final List<String> imageUrls;
 
     @Builder
-    public PetResponseDto(Long petId, String nickname, String petName,
+    public PetResponseDto(Long userId, Long petId, String nickname, String petName,
                           String petGender, String petKind,
                           String petInfo, List<String> imageUrls) {
+        this.userId = userId;
         this.petId = petId;
         this.nickname = nickname;
         this.petName = petName;
@@ -37,6 +40,7 @@ public class PetResponseDto {
                 .collect(Collectors.toList());
 
         return PetResponseDto.builder()
+                .userId(pet.getUser().getUserId())
                 .petId(pet.getPetId())
                 .nickname(pet.getUser().getNickname())
                 .petName(pet.getPetName())

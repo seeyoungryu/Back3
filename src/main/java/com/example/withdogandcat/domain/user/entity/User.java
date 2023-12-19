@@ -51,6 +51,16 @@ public class User {
         this.role = role;
     }
 
+    public static User of(SignupRequestDto requestDto, String password) {
+        return User.builder()
+                .email(requestDto.getEmail())
+                .password(password)
+                .phoneNumber(requestDto.getPhoneNumber())
+                .nickname(requestDto.getNickname())
+                .role(UserRole.USER)
+                .build();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,23 +74,7 @@ public class User {
         return Objects.hash(userId);
     }
 
-    public static User of(SignupRequestDto requestDto, String password) {
-        return User.builder()
-                .email(requestDto.getEmail())
-                .password(password)
-                .phoneNumber(requestDto.getPhoneNumber())
-                .nickname(requestDto.getNickname())
-                .role(UserRole.USER)
-                .build();
-    }
-
-    public static User from(SignupRequestDto requestDto, String password) {
-        return User.builder()
-                .email(requestDto.getEmail())
-                .password(password)
-                .phoneNumber(requestDto.getPhoneNumber())
-                .nickname(requestDto.getNickname())
-                .role(UserRole.USER)
-                .build();
+    public void delete() {
+        this.isActive = false;
     }
 }

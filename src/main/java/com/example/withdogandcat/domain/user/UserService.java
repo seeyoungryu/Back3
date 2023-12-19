@@ -13,10 +13,11 @@ import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.UserRole;
-import com.example.withdogandcat.global.email.Email;
-import com.example.withdogandcat.global.email.EmailRepository;
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
+import com.example.withdogandcat.domain.email.Email;
+import com.example.withdogandcat.domain.email.EmailRepository;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,12 +42,14 @@ public class UserService {
     private final EmailRepository emailRepository;
 
     @Transactional
-    public void registerNewAccount(SignupRequestDto requestDto) {
-        checkIfEmailExist(requestDto.getEmail());
+    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) {
+        if (userRepository.existsByEmail(requestDto.getEmail())) {
+            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 가입된 이메일 주소입니다.", null);
+        }
 
         Email email = emailRepository.findByEmailAndExpiryDateAfterAndEmailVerifiedTrue(
                         requestDto.getEmail(), LocalDateTime.now())
-                .orElseThrow(() -> new CustomException(ErrorCode.EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new IllegalStateException("Email not found or not verified"));
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         User newUser = User.builder()
@@ -59,12 +62,15 @@ public class UserService {
 
         userRepository.save(newUser);
         emailRepository.delete(email);
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "회원가입 성공", newUser);
     }
 
-    private void checkIfEmailExist(String email) {
+    private BaseResponse<Void> checkIfEmailExist(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
+            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "로그인 성공", null);
         }
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
     }
 
 
@@ -81,10 +87,10 @@ public class UserService {
     @Transactional
     public void deleteAccount(Long userId, String inputPassword) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
-            throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
+            throw new BaseException(BaseResponseStatus.PASSWORD_MISMATCH);
         }
 
         // 댓글과 좋아요 삭제
