@@ -24,22 +24,22 @@ public class UserController {
     private final EmailService emailService;
 
     @PostMapping("/email")
-    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestBody EmailRequestDto requestDto) {
-        emailService.sendVerificationEmail(requestDto.getEmail());
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestParam String email) {
+        emailService.sendVerificationEmail(email);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "인증 성공", null));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse<Void>> registerAccount(@RequestBody SignupRequestDto requestDto) {
         userService.registerNewAccount(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+                .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "회원가입 성공", null));
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<BaseResponse<Void>> deleteAccount(@RequestBody DeleteRequestDto request, Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         userService.deleteAccount(userDetails.getUser().getUserId(), request.getPassword());
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 }

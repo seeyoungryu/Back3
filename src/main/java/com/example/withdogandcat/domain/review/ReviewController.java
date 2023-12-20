@@ -25,13 +25,13 @@ public class ReviewController {
                                                                         Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         ReviewResponseDto responseDto = reviewService.createReview(userId, shopId, requestDto).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", responseDto));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDto));
     }
 
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<ReviewResponseDto>>> getAllReviews(@PathVariable("shopId") Long shopId) {
         List<ReviewResponseDto> reviews = reviewService.getAllReviews(shopId).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", reviews));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", reviews));
     }
 
     @DeleteMapping("/{reviewId}")
@@ -40,6 +40,6 @@ public class ReviewController {
                                                            Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         reviewService.deleteReview(userId, shopId, reviewId);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 }

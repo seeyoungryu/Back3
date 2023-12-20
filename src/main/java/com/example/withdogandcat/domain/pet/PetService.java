@@ -32,7 +32,7 @@ public class PetService {
         List<PetResponseDto> petDtos = pets.stream()
                 .map(PetResponseDto::from)
                 .collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", petDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
 
     // 반려동물 등록
@@ -43,7 +43,7 @@ public class PetService {
         List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
         uploadedImages.forEach(pet::addImage);
         petRepository.save(pet);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", PetResponseDto.from(pet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
     // 반려동물 전체 조회
@@ -51,7 +51,7 @@ public class PetService {
     public BaseResponse<List<PetResponseDto>> getAllPets() {
         List<PetResponseDto> pets = petRepository.findAll().stream()
                 .map(PetResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", pets);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets);
     }
 
     // 반려동물 상세조회
@@ -59,7 +59,7 @@ public class PetService {
     public BaseResponse<PetResponseDto> getPet(Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", PetResponseDto.from(pet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
     // 반려동물 수정
@@ -83,7 +83,7 @@ public class PetService {
                 petRequestDto.getPetInfo(),
                 petRequestDto.getPetKind(),
                 petRequestDto.getPetGender());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", PetResponseDto.from(petRepository.save(pet)));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(petRepository.save(pet)));
     }
 
     // 반려동물 삭제
@@ -94,7 +94,7 @@ public class PetService {
 
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
 }

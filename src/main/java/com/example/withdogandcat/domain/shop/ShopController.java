@@ -37,7 +37,7 @@ public class ShopController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User currentUser = userDetails.getUser();
         List<ShopResponseDto> shops = shopService.getShopsByCurrentUser(currentUser).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shops));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
     }
 
     // 가게 등록
@@ -50,21 +50,21 @@ public class ShopController {
 
         ShopResponseDto createdShop = shopService.createShop(shopRequestDto, imageFiles, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", createdShop));
+                .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", createdShop));
     }
 
     // 가게 전체 조회
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<ShopResponseDto>>> getAllShops() {
         List<ShopResponseDto> shops = shopService.getAllShops().getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shops));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
     }
 
     // 가게 상세 조회
     @GetMapping("/{shopId}")
     public ResponseEntity<BaseResponse<ShopDetailResponseDto>> getShopDetails(@PathVariable("shopId") Long shopId) {
         ShopDetailResponseDto shopDetailResponseDto = shopService.getShopDetails(shopId).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDetailResponseDto));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDetailResponseDto));
     }
 
     // 가게 수정
@@ -77,7 +77,7 @@ public class ShopController {
             @LoginAccount User currentUser) throws IOException {
 
         ShopResponseDto updatedShop = shopService.updateShop(shopId, shopRequestDto, imageFiles, currentUser).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", updatedShop));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", updatedShop));
     }
 
     // 가게 삭제
@@ -85,7 +85,7 @@ public class ShopController {
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<Void>> deleteShop(@PathVariable Long shopId) {
         shopService.deleteShop(shopId);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
     // 카테고리별 가게 조회
@@ -93,6 +93,6 @@ public class ShopController {
     public ResponseEntity<BaseResponse<List<ShopResponseDto>>> getShopsByCategory(
             @PathVariable("shopType") ShopType shopType) {
         List<ShopResponseDto> shops = shopService.getShopsByCategory(shopType).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shops));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
     }
 }

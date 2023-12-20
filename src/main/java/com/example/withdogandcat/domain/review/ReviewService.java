@@ -45,7 +45,7 @@ public class ReviewService {
                 review.getComment(),
                 0, // 예시: 좋아요 수
                 review.getCreatedAt());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", responseDto);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDto);
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +67,7 @@ public class ReviewService {
                             review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", responseDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDtos);
     }
 
     @Transactional
@@ -83,6 +83,6 @@ public class ReviewService {
         }
 
         reviewRepository.deleteById(reviewId);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 }

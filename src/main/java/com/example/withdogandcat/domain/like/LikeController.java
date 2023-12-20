@@ -19,13 +19,13 @@ public class LikeController {
     public ResponseEntity<BaseResponse<Void>> createLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         likeService.createLike(userId, reviewId);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
     @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> deleteLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         likeService.deleteLike(userId, reviewId);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 }

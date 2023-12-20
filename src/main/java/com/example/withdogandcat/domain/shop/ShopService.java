@@ -39,7 +39,7 @@ public class ShopService {
 
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
 
@@ -63,7 +63,7 @@ public class ShopService {
             return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
         }
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shops);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops);
     }
 
     // 가게 상세 조회
@@ -89,7 +89,7 @@ public class ShopService {
                 .reviews(reviews)
                 .build();
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", detailResponse);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", detailResponse);
     }
 
     // 가게 수정
@@ -99,7 +99,7 @@ public class ShopService {
         Shop shop = shopRepository.findById(shopId).orElseThrow();
 
         if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
-            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "로그인 성공", null);
+            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "성공", null);
         }
 
         if (imageFiles != null && !imageFiles.isEmpty()) {
@@ -117,7 +117,7 @@ public class ShopService {
                 shopRequestDto.getShopAddress(),
                 shopRequestDto.getShopDescribe());
         Shop updatedShop = shopRepository.save(shop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", ShopResponseDto.from(updatedShop));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop));
     }
 
 
@@ -129,7 +129,7 @@ public class ShopService {
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
     // 카테고리별 가게 조회
@@ -142,6 +142,6 @@ public class ShopService {
 
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 }
