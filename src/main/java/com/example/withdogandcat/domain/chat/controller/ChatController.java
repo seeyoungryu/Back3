@@ -22,7 +22,6 @@ public class ChatController {
     private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
-    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리
@@ -30,6 +29,7 @@ public class ChatController {
     @MessageMapping("/chat/message")
     public void message(ChatMessage message, StompHeaderAccessor headerAccessor) {
 
+        // 토큰 및 사용자 이메일 처리
         String token = headerAccessor.getFirstNativeHeader(AUTHORIZATION_HEADER);
         jwtUtil.validateToken(token);
         String userEmail = jwtUtil.getUserEmailFromToken(token);
@@ -44,8 +44,13 @@ public class ChatController {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
 
         } else if (MessageType.TALK.equals(message.getType())) {
+
+            /**
+             * TALK의 경우 사용자가 작성한 메세지를 그대로 사용함
+             */
         }
 
+        // 모든 메시지 유형에 대해 토픽 발행 및 저장
         redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()), message);
         chatMessageService.saveMessage(message.getRoomId(), message, userEmail);
     }

@@ -1,12 +1,9 @@
 package com.example.withdogandcat.domain.chat.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoomListDto {
 
     /**
@@ -14,6 +11,13 @@ public class ChatRoomListDto {
      */
     private String roomId;
     private String name;
-    private String nickname;
+    private CreatorDto creator;
+
+    @Builder
+    public ChatRoomListDto(String roomId, String name, CreatorDto creator) {
+        this.roomId = roomId;
+        this.name = name;
+        this.creator = creator;
+    }
 
 }

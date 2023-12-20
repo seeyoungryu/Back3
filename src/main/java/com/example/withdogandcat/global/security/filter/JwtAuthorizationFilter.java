@@ -42,7 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Claims info = jwtUtil.getUserInfoFromToken(token);
                 setAuthentication(info.getSubject());
 
-            } catch (Exception e) {
+            } catch (Exception e) { // 변경된 부분
                 logger.error("JWT validation error: {}", e.getMessage());
                 BaseResponse<Void> errorResponse = new BaseResponse<>(BaseResponseStatus.AUTHENTICATION_FAILED, "로그인 성공", null);
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

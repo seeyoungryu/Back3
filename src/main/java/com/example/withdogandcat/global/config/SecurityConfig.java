@@ -33,15 +33,13 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html",
-            "/api/user/**", "/application/**"
+            "/api/user/**"
     };
 
     private static final String[] CHAT_WHITELIST = {
-            "/chat/room/**", "/chat/message", "/chat/rooms/**",
-            "/sub/chat/**", "/pub/chat/**", "/ws-stomp", "/chat/roomdetail",
-            "/sub/chat/room", "/ws-stomp/**", "/ws-stomp/info/**", "/webjars/**"
+            "/chat/room/**", "/chat/message", "/chat/rooms/**","/ws/chat/**",
+            "/sub/chat/**", "/pub/chat/**", "/ws/**", "/ws"
     };
-
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
@@ -83,7 +81,6 @@ public class SecurityConfig {
                         // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
-                        .requestMatchers("/application/**").permitAll()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -97,7 +94,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173","http://localhost:5174"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
@@ -106,4 +104,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }

@@ -17,7 +17,6 @@ public class CustomWebSocketHandler extends WebSocketHandlerDecorator {
      * 사용자의 Session을 관리하기 위한 클래스
      */
 
-    // RedisTemplate 주입을 위한 생성자
     public CustomWebSocketHandler(WebSocketHandler delegate,
                                   RedisTemplate<String, Object> redisTemplate) {
         super(delegate);
@@ -26,15 +25,17 @@ public class CustomWebSocketHandler extends WebSocketHandlerDecorator {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+
         String userEmail = (String) session.getAttributes().get("email");
 
         if (userEmail != null && !userEmail.isEmpty()) {
             String redisKey = "websocket_session:" + session.getId();
             redisTemplate.opsForValue().set(redisKey, userEmail);
 
-            log.info("WebSocket session established: sessionId={}, userEmail={}", session.getId(), userEmail);
+            log.info("세션 열림: sessionId={}, userEmail={}", session.getId(), userEmail);
+
         } else {
-            log.warn("Email not found in session attributes for sessionId={}", session.getId());
+            log.warn("이메일 못찾음={}", session.getId());
         }
 
         super.afterConnectionEstablished(session);
@@ -46,7 +47,7 @@ public class CustomWebSocketHandler extends WebSocketHandlerDecorator {
         String redisKey = "websocket_session:" + session.getId();
         redisTemplate.delete(redisKey);
 
-        log.info("WebSocket session closed: sessionId={}", session.getId());
+        log.info("세션 닫힘: sessionId={}", session.getId());
 
         super.afterConnectionClosed(session, closeStatus);
     }
