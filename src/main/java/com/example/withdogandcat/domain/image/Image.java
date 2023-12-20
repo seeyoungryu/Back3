@@ -26,11 +26,11 @@ public class Image {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private Shop shop;
-////////////////////////////////////////
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
-////////////////////////////////////////
+
     @Builder
     public Image(String originName, String storedImagePath, Shop shop, Pet pet) {
         this.originName = originName;
@@ -43,5 +43,7 @@ public class Image {
         this.shop = shop;
     }
 
-    public void setPet(Pet pet) {this.pet = pet;}
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
 }

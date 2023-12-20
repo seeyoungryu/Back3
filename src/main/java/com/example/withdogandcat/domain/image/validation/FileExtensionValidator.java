@@ -19,7 +19,7 @@ public class FileExtensionValidator implements ConstraintValidator<FileExtension
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         if (file == null || file.isEmpty()) {
-            return true; // null file을 유효하게 설정할것이라면 false로 지정
+            return true;
         }
         String originalFilename = file.getOriginalFilename();
         assert originalFilename != null;

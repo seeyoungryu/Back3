@@ -1,7 +1,6 @@
 package com.example.withdogandcat.domain.shop.dto;
 
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 

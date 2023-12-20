@@ -6,9 +6,9 @@ import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.exception.CustomException;
-import com.example.withdogandcat.global.exception.ErrorCode;
-import com.example.withdogandcat.global.tool.ApiResponseDto;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,56 +25,47 @@ public class PetService {
     private final PetRepository petRepository;
     private final ImageS3Service imageS3Service;
 
-    // 마이페이지 반려동물 조회
     @Transactional(readOnly = true)
-    public ApiResponseDto<List<PetResponseDto>> getUserPets(User currentUser) {
+    public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
-        String message = pets.isEmpty() ? "반려동물 없음" : "반려동물 조회 성공";
         List<PetResponseDto> petDtos = pets.stream()
                 .map(PetResponseDto::from)
                 .collect(Collectors.toList());
-        return new ApiResponseDto<>(message, petDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
 
-    // 반려동물 등록
     @Transactional
-    public PetResponseDto createPet(PetRequestDto petRequestDto ,List<MultipartFile> imageFiles,
-                                      User user) throws IOException {
+    public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles,
+                                                  User user) throws IOException {
         Pet pet = Pet.of(petRequestDto, user);
         List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
         uploadedImages.forEach(pet::addImage);
         petRepository.save(pet);
-        return PetResponseDto.from(pet);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
-    // 반려동물 전체 조회
     @Transactional(readOnly = true)
-    public ApiResponseDto<List<PetResponseDto>> getAllPets() {
+    public BaseResponse<List<PetResponseDto>> getAllPets() {
         List<PetResponseDto> pets = petRepository.findAll().stream()
                 .map(PetResponseDto::from).collect(Collectors.toList());
-
-        String message = pets.isEmpty() ? "등록된 왈왈이가 없습니다" : "왈왈이 전체 조회 성공";
-        return new ApiResponseDto<>(message, pets);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets);
     }
 
-    // 반려동물 상세조회
     @Transactional(readOnly = true)
-    public PetResponseDto getPet(Long petId) {
+    public BaseResponse<PetResponseDto> getPet(Long petId) {
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
-
-        return PetResponseDto.from(pet);
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
-    // 반려동물 수정
     @Transactional
-    public PetResponseDto updatePet(Long petId, PetRequestDto petRequestDto,
-                                    List<MultipartFile> imageFiles, User currentUser) throws IOException {
+    public BaseResponse<PetResponseDto> updatePet(Long petId, PetRequestDto petRequestDto,
+                                                  List<MultipartFile> imageFiles, User currentUser) throws IOException {
 
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
         if (!pet.getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
+            throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
         }
 
         imageS3Service.deleteImages(pet.getImages());
@@ -82,22 +73,22 @@ public class PetService {
         List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
         newImages.forEach(pet::addImage);
 
-
         pet.updatePetDetails(
                 petRequestDto.getPetName(),
                 petRequestDto.getPetInfo(),
                 petRequestDto.getPetKind(),
                 petRequestDto.getPetGender());
-        return PetResponseDto.from(petRepository.save(pet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(petRepository.save(pet)));
     }
 
-    // 반려동물 삭제
     @Transactional
-    public void deletePet(Long petId) {
+    public BaseResponse<Void> deletePet(Long petId) {
         Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
 
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
+
 }

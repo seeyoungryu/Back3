@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByUser(User user);
+    void deleteByUser(User user);
 }

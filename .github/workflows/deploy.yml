@@ -7,9 +7,9 @@ on:
 
 env:
   AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: petserver
-  CODE_DEPLOY_APPLICATION_NAME: pet-app
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: pet-app-deployment-group
+  S3_BUCKET_NAME: petbackup
+  CODE_DEPLOY_APPLICATION_NAME: petbackup-app
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: petbackup-codedeploy-deployment-group
 
 permissions:
   contents: read
@@ -48,8 +48,8 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID2 }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY2 }}
         aws-region: ${{ env.AWS_REGION }}
 
     # (6) 빌드 결과물을 S3 버킷에 업로드

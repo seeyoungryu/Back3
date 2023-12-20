@@ -1,7 +1,10 @@
 package com.example.withdogandcat.global.security.filter;
 
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,19 +33,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = jwtUtil.getTokenFromRequest(req);
+
+        String token = jwtUtil.resolveToken(req);
 
         if (StringUtils.hasText(token)) {
-            logger.info("토큰 확인용 : " + token);
-            if (!jwtUtil.validateToken(token)) {
-                res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            try {
+                jwtUtil.validateToken(token);
+                Claims info = jwtUtil.getUserInfoFromToken(token);
+                setAuthentication(info.getSubject());
+
+            } catch (Exception e) {
+                logger.error("JWT validation error: {}", e.getMessage());
+                BaseResponse<Void> errorResponse = new BaseResponse<>(BaseResponseStatus.AUTHENTICATION_FAILED, "로그인 성공", null);
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                res.setContentType("application/json;charset=UTF-8");
+                res.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
                 return;
             }
-            Claims info = jwtUtil.getUserInfoFromToken(token);
-
-            setAuthentication(info.getSubject());
         }
-        logger.info(req.getRequestURI());
         filterChain.doFilter(req, res);
     }
 

@@ -1,10 +1,7 @@
 package com.example.withdogandcat.domain.shop.dto;
 
 import com.example.withdogandcat.domain.shop.entity.ShopType;
-import com.example.withdogandcat.domain.image.validation.FileExtension;
-import com.example.withdogandcat.domain.image.validation.FileSize;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +19,7 @@ public class ShopRequestDto {
     private String shopTime;
     private String shopTel;
     private String shopAddress;
-
-    @NotNull(message = "ShopType은 필수 항목입니다.")
     private ShopType shopType;
-
     private String shopDescribe;
 
     private List<MultipartFile> imageFiles;

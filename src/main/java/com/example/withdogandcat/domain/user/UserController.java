@@ -1,13 +1,16 @@
 package com.example.withdogandcat.domain.user;
 
+import com.example.withdogandcat.domain.email.EmailService;
+import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,10 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final EmailService emailService;
+
+    @PostMapping("/email")
+    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestParam String email) {
+        emailService.sendVerificationEmail(email);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "인증 성공", null));
+    }
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> registerAccount(@RequestBody SignupRequestDto requestDto) {
+    public ResponseEntity<BaseResponse<Void>> registerAccount(@RequestBody SignupRequestDto requestDto) {
         userService.registerNewAccount(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "회원가입 성공", null));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<BaseResponse<Void>> deleteAccount(@RequestBody DeleteRequestDto request, Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        userService.deleteAccount(userDetails.getUser().getUserId(), request.getPassword());
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 }
