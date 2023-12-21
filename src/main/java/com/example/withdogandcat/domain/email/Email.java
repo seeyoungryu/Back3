@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.email.entity;
+package com.example.withdogandcat.domain.email;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
