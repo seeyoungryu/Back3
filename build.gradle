@@ -41,6 +41,9 @@ dependencies {
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // json
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
 
@@ -63,6 +66,10 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+
+    //email 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

@@ -64,21 +64,25 @@ public class PetService {
 
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
+
         if (!pet.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
         }
 
-        imageS3Service.deleteImages(pet.getImages());
-        pet.clearImages();
-        List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
-        newImages.forEach(pet::addImage);
+        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+            imageS3Service.deleteImages(pet.getImages());
+            pet.clearImages();
+            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
+            newImages.forEach(pet::addImage);
+        }
 
         pet.updatePetDetails(
                 petRequestDto.getPetName(),
                 petRequestDto.getPetInfo(),
                 petRequestDto.getPetKind(),
                 petRequestDto.getPetGender());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(petRepository.save(pet)));
+        Pet savedPet = petRepository.save(pet);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(savedPet));
     }
 
     @Transactional
