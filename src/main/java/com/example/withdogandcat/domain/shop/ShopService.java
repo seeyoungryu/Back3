@@ -97,7 +97,7 @@ public class ShopService {
             return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "성공", null);
         }
 
-        if (imageFiles != null && !imageFiles.isEmpty()) {
+        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
             imageS3Service.deleteImages(shop.getImages());
             shop.clearImages();
             List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
