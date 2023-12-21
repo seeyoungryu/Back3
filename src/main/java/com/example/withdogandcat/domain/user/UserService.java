@@ -39,14 +39,14 @@ public class UserService {
     private final EmailRepository emailRepository;
 
     @Transactional
-    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) {
+    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) throws BaseException {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 가입된 이메일 주소입니다.", null);
+            throw new BaseException(BaseResponseStatus.EMAIL_ALREADY_EXISTS);
         }
 
         Email email = emailRepository.findByEmailAndExpiryDateAfterAndEmailVerifiedTrue(
                         requestDto.getEmail(), LocalDateTime.now())
-                .orElseThrow(() -> new IllegalStateException("Email not found or not verified"));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.EMAIL_NOT_FOUND));
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         User newUser = User.builder()
@@ -65,9 +65,9 @@ public class UserService {
 
     private BaseResponse<Void> checkIfEmailExist(String email) {
         if (userRepository.existsByEmail(email)) {
-            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "로그인 성공", null);
+            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 사용중인 이메일 주소입니다.", null);
         }
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용 가능한 이메일 주소입니다.", null);
     }
 
 

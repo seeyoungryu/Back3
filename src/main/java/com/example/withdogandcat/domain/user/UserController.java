@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.user;
 
+import com.example.withdogandcat.domain.email.EmailRequestDto;
 import com.example.withdogandcat.domain.email.EmailService;
 import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
@@ -21,8 +22,8 @@ public class UserController {
     private final EmailService emailService;
 
     @PostMapping("/email")
-    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestParam String email) {
-        emailService.sendVerificationEmail(email);
+    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestBody EmailRequestDto requestDto) {
+        emailService.sendVerificationEmail(requestDto.getEmail());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "인증 성공", null));
     }
 
