@@ -38,16 +38,4 @@ public class Email {
         this.emailVerified = emailVerified;
     }
 
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
-    }
-
-    public boolean isRegistrationComplete() {
-        return registrationComplete;
-    }
-
 }
