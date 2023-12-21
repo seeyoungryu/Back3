@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreatorDto {
 
+    /**
+     * 채팅방 생성자 정보
+     */
     private String email;
     private String nickname;
 

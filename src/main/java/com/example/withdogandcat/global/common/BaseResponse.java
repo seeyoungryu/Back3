@@ -28,7 +28,7 @@ public class BaseResponse<T> {
     /**
      * 일반 응답
      */
-    public BaseResponse(BaseResponseStatus status, String 로그인_성공, T result){
+    public BaseResponse(BaseResponseStatus status, String message, T result){
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
         this.code = status.getCode();
@@ -42,7 +42,7 @@ public class BaseResponse<T> {
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
         this.code = status.getCode();
-        this.result = null; // 오류 응답에서는 결과가 없음
+        this.result = null;
     }
 
 }

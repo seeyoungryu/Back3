@@ -25,17 +25,15 @@ public class PetService {
     private final PetRepository petRepository;
     private final ImageS3Service imageS3Service;
 
-    // 마이페이지 반려동물 조회
     @Transactional(readOnly = true)
     public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
         List<PetResponseDto> petDtos = pets.stream()
                 .map(PetResponseDto::from)
                 .collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", petDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
 
-    // 반려동물 등록
     @Transactional
     public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles,
                                                   User user) throws IOException {
@@ -43,26 +41,23 @@ public class PetService {
         List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
         uploadedImages.forEach(pet::addImage);
         petRepository.save(pet);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", PetResponseDto.from(pet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
-    // 반려동물 전체 조회
     @Transactional(readOnly = true)
     public BaseResponse<List<PetResponseDto>> getAllPets() {
         List<PetResponseDto> pets = petRepository.findAll().stream()
                 .map(PetResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", pets);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets);
     }
 
-    // 반려동물 상세조회
     @Transactional(readOnly = true)
     public BaseResponse<PetResponseDto> getPet(Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", PetResponseDto.from(pet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
-    // 반려동물 수정
     @Transactional
     public BaseResponse<PetResponseDto> updatePet(Long petId, PetRequestDto petRequestDto,
                                                   List<MultipartFile> imageFiles, User currentUser) throws IOException {
@@ -83,10 +78,9 @@ public class PetService {
                 petRequestDto.getPetInfo(),
                 petRequestDto.getPetKind(),
                 petRequestDto.getPetGender());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", PetResponseDto.from(petRepository.save(pet)));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(petRepository.save(pet)));
     }
 
-    // 반려동물 삭제
     @Transactional
     public BaseResponse<Void> deletePet(Long petId) {
         Pet pet = petRepository.findById(petId)
@@ -94,7 +88,7 @@ public class PetService {
 
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
 }

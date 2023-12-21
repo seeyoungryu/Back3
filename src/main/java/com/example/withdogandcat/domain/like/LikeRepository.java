@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Optional<Like> findByUserAndReview(User user, Review review);
     void deleteByUser(User user);
-
     int countByReview(Review review);
 }

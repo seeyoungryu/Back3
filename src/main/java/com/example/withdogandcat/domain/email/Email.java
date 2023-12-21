@@ -24,8 +24,6 @@ public class Email {
     private LocalDateTime expiryDate;
     private boolean registrationComplete;
 
-
-
     @Column(nullable = false)
     private boolean emailVerified = false;
 

@@ -25,10 +25,10 @@ public class ChatMessageService {
 
     // 채팅방 메세지 저장
     @Transactional
-    public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, Long userId) {
+    public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, String userEmail) {
         String key = "chatRoom:" + roomId + ":messages";
         Long size = redisTemplate.opsForList().size(key);
-        int maxSize = 10; // 최대 저장할 메시지 수
+        int maxSize = 20; // 최대 저장할 메시지 수
 
         if (size != null && size >= maxSize) {
             redisTemplate.opsForList().leftPop(key);
@@ -36,19 +36,29 @@ public class ChatMessageService {
 
         redisTemplate.opsForList().rightPush(key, chatMessage);
 
-        User sender = userRepository.findById(userId).orElseThrow();
-
+        User sender = userRepository.findByEmail(userEmail).orElseThrow();
         ChatMessageEntity chatMessageEntity = convertToEntity(chatMessage, sender);
+
         chatMessageJpaRepository.save(chatMessageEntity);
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
+    }
+
+    @Transactional
+    public BaseResponse<Void> deleteMessages(String roomId) {
+        String key = "chatRoom:" + roomId + ":messages";
+        redisTemplate.delete(key);
+
+        chatMessageJpaRepository.deleteByRoomId(roomId);
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
     // 채팅방에 저장된 메세지 가져오기
     public BaseResponse<List<Object>> getMessages(String roomId) {
         String key = "chatRoom:" + roomId + ":messages";
         List<Object> messages = redisTemplate.opsForList().range(key, 0, -1);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", messages);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", messages);
     }
 
     private ChatMessageEntity convertToEntity(ChatMessage chatMessage, User sender) {
@@ -60,13 +70,4 @@ public class ChatMessageService {
                 .build();
     }
 
-    @Transactional
-    public BaseResponse<Void> deleteMessages(String roomId) {
-        String key = "chatRoom:" + roomId + ":messages";
-        redisTemplate.delete(key);
-
-        chatMessageJpaRepository.deleteByRoomId(roomId);
-
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
-    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
+
         @Query("SELECT i FROM Image i WHERE i.pet.user.userId = :userId OR i.shop.user.userId = :userId")
         List<Image> findByUserId(@Param("userId") Long userId);
-    }
+}

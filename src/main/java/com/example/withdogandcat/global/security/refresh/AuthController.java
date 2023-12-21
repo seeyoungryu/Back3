@@ -21,10 +21,8 @@ public class AuthController {
         String refreshToken = request.getHeader("Refresh-Token");
         TokenDto tokenData = authService.reissueToken(refreshToken);
 
-        // 토큰을 응답 헤더에 추가
         jwtUtil.addTokensToHeaders(tokenData.getAccessToken(), tokenData.getRefreshToken(), response);
 
-        // HTTP 상태 코드만 반환 (페이로드 없음)
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

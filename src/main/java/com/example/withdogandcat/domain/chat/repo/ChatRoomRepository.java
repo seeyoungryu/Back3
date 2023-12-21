@@ -40,12 +40,14 @@ public class ChatRoomRepository {
         try {
             return opsHashChatRoom.size(CHAT_ROOMS);
         } catch (Exception e) {
-            log.error("Error counting chat rooms", e);
+            log.error("채팅방 카운트 오류", e);
             return 0;
         }
     }
 
-    // 채팅방 생성
+    /**
+     * 채팅방 생성
+     */
     public void createChatRoom(String roomId, String name, Long creatorId) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setRoomId(roomId);
@@ -54,31 +56,35 @@ public class ChatRoomRepository {
         try {
             opsHashChatRoom.put(CHAT_ROOMS, roomId, chatRoom);
         } catch (Exception e) {
-            log.error("Error creating chat room: {}", name, e);
+            log.error("생성 오류: {}", name, e);
         }
     }
 
-    // 채팅방 입장
+    /**
+     * 채팅방 입장 + Topic 발행
+     */
     public void enterChatRoom(String roomId) {
         topics.computeIfAbsent(roomId, k -> {
             ChannelTopic topic = new ChannelTopic(roomId);
             try {
                 redisMessageListener.addMessageListener(redisSubscriber, topic);
             } catch (Exception e) {
-                log.error("Error entering chat room: {}", roomId, e);
+                log.error("채팅방 입장 오류: {}", roomId, e);
             }
             return topic;
         });
     }
 
-    // 채팅방 삭제
+    /**
+     * 채팅방 삭제
+     */
     public void deleteRoom(String roomId) {
         try {
             String key = "CHAT_ROOM";
             String field = roomId; // 채팅방 ID가 field로 사용됨
             redisTemplate.opsForHash().delete(key, field); // 특정 field 삭제
         } catch (Exception e) {
-            log.error("Error deleting chat room from Redis: {}", roomId, e);
+            log.error("레디스에서 채팅방 삭제 오류: {}", roomId, e);
         }
     }
 

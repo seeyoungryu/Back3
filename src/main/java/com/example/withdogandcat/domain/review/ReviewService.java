@@ -1,13 +1,13 @@
 package com.example.withdogandcat.domain.review;
 
+import com.example.withdogandcat.domain.like.LikeRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
-import com.example.withdogandcat.domain.like.LikeRepository;
-import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.ShopRepository;
-import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.UserRepository;
+import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
@@ -43,9 +43,9 @@ public class ReviewService {
                 shop.getShopId(),
                 user.getNickname(),
                 review.getComment(),
-                0, // 예시: 좋아요 수
+                0,
                 review.getCreatedAt());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", responseDto);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDto);
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +67,7 @@ public class ReviewService {
                             review.getCreatedAt());
                 })
                 .collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", responseDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDtos);
     }
 
     @Transactional
@@ -76,13 +76,13 @@ public class ReviewService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
         Review review = reviewRepository.findByReviewIdAndShop(reviewId, shop)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.RETRIEVAL_FAILED)); // 리뷰 조회 실패
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.RETRIEVAL_FAILED));
 
         if (!review.getUser().getUserId().equals(userId)) {
             throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
         }
 
         reviewRepository.deleteById(reviewId);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 }

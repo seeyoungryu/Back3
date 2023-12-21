@@ -1,20 +1,17 @@
 package com.example.withdogandcat.domain.user;
 
+import com.example.withdogandcat.domain.email.Email;
+import com.example.withdogandcat.domain.email.EmailRepository;
 import com.example.withdogandcat.domain.image.Image;
 import com.example.withdogandcat.domain.image.ImageRepository;
 import com.example.withdogandcat.domain.image.ImageS3Service;
 import com.example.withdogandcat.domain.like.LikeRepository;
 import com.example.withdogandcat.domain.pet.PetRepository;
-import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.shop.ShopRepository;
-import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.UserRole;
-import com.example.withdogandcat.domain.email.Email;
-import com.example.withdogandcat.domain.email.EmailRepository;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
@@ -42,14 +39,14 @@ public class UserService {
     private final EmailRepository emailRepository;
 
     @Transactional
-    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) {
+    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) throws BaseException {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 가입된 이메일 주소입니다.", null);
+            throw new BaseException(BaseResponseStatus.EMAIL_ALREADY_EXISTS);
         }
 
         Email email = emailRepository.findByEmailAndExpiryDateAfterAndEmailVerifiedTrue(
                         requestDto.getEmail(), LocalDateTime.now())
-                .orElseThrow(() -> new IllegalStateException("Email not found or not verified"));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.EMAIL_NOT_FOUND));
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         User newUser = User.builder()
@@ -68,9 +65,9 @@ public class UserService {
 
     private BaseResponse<Void> checkIfEmailExist(String email) {
         if (userRepository.existsByEmail(email)) {
-            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "로그인 성공", null);
+            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 사용중인 이메일 주소입니다.", null);
         }
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용 가능한 이메일 주소입니다.", null);
     }
 
 
@@ -93,23 +90,17 @@ public class UserService {
             throw new BaseException(BaseResponseStatus.PASSWORD_MISMATCH);
         }
 
-        // 댓글과 좋아요 삭제
         likeRepository.deleteByUser(user);
         reviewRepository.deleteByUser(user);
 
-        // 사용자와 관련된 모든 이미지 조회
         List<Image> userImages = imageRepository.findByUserId(userId);
 
-        // S3와 데이터베이스에서 이미지 삭제
         imageS3Service.deleteImages(userImages);
 
-        // 펫 삭제
         petRepository.deleteByUser(user);
 
-        // 샵 삭제
         shopRepository.deleteByUser(user);
 
-        // 유저 삭제
         userRepository.delete(user);
     }
 }

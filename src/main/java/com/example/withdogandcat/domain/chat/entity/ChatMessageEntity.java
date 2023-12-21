@@ -1,15 +1,15 @@
 package com.example.withdogandcat.domain.chat.entity;
 
-
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.Timestamped;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Builder
-@AllArgsConstructor
 @Table(name = "chat_messages")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessageEntity extends Timestamped {
@@ -19,16 +19,22 @@ public class ChatMessageEntity extends Timestamped {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private MessageType type; // 메시지 타입
+    private MessageType type;
 
-    private String roomId; // 방 번호
+    private String roomId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User sender; // 메시지 보낸사람, User 엔티티 참조
 
-    private String senderNickname; // 메시지 보낸사람의 닉네임
+    private String message;
 
-    private String message; // 메시지
+    @Builder
+    private ChatMessageEntity(MessageType type, String roomId, User sender, String message) {
+        this.type = type;
+        this.roomId = roomId;
+        this.sender = sender;
+        this.message = message;
+    }
 
 }

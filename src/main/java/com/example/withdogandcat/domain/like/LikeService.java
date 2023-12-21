@@ -2,8 +2,8 @@ package com.example.withdogandcat.domain.like;
 
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.entity.Review;
-import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.domain.user.UserRepository;
+import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;

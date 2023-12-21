@@ -27,10 +27,10 @@ public class ExceptionHandler {
                 .getAllErrors()
                 .get(0)
                 .getDefaultMessage();
-        BaseResponseStatus errorStatus = BaseResponseStatus.BAD_REQUEST; // 예시, 실제 상황에 맞게 조정
+        BaseResponseStatus errorStatus = BaseResponseStatus.BAD_REQUEST;
 
         return ResponseEntity
                 .status(errorStatus.getCode())
-                .body(new BaseResponse<>(errorStatus, "로그인 성공", errorMessage));
+                .body(new BaseResponse<>(errorStatus, "성공", errorMessage));
     }
 }

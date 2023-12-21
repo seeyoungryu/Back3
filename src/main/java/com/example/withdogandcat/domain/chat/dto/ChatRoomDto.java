@@ -10,18 +10,19 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoomDto {
+
     private Long id;
     private String roomId;
     private String name;
     private LocalDateTime createdAt;
-    private CreatorDto creatorId;
+    private CreatorDto creator;
 
     @Builder
-    public ChatRoomDto(Long id, String roomId, String name, LocalDateTime createdAt, CreatorDto creatorId) {
+    public ChatRoomDto(Long id, String roomId, String name, LocalDateTime createdAt, CreatorDto creator) {
         this.id = id;
         this.roomId = roomId;
         this.name = name;
         this.createdAt = createdAt;
-        this.creatorId = creatorId;
+        this.creator = creator;
     }
 }

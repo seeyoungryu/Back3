@@ -1,4 +1,4 @@
-package com.example.withdogandcat.global.config;
+package com.example.withdogandcat.domain.chat.redis;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

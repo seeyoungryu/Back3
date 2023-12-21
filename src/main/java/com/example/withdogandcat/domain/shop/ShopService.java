@@ -2,6 +2,7 @@ package com.example.withdogandcat.domain.shop;
 
 import com.example.withdogandcat.domain.image.Image;
 import com.example.withdogandcat.domain.image.ImageS3Service;
+import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.withdogandcat.domain.review.ReviewRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +29,6 @@ public class ShopService {
     private final ReviewRepository reviewRepository;
     private final ImageS3Service imageS3Service;
 
-    // 마이페이지 가게 조회
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
         List<Shop> shops = shopRepository.findByUser(currentUser);
@@ -39,11 +38,10 @@ public class ShopService {
 
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
 
-    // 가게 등록
     @Transactional
     public ShopResponseDto createShop(ShopRequestDto shopRequestDto, List<MultipartFile> imageFiles, User user) throws IOException {
         Shop shop = Shop.of(shopRequestDto, user);
@@ -53,7 +51,6 @@ public class ShopService {
         return ShopResponseDto.from(shop);
     }
 
-    // 가게 전체 조회
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getAllShops() {
         List<ShopResponseDto> shops = shopRepository.findAll().stream()
@@ -63,10 +60,9 @@ public class ShopService {
             return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
         }
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shops);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops);
     }
 
-    // 가게 상세 조회
     @Transactional(readOnly = true)
     public BaseResponse<ShopDetailResponseDto> getShopDetails(Long shopId) {
         Shop shop = shopRepository.findById(shopId).orElseThrow();
@@ -89,17 +85,16 @@ public class ShopService {
                 .reviews(reviews)
                 .build();
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", detailResponse);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", detailResponse);
     }
 
-    // 가게 수정
     @Transactional
     public BaseResponse<ShopResponseDto> updateShop(Long shopId, ShopRequestDto shopRequestDto,
                                                     List<MultipartFile> imageFiles, User currentUser) throws IOException {
         Shop shop = shopRepository.findById(shopId).orElseThrow();
 
         if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
-            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "로그인 성공", null);
+            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "성공", null);
         }
 
         if (imageFiles != null && !imageFiles.isEmpty()) {
@@ -117,11 +112,10 @@ public class ShopService {
                 shopRequestDto.getShopAddress(),
                 shopRequestDto.getShopDescribe());
         Shop updatedShop = shopRepository.save(shop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", ShopResponseDto.from(updatedShop));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop));
     }
 
 
-    // 가게 삭제
     @Transactional
     public BaseResponse<Void> deleteShop(Long shopId) {
         Shop shop = shopRepository.findById(shopId).orElseThrow();
@@ -129,10 +123,9 @@ public class ShopService {
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
-    // 카테고리별 가게 조회
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getShopsByCategory(ShopType shopType) {
         List<Shop> shops = shopRepository.findAllByShopType(shopType);
@@ -142,6 +135,6 @@ public class ShopService {
 
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", shopDtos);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 }

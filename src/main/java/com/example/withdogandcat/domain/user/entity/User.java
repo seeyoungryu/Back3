@@ -16,10 +16,6 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    private boolean emailVerified;
-    private LocalDateTime expiryDate;
-    private boolean registrationComplete;
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
@@ -41,6 +37,10 @@ public class User {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+    private boolean emailVerified;
+    private LocalDateTime expiryDate;
+    private boolean registrationComplete;
 
     @Builder
     private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
@@ -66,7 +66,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userId, user.userId); // id는 User 클래스의 고유 식별자 필드
+        return Objects.equals(userId, user.userId);
     }
 
     @Override

@@ -23,10 +23,8 @@ public class EmailService {
 
     @Async
     public void sendVerificationEmail(String userEmail) {
-        // 기존 이메일 레코드 찾기 및 삭제
         emailRepository.findByEmail(userEmail).ifPresent(emailRepository::delete);
 
-        // 새 인증 코드 생성
         String verificationCode = generateVerificationCode();
         String content = "인증 코드 입니다. 제한시간 5분 ( 대소문자 구분 필수) : " + verificationCode;
 
@@ -44,7 +42,6 @@ public class EmailService {
             logger.error("Failed to send email to: {}", userEmail, e);
         }
 
-        // 새 이메일 레코드 추가
         Email email = new Email(userEmail, verificationCode);
         emailRepository.save(email);
     }

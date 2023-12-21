@@ -1,6 +1,5 @@
 package com.example.withdogandcat.global.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

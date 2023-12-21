@@ -10,8 +10,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatRoomDetailDto {
+
+    /**
+     * 특정 채팅방 상세 조회시 반환 값
+     * 채팅방에 입장해있는 유저 목록까지 반환
+     */
     private String roomId;
     private String name;
-    private String nickname;
+    private CreatorDto creator;
     private List<CreatorDto> members;
 }

@@ -7,8 +7,6 @@ import lombok.*;
 
 @Getter
 @Entity
-@Builder
-@AllArgsConstructor
 @Table(name = "chat_rooms")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoomEntity extends Timestamped {
@@ -17,13 +15,20 @@ public class ChatRoomEntity extends Timestamped {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String roomId; // 고유한 방 ID
+    private String roomId;
 
     @Column(nullable = false)
-    private String name; // 채팅방 이름
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
-    private User creatorId; // 채팅방 생성자
+    private User creatorId;
+
+    @Builder
+    private ChatRoomEntity(String roomId, String name, User creatorId) {
+        this.roomId = roomId;
+        this.name = name;
+        this.creatorId = creatorId;
+    }
 
 }

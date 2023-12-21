@@ -38,7 +38,7 @@ public class SecurityConfig {
 
     private static final String[] CHAT_WHITELIST = {
             "/chat/room/**", "/chat/message", "/chat/rooms/**","/ws/chat/**",
-            "/sub/chat/**", "/pub/chat/**", "/ws-stomp", "/ws-stomp/**"
+            "/sub/chat/**", "/pub/chat/**", "/ws/**", "/ws"
     };
 
     private final JwtUtil jwtUtil;
@@ -81,8 +81,6 @@ public class SecurityConfig {
                         // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
-                        // 채팅관련 접근 임시로 모두 허용
-                        .requestMatchers("/chat/room/**").permitAll()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -96,7 +94,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173","http://localhost:5174"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
@@ -105,4 +104,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }

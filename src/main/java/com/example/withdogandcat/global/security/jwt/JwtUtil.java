@@ -1,7 +1,7 @@
 package com.example.withdogandcat.global.security.jwt;
 
 import com.example.withdogandcat.domain.user.entity.UserRole;
-import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -93,28 +94,41 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
+    // HttpServletRequest 헤더 추출
     public String resolveToken(HttpServletRequest req) {
         return req.getHeader(AUTHORIZATION_HEADER);
     }
 
-    public BaseResponse<String> validateToken(String token) {
+    // StompHeaderAccessor 헤더 추출
+    public String extractJwt(final StompHeaderAccessor accessor) {
+        return accessor.getFirstNativeHeader(AUTHORIZATION_HEADER);
+    }
+
+    public void validateToken(String token) throws BaseException {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그인 성공", null);
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            return new BaseResponse<>(BaseResponseStatus.INVALID_TOKEN, "로그인 성공", "Invalid token");
+            logger.error("Invalid token: {}", e.getMessage());
+            throw new BaseException(BaseResponseStatus.INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
-            return new BaseResponse<>(BaseResponseStatus.EXPIRED_TOKEN, "로그인 성공", "Expired token");
+            logger.error("Expired token: {}", e.getMessage());
+            throw new BaseException(BaseResponseStatus.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
-            return new BaseResponse<>(BaseResponseStatus.INVALID_REFRESH_TOKEN, "로그인 성공", "Unsupported token");
+            logger.error("Unsupported token: {}", e.getMessage());
+            throw new BaseException(BaseResponseStatus.INVALID_REFRESH_TOKEN);
         } catch (IllegalArgumentException e) {
-            return new BaseResponse<>(BaseResponseStatus.NOT_FOUND_TOKEN, "로그인 성공", "Token not found");
+            logger.error("Token not found: {}", e.getMessage());
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_TOKEN);
         }
     }
 
-
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    public String getUserEmailFromToken(String token) {
+        Claims claims = getUserInfoFromToken(token);
+        return claims.getSubject();
     }
 
     public void addTokensToHeaders(String accessToken, String refreshToken, HttpServletResponse response) {
