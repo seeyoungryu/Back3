@@ -99,7 +99,7 @@ public class ShopService {
         Shop shop = shopRepository.findById(shopId).orElseThrow();
 
         if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
-            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "성공", null);
+            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "유저를 찾을 수 없습니다.", null);
         }
 
         if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
