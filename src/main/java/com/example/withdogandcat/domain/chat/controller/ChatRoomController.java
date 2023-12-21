@@ -30,48 +30,53 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
 
+    /**
+     * 채팅방 전체 조회
+     */
     @GetMapping("/rooms")
     @ResponseBody
-    public List<ChatRoomListDto> room() {
-        return chatRoomService.findAllRoomListDtos().getResult();
+    public ResponseEntity<BaseResponse<List<ChatRoomListDto>>> room() {
+        BaseResponse<List<ChatRoomListDto>> response = chatRoomService.findAllRoomListDtos();
+        return ResponseEntity.ok(response);
     }
 
+    /**
+     * 채팅방 생성
+     */
     @PostMapping("/room")
     @ResponseBody
-    public ResponseEntity<ChatRoomDto> createRoom(@RequestParam("name") String name, HttpServletRequest request) {
-
+    public ResponseEntity<BaseResponse<ChatRoomDto>> createRoom(@RequestParam("name") String name, HttpServletRequest request) {
         try {
             String token = jwtUtil.resolveToken(request);
             jwtUtil.validateToken(token);
             String userEmail = jwtUtil.getUserEmailFromToken(token);
 
-            ChatRoomEntity chatRoomEntity = chatRoomService.createChatRoom(name, userEmail).getResult();
-            ChatRoomDto chatRoomDto = chatRoomService.convertToDto(chatRoomEntity);
-
-            return ResponseEntity.ok(chatRoomDto);
+            BaseResponse<ChatRoomDto> response = chatRoomService.createChatRoom(name, userEmail);
+            return ResponseEntity.ok(response);
 
         } catch (BaseException e) {
             return ResponseEntity
                     .status(e.getStatus().getCode())
-                    .body(ChatRoomDto.builder().build());
+                    .body(new BaseResponse<>(e.getStatus(), e.getMessage(), null));
         }
     }
 
+    /**
+     * 특정 채팅방 조회
+     */
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public ResponseEntity<ChatRoomDetailDto> roomInfo(@PathVariable("roomId") String roomId) {
-        ChatRoomDetailDto response = chatRoomService.findRoomDetailById(roomId);
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    public ResponseEntity<BaseResponse<ChatRoomDetailDto>> roomInfo(@PathVariable("roomId") String roomId) {
+        BaseResponse<ChatRoomDetailDto> response = chatRoomService.findRoomDetailById(roomId);
+        return ResponseEntity.ok(response);
     }
 
+    /**
+     * 특정 채팅방 삭제
+     */
     @DeleteMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<BaseResponse<String>> deleteRoom(@PathVariable("roomId") String roomId, HttpServletRequest request) {
-
         try {
             String token = jwtUtil.resolveToken(request);
             jwtUtil.validateToken(token);
@@ -84,14 +89,12 @@ public class ChatRoomController {
             return ResponseEntity
                     .status(e.getStatus().getCode())
                     .body(new BaseResponse<>(e.getStatus(), e.getMessage(), null));
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(BaseResponseStatus.UNEXPECTED_ERROR.getCode())
-                    .body(new BaseResponse<>(BaseResponseStatus.UNEXPECTED_ERROR, e.getMessage(), null));
         }
     }
 
+    /**
+     * 특정 채팅방의 메세지 조회
+     */
     @GetMapping("/room/{roomId}/messages")
     @ResponseBody
     public ResponseEntity<BaseResponse<List<Object>>> roomMessages(@PathVariable("roomId") String roomId) {

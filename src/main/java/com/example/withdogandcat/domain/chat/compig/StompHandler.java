@@ -18,6 +18,9 @@ public class StompHandler implements ChannelInterceptor {
 
     private final JwtUtil jwtUtil;
 
+    /**
+     * 웹소켓 연결을 요청하면 먼저 실행되서 검증함
+     */
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
@@ -30,7 +33,8 @@ public class StompHandler implements ChannelInterceptor {
                 jwtUtil.validateToken(token);
 
             } catch (BaseException e) {
-                log.error("Invalid JWT: {}", e.getMessage());
+                // TODO 예외처리 필요
+                log.error("토큰 오류: {}", e.getMessage());
             }
         }
         return message;

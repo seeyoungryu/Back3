@@ -22,11 +22,13 @@ public class ChatMessageService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
+
+    // 채팅방 메세지 저장
     @Transactional
     public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, String userEmail) {
         String key = "chatRoom:" + roomId + ":messages";
         Long size = redisTemplate.opsForList().size(key);
-        int maxSize = 20;
+        int maxSize = 20; // 최대 저장할 메시지 수
 
         if (size != null && size >= maxSize) {
             redisTemplate.opsForList().leftPop(key);
@@ -42,6 +44,17 @@ public class ChatMessageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
+    @Transactional
+    public BaseResponse<Void> deleteMessages(String roomId) {
+        String key = "chatRoom:" + roomId + ":messages";
+        redisTemplate.delete(key);
+
+        chatMessageJpaRepository.deleteByRoomId(roomId);
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
+    }
+
+    // 채팅방에 저장된 메세지 가져오기
     public BaseResponse<List<Object>> getMessages(String roomId) {
         String key = "chatRoom:" + roomId + ":messages";
         List<Object> messages = redisTemplate.opsForList().range(key, 0, -1);
@@ -57,13 +70,4 @@ public class ChatMessageService {
                 .build();
     }
 
-    @Transactional
-    public BaseResponse<Void> deleteMessages(String roomId) {
-        String key = "chatRoom:" + roomId + ":messages";
-        redisTemplate.delete(key);
-
-        chatMessageJpaRepository.deleteByRoomId(roomId);
-
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
-    }
 }

@@ -31,6 +31,6 @@ public class ExceptionHandler {
 
         return ResponseEntity
                 .status(errorStatus.getCode())
-                .body(new BaseResponse<>(errorStatus, "로그인 성공", errorMessage));
+                .body(new BaseResponse<>(errorStatus, "성공", errorMessage));
     }
 }

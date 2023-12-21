@@ -25,15 +25,12 @@ public class ChatMessageEntity extends Timestamped {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User sender;
+    private User sender; // 메시지 보낸사람, User 엔티티 참조
 
     private String message;
 
     @Builder
-    private ChatMessageEntity(MessageType type,
-                              String roomId,
-                              User sender,
-                              String message) {
+    private ChatMessageEntity(MessageType type, String roomId, User sender, String message) {
         this.type = type;
         this.roomId = roomId;
         this.sender = sender;
