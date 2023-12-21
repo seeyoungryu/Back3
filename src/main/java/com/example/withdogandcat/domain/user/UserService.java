@@ -27,9 +27,9 @@ public class UserService {
      * 회원가입
      */
     @Transactional
-    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) {
+    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) throws BaseException {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 가입된 이메일 주소입니다.", null);
+            throw new BaseException(BaseResponseStatus.EMAIL_ALREADY_EXISTS);
         }
 
         Email email = emailRepository.findByEmailAndExpiryDateAfterAndEmailVerifiedTrue(
