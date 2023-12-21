@@ -38,4 +38,3 @@ public class RedisSubscriber implements MessageListener {
         }
     }
 }
-

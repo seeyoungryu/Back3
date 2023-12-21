@@ -1,7 +1,9 @@
 package com.example.withdogandcat.domain.email;
 
+import com.example.withdogandcat.domain.email.entity.Email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -21,6 +24,9 @@ public class EmailService {
     private final EmailRepository emailRepository;
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
+    /**
+     * 이메일 인증코드 발송
+     */
     @Async
     public void sendVerificationEmail(String userEmail) {
         emailRepository.findByEmail(userEmail).ifPresent(emailRepository::delete);
@@ -46,7 +52,9 @@ public class EmailService {
         emailRepository.save(email);
     }
 
-
+    /**
+     * 이메일 인증코드 생성
+     */
     private String generateVerificationCode() {
         int length = 6;
         String allowedChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%&";
@@ -59,6 +67,9 @@ public class EmailService {
         return sb.toString();
     }
 
+    /**
+     * 이메일 인증
+     */
     public boolean verifyEmail(String userEmail, String verificationCode) {
         return emailRepository.findByEmail(userEmail)
                 .map(email -> {
@@ -70,5 +81,18 @@ public class EmailService {
                     return false;
                 })
                 .orElse(false);
+    }
+
+    /**
+     * 인증되지 않은 이메일 삭제
+     */
+    @Transactional
+    public void deleteUnverifiedEmails(LocalDateTime now) {
+        List<Email> emails = emailRepository.findAll();
+        for (Email email : emails) {
+            if (email.isEmailVerified() && !email.isRegistrationComplete() && email.getExpiryDate().isBefore(now)) {
+                emailRepository.delete(email);
+            }
+        }
     }
 }

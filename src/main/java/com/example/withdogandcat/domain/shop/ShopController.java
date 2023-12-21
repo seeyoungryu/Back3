@@ -29,6 +29,7 @@ public class ShopController {
 
     private final ShopService shopService;
 
+    // 마이페이지 가게 조회
     @GetMapping("/mypage")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<List<ShopResponseDto>>> getShopsByCurrentUser(Authentication authentication) {
@@ -38,6 +39,7 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
     }
 
+    // 가게 등록
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<ShopResponseDto>> createShop(
@@ -50,18 +52,21 @@ public class ShopController {
                 .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", createdShop));
     }
 
+    // 가게 전체 조회
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<ShopResponseDto>>> getAllShops() {
         List<ShopResponseDto> shops = shopService.getAllShops().getResult();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
     }
 
+    // 가게 상세 조회
     @GetMapping("/{shopId}")
     public ResponseEntity<BaseResponse<ShopDetailResponseDto>> getShopDetails(@PathVariable("shopId") Long shopId) {
         ShopDetailResponseDto shopDetailResponseDto = shopService.getShopDetails(shopId).getResult();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDetailResponseDto));
     }
 
+    // 가게 수정
     @PutMapping("/{shopId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<ShopResponseDto>> updateShop(
@@ -74,6 +79,7 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", updatedShop));
     }
 
+    // 가게 삭제
     @DeleteMapping("/{shopId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<Void>> deleteShop(@PathVariable Long shopId) {
@@ -81,6 +87,7 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
+    // 카테고리별 가게 조회
     @GetMapping("/category/{shopType}")
     public ResponseEntity<BaseResponse<List<ShopResponseDto>>> getShopsByCategory(
             @PathVariable("shopType") ShopType shopType) {

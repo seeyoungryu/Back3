@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 public class CleanupService {
 
     private final EmailRepository emailRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final EmailService emailService;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupUnverifiedEmails() {
@@ -31,6 +30,7 @@ public class CleanupService {
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupIncompleteRegistrations() {
         LocalDateTime now = LocalDateTime.now();
-        userService.deleteUnverifiedEmails(now);
+        emailService.deleteUnverifiedEmails(now);
     }
+
 }

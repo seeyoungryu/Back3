@@ -27,7 +27,7 @@ public class ExceptionHandler {
                 .getAllErrors()
                 .get(0)
                 .getDefaultMessage();
-        BaseResponseStatus errorStatus = BaseResponseStatus.BAD_REQUEST;
+        BaseResponseStatus errorStatus = BaseResponseStatus.BAD_REQUEST; // 예시, 실제 상황에 맞게 조정
 
         return ResponseEntity
                 .status(errorStatus.getCode())

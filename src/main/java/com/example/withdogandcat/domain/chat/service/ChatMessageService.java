@@ -22,7 +22,6 @@ public class ChatMessageService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-
     // 채팅방 메세지 저장
     @Transactional
     public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, String userEmail) {

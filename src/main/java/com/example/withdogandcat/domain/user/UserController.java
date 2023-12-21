@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.email.EmailRequestDto;
+import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
 import com.example.withdogandcat.domain.email.EmailService;
 import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
@@ -20,6 +20,7 @@ public class UserController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final UserDeletionService userDeletionService;
 
     @PostMapping("/email")
     public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestBody EmailRequestDto requestDto) {
@@ -35,9 +36,11 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<BaseResponse<Void>> deleteAccount(@RequestBody DeleteRequestDto request, Authentication authentication) {
+    public ResponseEntity<BaseResponse<Void>> deleteAccount(@RequestBody DeleteRequestDto request,
+                                                            Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        userService.deleteAccount(userDetails.getUser().getUserId(), request.getPassword());
+        userDeletionService.deleteAccount(userDetails.getUser().getUserId(), request.getPassword());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
+
 }

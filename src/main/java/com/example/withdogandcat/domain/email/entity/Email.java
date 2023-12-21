@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.email;
+package com.example.withdogandcat.domain.email.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,12 +20,13 @@ public class Email {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
     private String verificationCode;
     private LocalDateTime expiryDate;
     private boolean registrationComplete;
 
-    @Column(nullable = false)
-    private boolean emailVerified = false;
 
     public Email(String email, String verificationCode) {
         this.email = email;

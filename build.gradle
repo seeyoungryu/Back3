@@ -26,18 +26,12 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.webjars:stomp-websocket:2.3.4'
     implementation 'org.webjars:sockjs-client:1.5.1'
-    implementation 'org.webjars.bower:axios:0.21.1'
-    implementation 'org.webjars.bower:vue:2.6.14'
-    implementation 'org.webjars.bower:bootstrap:5.3.1'
 
     // WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
-    // monitor
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
@@ -49,7 +43,6 @@ dependencies {
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-
     // S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
@@ -59,14 +52,11 @@ dependencies {
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
-    // Security
+    // Security JWT
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
-    // JWT
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
-
 
     //email 인증
     implementation 'org.springframework.boot:spring-boot-starter-mail'

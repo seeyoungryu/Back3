@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.email;
 
+import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,4 +25,5 @@ public class EmailController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 인증 실패했습니다.");
         }
     }
+
 }
