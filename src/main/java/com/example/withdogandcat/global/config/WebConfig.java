@@ -9,12 +9,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     private static final String REACT_LOCAL_HOST = "http://localhost:5173";
     private static final String REACT_LOCAL_HOST2 = "http://localhost:5174";
+    private static final String PRODUCTION_HOST = "http://52.78.115.3:8080";
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowCredentials(true)
-                .allowedOrigins(REACT_LOCAL_HOST, REACT_LOCAL_HOST2)
+                .allowedOrigins(REACT_LOCAL_HOST, REACT_LOCAL_HOST2, PRODUCTION_HOST)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .exposedHeaders("Authorization");
