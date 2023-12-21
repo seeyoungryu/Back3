@@ -19,9 +19,9 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     private final JavaMailSender emailSender;
     private final EmailRepository emailRepository;
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     /**
      * 이메일 인증코드 발송
