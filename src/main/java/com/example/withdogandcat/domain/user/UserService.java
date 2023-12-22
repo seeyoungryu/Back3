@@ -23,6 +23,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailRepository emailRepository;
 
+
     /**
      * 회원가입
      */
@@ -37,6 +38,7 @@ public class UserService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.EMAIL_NOT_FOUND));
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+
         User newUser = User.builder()
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
