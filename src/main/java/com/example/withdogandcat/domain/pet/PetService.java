@@ -82,7 +82,7 @@ public class PetService {
                 petRequestDto.getPetKind(),
                 petRequestDto.getPetGender());
         Pet savedPet = petRepository.save(pet);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(savedPet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
     @Transactional
