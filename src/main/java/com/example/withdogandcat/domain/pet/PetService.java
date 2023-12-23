@@ -76,6 +76,7 @@ public class PetService {
             newImages.forEach(pet::addImage);
         }
 
+
         pet.updatePetDetails(
                 petRequestDto.getPetName(),
                 petRequestDto.getPetInfo(),
