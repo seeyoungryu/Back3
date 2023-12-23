@@ -31,4 +31,5 @@ public class CleanupService {
         LocalDateTime now = LocalDateTime.now();
         emailService.deleteUnverifiedEmails(now);
     }
+
 }
