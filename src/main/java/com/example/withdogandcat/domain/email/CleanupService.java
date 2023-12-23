@@ -16,7 +16,7 @@ public class CleanupService {
     private final EmailService emailService;
 
 
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupUnverifiedEmails() {
         LocalDateTime now = LocalDateTime.now();
         emailRepository.findAll().forEach(email -> {
@@ -26,9 +26,10 @@ public class CleanupService {
         });
     }
 
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 5 0 * * ?")
     public void cleanupIncompleteRegistrations() {
         LocalDateTime now = LocalDateTime.now();
         emailService.deleteUnverifiedEmails(now);
     }
+
 }
