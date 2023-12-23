@@ -87,12 +87,10 @@ public class PetService {
 
     @Transactional
     public BaseResponse<Void> deletePet(Long petId) {
-        Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
+        Pet pet = petRepository.findById(petId).orElseThrow();
 
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
-
 }
