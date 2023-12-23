@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.shop.entity.Shop;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,46 +28,36 @@ public class ImageS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public List<Image> uploadMultipleImages(List<MultipartFile> multipartFiles, Shop shop) throws IOException {
+    public List<Image> uploadMultipleImagesForShop(List<MultipartFile> multipartFiles, Shop shop) throws IOException {
+        return uploadMultipleImages(multipartFiles, shop, null);
+    }
+
+    public List<Image> uploadMultipleImagesForPet(List<MultipartFile> multipartFiles, Pet pet) throws IOException {
+        return uploadMultipleImages(multipartFiles, null, pet);
+    }
+
+    private List<Image> uploadMultipleImages(List<MultipartFile> multipartFiles, Shop shop, Pet pet) throws IOException {
         if (multipartFiles == null || multipartFiles.isEmpty()) {
             return Collections.emptyList();
         }
 
         return multipartFiles.stream()
-                .map(multipartFile -> uploadSingleImage(multipartFile, shop))
+                .map(multipartFile -> uploadSingleImage(multipartFile, shop, pet))
                 .collect(Collectors.toList());
     }
 
-    private Image uploadSingleImage(MultipartFile multipartFile, Shop shop) {
+    private Image uploadSingleImage(MultipartFile multipartFile, Shop shop, Pet pet) {
         String storedImagePath = uploadFileToS3(multipartFile);
         String originName = multipartFile.getOriginalFilename();
+
+        if (shop != null && pet != null) {
+            throw new BaseException(BaseResponseStatus.IMAGE_UPLOAD_FAILED);
+        }
 
         Image image = Image.builder()
                 .originName(originName)
                 .storedImagePath(storedImagePath)
                 .shop(shop)
-                .build();
-
-        return imageRepository.save(image);
-    }
-
-    public List<Image> uploadMultipleImages(List<MultipartFile> multipartFiles, Pet pet) throws IOException {
-        if (multipartFiles == null || multipartFiles.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return multipartFiles.stream()
-                .map(multipartFile -> uploadSingleImage(multipartFile, pet))
-                .collect(Collectors.toList());
-    }
-
-    private Image uploadSingleImage(MultipartFile multipartFile, Pet pet) {
-        String storedImagePath = uploadFileToS3(multipartFile);
-        String originName = multipartFile.getOriginalFilename();
-
-        Image image = Image.builder()
-                .originName(originName)
-                .storedImagePath(storedImagePath)
                 .pet(pet)
                 .build();
 
@@ -91,13 +83,13 @@ public class ImageS3Service {
 
     public void deleteImages(List<Image> images) {
         if (images != null) {
-            images.forEach(this::deleteImage);
-        }
-    }
+            images.stream()
+                    .map(Image::getStoredImagePath)
+                    .map(this::extractFileName)
+                    .forEach(fileName -> amazonS3.deleteObject(bucketName, fileName));
 
-    public void deleteImage(Image image) {
-        amazonS3.deleteObject(bucketName, extractFileName(image.getStoredImagePath()));
-        imageRepository.delete(image);
+            imageRepository.deleteAll(images);
+        }
     }
 
     private String extractFileName(String fileUrl) {

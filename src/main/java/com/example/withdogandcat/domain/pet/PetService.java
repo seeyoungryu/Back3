@@ -38,7 +38,7 @@ public class PetService {
     public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles,
                                                   User user) throws IOException {
         Pet pet = Pet.of(petRequestDto, user);
-        List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
+        List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
         uploadedImages.forEach(pet::addImage);
         petRepository.save(pet);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
@@ -69,10 +69,10 @@ public class PetService {
             throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
         }
 
-        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+        if (imageFiles != null && !imageFiles.isEmpty() && !imageFiles.stream().allMatch(MultipartFile::isEmpty)) {
             imageS3Service.deleteImages(pet.getImages());
             pet.clearImages();
-            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
+            List<Image> newImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
             newImages.forEach(pet::addImage);
         }
 
