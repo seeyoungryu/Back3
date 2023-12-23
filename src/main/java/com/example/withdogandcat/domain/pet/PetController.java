@@ -73,9 +73,10 @@ public class PetController {
 
     @DeleteMapping("/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<BaseResponse<Void>> deletePet(@PathVariable("petId") Long petId) {
+    public ResponseEntity<BaseResponse<Void>> deletePet(@PathVariable Long petId) {
         petService.deletePet(petId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
 }
+
