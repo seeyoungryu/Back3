@@ -76,13 +76,14 @@ public class PetService {
             newImages.forEach(pet::addImage);
         }
 
+
         pet.updatePetDetails(
                 petRequestDto.getPetName(),
                 petRequestDto.getPetInfo(),
                 petRequestDto.getPetKind(),
                 petRequestDto.getPetGender());
         Pet savedPet = petRepository.save(pet);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(savedPet));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
     }
 
     @Transactional
