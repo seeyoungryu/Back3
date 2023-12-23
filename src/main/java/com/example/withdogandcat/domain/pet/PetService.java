@@ -38,7 +38,7 @@ public class PetService {
     public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles,
                                                   User user) throws IOException {
         Pet pet = Pet.of(petRequestDto, user);
-        List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
+        List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
         uploadedImages.forEach(pet::addImage);
         petRepository.save(pet);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet));
@@ -69,10 +69,10 @@ public class PetService {
             throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
         }
 
-        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+        if (imageFiles != null && !imageFiles.isEmpty() && !imageFiles.stream().allMatch(MultipartFile::isEmpty)) {
             imageS3Service.deleteImages(pet.getImages());
             pet.clearImages();
-            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, pet);
+            List<Image> newImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
             newImages.forEach(pet::addImage);
         }
 
@@ -86,13 +86,18 @@ public class PetService {
     }
 
     @Transactional
-    public BaseResponse<Void> deletePet(Long petId) {
+    public BaseResponse<Void> deletePet(Long petId, User currentUser) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
 
+        // 현재 로그인한 사용자가 애완동물을 삭제할 권한이 있는지 확인
+        if (!pet.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
+        }
+
+        // 권한이 확인되면 이미지 삭제 및 애완동물 삭제 진행
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
-
 }

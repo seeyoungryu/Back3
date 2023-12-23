@@ -11,6 +11,7 @@ import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class ShopService {
     @Transactional
     public ShopResponseDto createShop(ShopRequestDto shopRequestDto, List<MultipartFile> imageFiles, User user) throws IOException {
         Shop shop = Shop.of(shopRequestDto, user);
-        List<Image> uploadedImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
+        List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForShop(imageFiles, shop);
         uploadedImages.forEach(shop::addImage);
         shopRepository.save(shop);
         return ShopResponseDto.from(shop);
@@ -69,7 +70,8 @@ public class ShopService {
     // 가게 상세 조회
     @Transactional(readOnly = true)
     public BaseResponse<ShopDetailResponseDto> getShopDetails(Long shopId) {
-        Shop shop = shopRepository.findById(shopId).orElseThrow();
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
         List<ReviewResponseDto> reviews = reviewRepository.findByShopId(shopId).stream()
                 .map(review -> ReviewResponseDto.builder()
@@ -96,16 +98,17 @@ public class ShopService {
     @Transactional
     public BaseResponse<ShopResponseDto> updateShop(Long shopId, ShopRequestDto shopRequestDto,
                                                     List<MultipartFile> imageFiles, User currentUser) throws IOException {
-        Shop shop = shopRepository.findById(shopId).orElseThrow();
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
         if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
             return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "유저를 찾을 수 없습니다.", null);
         }
 
-        if (imageFiles != null && !imageFiles.isEmpty() && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+        if (imageFiles != null && !imageFiles.isEmpty() && !imageFiles.stream().allMatch(MultipartFile::isEmpty)) {
             imageS3Service.deleteImages(shop.getImages());
             shop.clearImages();
-            List<Image> newImages = imageS3Service.uploadMultipleImages(imageFiles, shop);
+            List<Image> newImages = imageS3Service.uploadMultipleImagesForShop(imageFiles, shop);
             newImages.forEach(shop::addImage);
         }
 
@@ -124,7 +127,8 @@ public class ShopService {
     // 가게 삭제
     @Transactional
     public BaseResponse<Void> deleteShop(Long shopId) {
-        Shop shop = shopRepository.findById(shopId).orElseThrow();
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
