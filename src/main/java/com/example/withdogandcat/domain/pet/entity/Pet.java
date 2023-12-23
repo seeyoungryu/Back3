@@ -36,7 +36,7 @@ public class Pet {
     @Column(nullable = false)
     private PetKind petKind;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
     @Builder

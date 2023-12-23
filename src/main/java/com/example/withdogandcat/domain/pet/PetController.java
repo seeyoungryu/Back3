@@ -68,7 +68,7 @@ public class PetController {
             @LoginAccount User currentUser) throws IOException {
 
         PetResponseDto updatedPet = petService.updatePet(petId, petRequestDto, imageFiles, currentUser).getResult();
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", updatedPet));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", updatedPet));
     }
 
 
