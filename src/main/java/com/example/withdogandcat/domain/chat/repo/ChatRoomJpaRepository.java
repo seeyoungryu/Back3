@@ -11,11 +11,9 @@ import java.util.Optional;
 @Repository
 public interface ChatRoomJpaRepository extends JpaRepository<ChatRoomEntity, Long> {
 
-    /**
-     * Mysql 저장을 위한 인터페이스
-     */
     Optional<ChatRoomEntity> findByRoomId(String roomId);
     void deleteByRoomId(String roomId);
-
     List<ChatRoomEntity> findByCreatorId(User creator);
+    long countByCreatorId(User user);
+
 }

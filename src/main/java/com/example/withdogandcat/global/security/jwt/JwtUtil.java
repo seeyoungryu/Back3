@@ -99,14 +99,10 @@ public class JwtUtil {
         return req.getHeader(AUTHORIZATION_HEADER);
     }
 
-    // StompHeaderAccessor 헤더 추출
-    public String extractJwt(final StompHeaderAccessor accessor) {
-        return accessor.getFirstNativeHeader(AUTHORIZATION_HEADER);
-    }
-
-    public void validateToken(String token) throws BaseException {
+    public boolean validateToken(String token) throws BaseException {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid token: {}", e.getMessage());
             throw new BaseException(BaseResponseStatus.INVALID_TOKEN);
