@@ -97,7 +97,7 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173","http://localhost:5174","http://war-war.s3-website.ap-northeast-2.amazonaws.com"));
+                "http://localhost:5173","http://localhost:5174","http://war-war.s3-website.ap-northeast-2.amazonaws.com","https://final-five-pied.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
