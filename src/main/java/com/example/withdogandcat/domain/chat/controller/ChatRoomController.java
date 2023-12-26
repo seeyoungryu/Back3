@@ -99,7 +99,6 @@ public class ChatRoomController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 상세 조회 성공", chatRoomDetail));
     }
 
-
     /**
      * 특정 채팅방 삭제
      */

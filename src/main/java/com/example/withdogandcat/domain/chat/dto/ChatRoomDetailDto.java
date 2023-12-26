@@ -22,6 +22,6 @@ public class ChatRoomDetailDto {
     private List<UserInfoDto> members;
 
     @Setter
-    private long userCount; // 현재 채팅방의 사용자 수
+    private long userCount;
 
 }

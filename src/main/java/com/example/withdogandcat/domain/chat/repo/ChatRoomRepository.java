@@ -102,7 +102,6 @@ public class ChatRoomRepository {
         }
     }
 
-    // 채팅방이 Redis에 존재하는지 확인
     public boolean existsById(String roomId) {
         return opsHashChatRoom.hasKey(CHAT_ROOMS, roomId);
     }

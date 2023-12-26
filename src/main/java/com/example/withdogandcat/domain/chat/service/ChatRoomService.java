@@ -40,7 +40,6 @@ public class ChatRoomService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
 
-        // 사용자가 이미 생성한 채팅방 수 확인
         long existingRoomsCount = chatRoomJpaRepository.countByCreatorId(user);
         if (existingRoomsCount >= MAX_ROOM_COUNT) {
             throw new BaseException(BaseResponseStatus.EXCEED_MAX_CHATROOM_LIMIT);
@@ -72,10 +71,8 @@ public class ChatRoomService {
             throw new BaseException(BaseResponseStatus.AUTHENTICATION_FAILED);
         }
 
-        // Redis에서 채팅방 멤버 목록 삭제
         redisTemplate.delete("chatRoom:" + roomId + ":members");
 
-        // JPA와 Redis에서 채팅방 삭제
         chatMessageService.deleteMessages(roomId);
         chatRoomRepository.deleteRoom(roomId);
         chatRoomJpaRepository.deleteByRoomId(roomId);
@@ -112,7 +109,6 @@ public class ChatRoomService {
         ChatRoomEntity chatRoomEntity = chatRoomJpaRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND));
 
-        // 해당 이메일로 유저 정보 조회
         Set<String> memberEmails = redisTemplate.opsForSet().members("chatRoom:" + roomId + ":members");
         List<String> memberEmailList = new ArrayList<>(memberEmails);
         List<User> members = userRepository.findAllByEmailIn(memberEmailList);
@@ -131,7 +127,6 @@ public class ChatRoomService {
                                 petDtos
                         );
                     } catch (Exception e) {
-                        // 오류 처리: 로그 기록, 기본값 반환 등
                         return new UserInfoDto(user.getUserId(), user.getEmail(), user.getNickname(), null);
                     }
                 })

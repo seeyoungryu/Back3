@@ -39,7 +39,6 @@ public class ChatController {
 
         // 채팅방 존재 여부 확인
         if (!chatRoomRepository.existsById(message.getRoomId())) {
-            // 채팅방이 존재하지 않는 경우 예외 처리
             throw new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND);
         }
 
@@ -47,22 +46,19 @@ public class ChatController {
             chatRoomRepository.enterChatRoom(message.getRoomId());
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
 
-            // 사용자를 채팅방의 멤버로 추가하고, 사용자 수 증가
             redisTemplate.opsForSet().add("chatRoom:" + message.getRoomId() + ":members", userEmail);
             chatRoomRepository.incrementUserCount(message.getRoomId());
 
         } else if (MessageType.QUIT.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
 
-            // 사용자를 채팅방의 멤버에서 제거하고, 사용자 수 감소
             redisTemplate.opsForSet().remove("chatRoom:" + message.getRoomId() + ":members", userEmail);
             chatRoomRepository.decrementUserCount(message.getRoomId());
 
         } else if (MessageType.TALK.equals(message.getType())) {
-            // TALK 메시지 처리 로직
+
         }
 
-        // 모든 메시지 유형에 대해 토픽 발행 및 저장
         redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()), message);
         chatMessageService.saveMessage(message.getRoomId(), message, userEmail);
     }

@@ -15,13 +15,11 @@ import java.util.Optional;
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntity, Long> {
 
     void deleteByRoomId(String roomId);
-    // 특정 채팅방의 메시지 개수를 반환
     long countByRoomId(String roomId);
 
     @Query("SELECT m.id FROM ChatMessageEntity m WHERE m.roomId = :roomId ORDER BY m.createdAt ASC")
     List<Long> findOldestMessageIds(String roomId, Pageable pageable);
 
-    // ID 목록을 사용하여 메시지 삭제
     @Modifying
     @Transactional
     void deleteByIdIn(List<Long> messageIds);
