@@ -69,13 +69,10 @@ public class PetService {
             throw new BaseException(BaseResponseStatus.USER_NOT_FOUND);
         }
 
-        if (imageFiles != null && !imageFiles.isEmpty() && !imageFiles.stream().allMatch(MultipartFile::isEmpty)) {
-            imageS3Service.deleteImages(pet.getImages());
-            pet.clearImages();
-            List<Image> newImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
-            newImages.forEach(pet::addImage);
-        }
-
+        imageS3Service.deleteImages(pet.getImages());
+        pet.clearImages();
+        List<Image> newImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
+        newImages.forEach(pet::addImage);
 
         pet.updatePetDetails(
                 petRequestDto.getPetName(),
