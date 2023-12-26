@@ -3,6 +3,7 @@ package com.example.withdogandcat.domain.chat.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -18,5 +19,9 @@ public class ChatRoomDetailDto {
     private String roomId;
     private String name;
     private CreatorDto creator;
-    private List<CreatorDto> members;
+    private List<UserInfoDto> members;
+
+    @Setter
+    private long userCount; // 현재 채팅방의 사용자 수
+
 }

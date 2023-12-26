@@ -8,6 +8,7 @@ import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,23 +23,35 @@ public class ChatMessageService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-    // 채팅방 메세지 저장
+    // 채팅방 메시지 저장
     @Transactional
     public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, String userEmail) {
-        String key = "chatRoom:" + roomId + ":messages";
-        Long size = redisTemplate.opsForList().size(key);
-        int maxSize = 20; // 최대 저장할 메시지 수
+        String redisKey = "chatRoom:" + roomId + ":messages";
+        Long redisSize = redisTemplate.opsForList().size(redisKey);
+        int redisMaxSize = 20;
 
-        if (size != null && size >= maxSize) {
-            redisTemplate.opsForList().leftPop(key);
+        if (redisSize != null && redisSize >= redisMaxSize) {
+            redisTemplate.opsForList().leftPop(redisKey);
         }
 
-        redisTemplate.opsForList().rightPush(key, chatMessage);
+        redisTemplate.opsForList().rightPush(redisKey, chatMessage);
 
+        // 데이터베이스에 메시지 저장
         User sender = userRepository.findByEmail(userEmail).orElseThrow();
         ChatMessageEntity chatMessageEntity = convertToEntity(chatMessage, sender);
-
         chatMessageJpaRepository.save(chatMessageEntity);
+
+        long dbMaxSize = 50; // 저장할 최대 메시지 수
+        long dbSize = chatMessageJpaRepository.countByRoomId(roomId);
+
+        // 데이터베이스에 저장된 메시지가 최대 수를 초과한 경우, 가장 오래된 메시지 삭제
+        if (dbSize > dbMaxSize) {
+            List<Long> oldestMessageIds = chatMessageJpaRepository.findOldestMessageIds(
+                    roomId,
+                    PageRequest.of(0, (int)(dbSize - dbMaxSize))
+            );
+            chatMessageJpaRepository.deleteByIdIn(oldestMessageIds);
+        }
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }

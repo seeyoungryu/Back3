@@ -4,6 +4,7 @@ import com.example.withdogandcat.domain.chat.dto.ChatRoomDetailDto;
 import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
 import com.example.withdogandcat.domain.chat.dto.ChatRoomListDto;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
+import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.service.ChatMessageService;
 import com.example.withdogandcat.domain.chat.service.ChatRoomService;
 import com.example.withdogandcat.global.common.BaseResponse;
@@ -29,6 +30,29 @@ public class ChatRoomController {
     private final JwtUtil jwtUtil;
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomRepository chatRoomRepository;
+
+    /**
+     * 사용자가 생성한 채팅방 목록 조회(마이페이지)
+     */
+    @GetMapping("/mypage")
+    @ResponseBody
+    public ResponseEntity<BaseResponse<List<ChatRoomListDto>>> myRooms(HttpServletRequest request) {
+
+        try {
+            String token = jwtUtil.resolveToken(request);
+            jwtUtil.validateToken(token);
+            String userEmail = jwtUtil.getUserEmailFromToken(token);
+
+            List<ChatRoomListDto> userRooms = chatRoomService.findRoomsCreatedByUser(userEmail).getResult();
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용자 채팅방 조회 성공", userRooms));
+
+        } catch (BaseException e) {
+            return ResponseEntity
+                    .status(e.getStatus().getCode())
+                    .body(new BaseResponse<>(e.getStatus(), e.getMessage(), null));
+        }
+    }
 
     /**
      * 채팅방 전체 조회
@@ -45,7 +69,8 @@ public class ChatRoomController {
      */
     @PostMapping("/room")
     @ResponseBody
-    public ResponseEntity<BaseResponse<ChatRoomDto>> createRoom(@RequestParam("name") String name, HttpServletRequest request) {
+    public ResponseEntity<BaseResponse<ChatRoomDto>> createRoom(@RequestParam("name") String name,
+                                                                HttpServletRequest request) {
         try {
             String token = jwtUtil.resolveToken(request);
             jwtUtil.validateToken(token);
@@ -67,16 +92,21 @@ public class ChatRoomController {
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<BaseResponse<ChatRoomDetailDto>> roomInfo(@PathVariable("roomId") String roomId) {
-        BaseResponse<ChatRoomDetailDto> response = chatRoomService.findRoomDetailById(roomId);
-        return ResponseEntity.ok(response);
+        ChatRoomDetailDto chatRoomDetail = chatRoomService.findRoomDetailById(roomId).getResult();
+        long userCount = chatRoomRepository.getUserCount(roomId); // 현재 사용자 수 조회
+        chatRoomDetail.setUserCount(userCount); // ChatRoomDetailDto에 사용자 수 설정
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 상세 조회 성공", chatRoomDetail));
     }
+
 
     /**
      * 특정 채팅방 삭제
      */
     @DeleteMapping("/room/{roomId}")
     @ResponseBody
-    public ResponseEntity<BaseResponse<String>> deleteRoom(@PathVariable("roomId") String roomId, HttpServletRequest request) {
+    public ResponseEntity<BaseResponse<String>> deleteRoom(@PathVariable("roomId") String roomId,
+                                                           HttpServletRequest request) {
         try {
             String token = jwtUtil.resolveToken(request);
             jwtUtil.validateToken(token);

@@ -25,4 +25,5 @@ public class ChatRoomDto {
         this.createdAt = createdAt;
         this.creator = creator;
     }
+
 }

@@ -76,6 +76,20 @@ public class ChatRoomRepository {
     }
 
     /**
+     * 채팅방 인원수 증가/감소
+     */
+    public void incrementUserCount(String roomId) {
+        redisTemplate.opsForValue().increment("chatRoom:" + roomId + ":userCount");
+    }
+
+    public void decrementUserCount(String roomId) {
+        Long count = redisTemplate.opsForValue().increment("chatRoom:" + roomId + ":userCount", -1);
+        if (count != null && count < 0) {
+            redisTemplate.opsForValue().set("chatRoom:" + roomId + ":userCount", "0");
+        }
+    }
+
+    /**
      * 채팅방 삭제
      */
     public void deleteRoom(String roomId) {
@@ -86,6 +100,21 @@ public class ChatRoomRepository {
         } catch (Exception e) {
             log.error("레디스에서 채팅방 삭제 오류: {}", roomId, e);
         }
+    }
+
+    // 채팅방이 Redis에 존재하는지 확인
+    public boolean existsById(String roomId) {
+        return opsHashChatRoom.hasKey(CHAT_ROOMS, roomId);
+    }
+
+    public long getUserCount(String roomId) {
+        String key = "chatRoom:" + roomId + ":userCount";
+        Object countObj = redisTemplate.opsForValue().get(key);
+        if (countObj != null) {
+            String countStr = String.valueOf(countObj);
+            return Long.parseLong(countStr);
+        }
+        return 0;
     }
 
     public ChannelTopic getTopic(String roomId) {
