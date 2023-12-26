@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private static final String REACT_LOCAL_HOST = "http://localhost:5173";
     private static final String REACT_LOCAL_HOST2 = "http://localhost:5174";
-    private static final String REACT_LOCAL_HOST3= "https://final-pi-coral.vercel.app";
+    private static final String REACT_LOCAL_HOST3 = "https://final-pi-coral.vercel.app";
 
     private static final String PRODUCTION_HOST = "http://3.37.121.136:8080";
     private static final String PRODUCTION_HOST2 = "http://3.37.121.136:443";
