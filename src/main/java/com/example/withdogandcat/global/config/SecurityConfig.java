@@ -100,7 +100,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173","http://localhost:5174",
                 "http://war-war.s3-website.ap-northeast-2.amazonaws.com",
-                "https://final-five-pied.vercel.app",
+                "https://final-pi-coral.vercel.app",
                 "https://warrwarr.co.kr"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
