@@ -1,6 +1,7 @@
 package com.example.withdogandcat.domain.chat.repo;
 
 import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
+import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,13 +16,10 @@ import java.util.Optional;
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntity, Long> {
 
     void deleteByRoomId(String roomId);
+
     long countByRoomId(String roomId);
 
-    @Query("SELECT m.id FROM ChatMessageEntity m WHERE m.roomId = :roomId ORDER BY m.createdAt ASC")
-    List<Long> findOldestMessageIds(String roomId, Pageable pageable);
-
-    @Modifying
-    @Transactional
-    void deleteByIdIn(List<Long> messageIds);
-
+    @Query("SELECT cm FROM ChatMessageEntity cm WHERE cm.roomId = :roomId ORDER BY cm.createdAt ASC")
+    List<ChatMessageEntity> findOldestMessages(@Param("roomId") String roomId);
 }
+
