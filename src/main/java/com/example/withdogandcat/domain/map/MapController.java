@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/map")
+@RequestMapping("/map")
 public class MapController {
 
     private static final Logger logger = LoggerFactory.getLogger(MapController.class); // 로거 추가
