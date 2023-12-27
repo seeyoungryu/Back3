@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.email;
 
+import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,13 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/verify")
-    public ResponseEntity<BaseResponse<String>> verifyEmail(@RequestBody EmailRequestDto requestDto) {
+    public ResponseEntity<String> verifyEmail(@RequestBody EmailRequestDto requestDto) {
         boolean isVerified = emailService.verifyEmail(requestDto.getEmail(), requestDto.getVerificationCode());
         if (isVerified) {
-            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "이메일이 성공적으로 인증되었습니다.", null));
+            return ResponseEntity.ok("이메일이 성공적으로 인증되었습니다.");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new BaseResponse<>(BaseResponseStatus.INVALID_VERIFICATION_CODE, "이메일 인증 실패했습니다.", null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 인증 실패했습니다.");
         }
     }
+
 }

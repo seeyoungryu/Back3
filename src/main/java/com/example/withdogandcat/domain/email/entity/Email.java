@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.email;
+package com.example.withdogandcat.domain.email.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -36,6 +36,18 @@ public class Email {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
+
+    public boolean isRegistrationComplete() {
+        return registrationComplete;
     }
 
 }

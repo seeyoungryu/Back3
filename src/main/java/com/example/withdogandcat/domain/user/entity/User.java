@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -15,8 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(nullable = false, unique = true)
@@ -38,6 +38,9 @@ public class User {
     @Column(nullable = false)
     private boolean isActive = true;
 
+    private boolean emailVerified;
+    private LocalDateTime expiryDate;
+    private boolean registrationComplete;
 
     @Builder
     private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
@@ -74,4 +77,5 @@ public class User {
     public void delete() {
         this.isActive = false;
     }
+
 }

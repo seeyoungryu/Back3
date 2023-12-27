@@ -20,6 +20,7 @@ public class SignupRequestDto {
             message = "비밀번호는 4~12자리면서 최소 하나의 알파벳과 숫자를 포함해야 합니다")
     private String password;
 
+
     @NotBlank(message = "닉네임은 비어있을 수 없습니다")
     private String nickname;
 

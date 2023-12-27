@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.email.EmailRequestDto;
+import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
 import com.example.withdogandcat.domain.email.EmailService;
 import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;

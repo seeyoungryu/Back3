@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.email;
 
+import com.example.withdogandcat.domain.email.entity.Email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
@@ -19,9 +20,9 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     private final JavaMailSender emailSender;
     private final EmailRepository emailRepository;
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     /**
      * 이메일 인증코드 발송

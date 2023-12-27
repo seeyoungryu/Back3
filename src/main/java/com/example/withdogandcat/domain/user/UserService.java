@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.email.Email;
+import com.example.withdogandcat.domain.email.entity.Email;
 import com.example.withdogandcat.domain.email.EmailRepository;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.domain.user.entity.User;
@@ -23,14 +23,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailRepository emailRepository;
 
-
     /**
      * 회원가입
      */
     @Transactional
-    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) throws BaseException {
+    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            throw new BaseException(BaseResponseStatus.EMAIL_ALREADY_EXISTS);
+            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 가입된 이메일 주소입니다.", null);
         }
 
         Email email = emailRepository.findByEmailAndExpiryDateAfterAndEmailVerifiedTrue(
@@ -38,7 +37,6 @@ public class UserService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.EMAIL_NOT_FOUND));
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
-
         User newUser = User.builder()
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
