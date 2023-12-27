@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.chat.compig;
+package com.example.withdogandcat.domain.chat.config;
 
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ public class WebSocketEventListener {
         if (token != null && jwtUtil.validateToken(token)) {
             String userEmail = jwtUtil.getUserEmailFromToken(token);
 
+            // 세션 ID와 사용자 이메일만 저장
             redisTemplate.opsForValue().set("websocket_session:" + sessionId, userEmail);
         }
     }

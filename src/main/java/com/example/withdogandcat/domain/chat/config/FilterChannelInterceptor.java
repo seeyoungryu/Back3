@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.chat.compig;
+package com.example.withdogandcat.domain.chat.config;
 
 import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
@@ -45,3 +45,4 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
         return message;
     }
 }
+

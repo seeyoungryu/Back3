@@ -93,8 +93,8 @@ public class ChatRoomController {
     @ResponseBody
     public ResponseEntity<BaseResponse<ChatRoomDetailDto>> roomInfo(@PathVariable("roomId") String roomId) {
         ChatRoomDetailDto chatRoomDetail = chatRoomService.findRoomDetailById(roomId).getResult();
-        long userCount = chatRoomRepository.getUserCount(roomId); // 현재 사용자 수 조회
-        chatRoomDetail.setUserCount(userCount); // ChatRoomDetailDto에 사용자 수 설정
+        long userCount = chatRoomRepository.getUserCount(roomId);
+        chatRoomDetail.setUserCount(userCount);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 상세 조회 성공", chatRoomDetail));
     }
@@ -115,8 +115,7 @@ public class ChatRoomController {
             return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 삭제 완료", null));
 
         } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getStatus().getCode())
+            return ResponseEntity.status(e.getStatus().getCode())
                     .body(new BaseResponse<>(e.getStatus(), e.getMessage(), null));
         }
     }

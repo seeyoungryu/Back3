@@ -24,7 +24,7 @@ public class ChatController {
     private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
-    private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
+    private final RedisTemplate<String, String> redisTemplate;
 
 
     /**
@@ -37,7 +37,6 @@ public class ChatController {
         jwtUtil.validateToken(token);
         String userEmail = jwtUtil.getUserEmailFromToken(token);
 
-        // 채팅방 존재 여부 확인
         if (!chatRoomRepository.existsById(message.getRoomId())) {
             throw new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND);
         }
