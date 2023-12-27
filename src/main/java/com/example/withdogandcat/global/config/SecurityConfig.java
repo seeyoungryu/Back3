@@ -82,7 +82,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/map").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/map").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
 
                         .anyRequest().authenticated());
