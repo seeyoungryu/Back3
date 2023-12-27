@@ -30,8 +30,8 @@ public class GeoLocationService {
             JSONObject jsonResponse = new JSONObject(response.body());
             JSONObject location = jsonResponse.getJSONArray("documents").getJSONObject(0);
 
-            double latitude = location.getJSONObject("road_address").getDouble("x");
-            double longitude = location.getJSONObject("road_address").getDouble("y");
+            double latitude = location.getJSONObject("road_address").getDouble("y");
+            double longitude = location.getJSONObject("road_address").getDouble("x");
 
             return new GeoLocation(latitude, longitude, address);
 

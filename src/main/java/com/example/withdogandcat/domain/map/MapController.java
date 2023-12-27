@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,24 +15,24 @@ public class MapController {
     private static final Logger logger = LoggerFactory.getLogger(MapController.class);
 
     private final GeoLocationService geoLocationService;
-    private List<Place> savedResults; // 저장된 검색 결과를 임시로 저장하는 리스트
+    private final MapService mapService;
 
     @Autowired
-    public MapController(GeoLocationService geoLocationService) {
+    public MapController(GeoLocationService geoLocationService, MapService mapService) {
         this.geoLocationService = geoLocationService;
-        this.savedResults = new ArrayList<>();
+        this.mapService = mapService;
     }
 
     @GetMapping("")
     public ResponseEntity<List<Place>> getSavedResults() {
-
-        return ResponseEntity.ok(savedResults);
+        List<Place> places = mapService.getAllPlaces();
+        return ResponseEntity.ok(places);
     }
 
     @PostMapping("")
     public ResponseEntity<?> saveLocation(@RequestBody List<Place> places) {
         try {
-            savedResults.addAll(places);
+            mapService.savePlaces(places);
             logger.info("검색 결과를 저장했습니다.");
             return ResponseEntity.ok().build();
         } catch (Exception e) {
