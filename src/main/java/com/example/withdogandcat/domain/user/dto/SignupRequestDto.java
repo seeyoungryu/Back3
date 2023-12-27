@@ -16,8 +16,8 @@ public class SignupRequestDto {
     private String email;
 
     @NotBlank(message = "비밀번호는 비어있을 수 없습니다")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,15}$",
-            message = "비밀번호는 8~15자리면서 알파벳, 숫자, 특수문자를 포함해야합니다")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]{4,12}$",
+            message = "비밀번호는 4~12자리면서 최소 하나의 알파벳과 숫자를 포함해야 합니다")
     private String password;
 
     @NotBlank(message = "닉네임은 비어있을 수 없습니다")
