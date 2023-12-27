@@ -37,24 +37,19 @@ public class ChatMessageService {
         redisTemplate.opsForList().rightPush(redisKey, chatMessage);
 
         // 데이터베이스에 메시지 저장 전에 오래된 메시지 삭제
-        long dbMaxSize = 200; // 저장할 최대 메시지 수
-        long dbSize = chatMessageJpaRepository.countByRoomId(roomId);
-
-        // 데이터베이스에 저장된 메시지가 최대 수를 초과할 경우
-        if (dbSize >= dbMaxSize) {
-            // 가장 오래된 메시지 ID 목록을 가져옵니다
-            List<Long> oldestMessageIds = chatMessageJpaRepository.findOldestMessageIds(
-                    roomId,
-                    PageRequest.of(0, 1) // 가장 오래된 1개의 메시지 ID
-            );
-            // 해당 메시지 삭제
-            chatMessageJpaRepository.deleteByIdIn(oldestMessageIds);
-        }
+        int maxMessagesPerRoom = 30; // 각 채팅방당 최대 메시지 수
 
         // 데이터베이스에 새 메시지 저장
         User sender = userRepository.findByEmail(userEmail).orElseThrow();
         ChatMessageEntity chatMessageEntity = convertToEntity(chatMessage, sender);
         chatMessageJpaRepository.save(chatMessageEntity);
+
+        // 각 채팅방의 메시지 수가 최대치를 초과할 경우 오래된 메시지 삭제
+        long dbSize = chatMessageJpaRepository.countByRoomId(roomId); // 메시지 개수 가져오기
+        if (dbSize >= maxMessagesPerRoom) {
+            List<ChatMessageEntity> messagesToDeleteList = chatMessageJpaRepository.findOldestMessages(roomId);
+            chatMessageJpaRepository.deleteAll(messagesToDeleteList); // 오래된 메시지 삭제
+        }
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }

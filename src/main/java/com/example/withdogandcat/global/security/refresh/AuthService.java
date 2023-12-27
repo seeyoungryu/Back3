@@ -17,6 +17,7 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public TokenDto reissueToken(String refreshToken) throws BaseException {
+
         jwtUtil.validateToken(refreshToken);
 
         Authentication authentication = jwtUtil.getAuthentication(refreshToken);
