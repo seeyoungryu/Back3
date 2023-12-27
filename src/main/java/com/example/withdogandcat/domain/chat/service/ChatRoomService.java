@@ -45,8 +45,7 @@ public class ChatRoomService {
             throw new BaseException(BaseResponseStatus.EXCEED_MAX_CHATROOM_LIMIT);
         }
 
-        ChatRoomEntity chatRoomEntity = ChatRoomEntity
-                .builder()
+        ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()
                 .name(name)
                 .creatorId(user)
                 .roomId(UUID.randomUUID().toString())
@@ -54,7 +53,8 @@ public class ChatRoomService {
 
         chatRoomEntity = chatRoomJpaRepository.save(chatRoomEntity);
 
-        if (chatRoomRepository.count() < MAX_ROOM_COUNT) {
+        long userActiveRoomsCount = chatRoomRepository.countActiveRoomsByUserId(user.getUserId());
+        if (userActiveRoomsCount < MAX_ROOM_COUNT) {
             chatRoomRepository.createChatRoom(chatRoomEntity.getRoomId(), name, user.getUserId());
         }
 
@@ -71,8 +71,10 @@ public class ChatRoomService {
             throw new BaseException(BaseResponseStatus.AUTHENTICATION_FAILED);
         }
 
+        // Redis에서 채팅방 멤버 목록 삭제
         redisTemplate.delete("chatRoom:" + roomId + ":members");
 
+        // JPA와 Redis에서 채팅방 삭제
         chatMessageService.deleteMessages(roomId);
         chatRoomRepository.deleteRoom(roomId);
         chatRoomJpaRepository.deleteByRoomId(roomId);
@@ -109,6 +111,7 @@ public class ChatRoomService {
         ChatRoomEntity chatRoomEntity = chatRoomJpaRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND));
 
+        // 해당 이메일로 유저 정보 조회
         Set<String> memberEmails = redisTemplate.opsForSet().members("chatRoom:" + roomId + ":members");
         List<String> memberEmailList = new ArrayList<>(memberEmails);
         List<User> members = userRepository.findAllByEmailIn(memberEmailList);
@@ -128,11 +131,10 @@ public class ChatRoomService {
                         );
                     } catch (Exception e) {
                         return new UserInfoDto(user.getUserId(), user.getEmail(), user.getNickname(), null);
-                    }
-                })
-                .collect(Collectors.toList());
+                    }}).collect(Collectors.toList());
 
         long userCount = chatRoomRepository.getUserCount(roomId);
+
         ChatRoomDetailDto chatRoomDetailDto = new ChatRoomDetailDto(
                 chatRoomEntity.getRoomId(),
                 chatRoomEntity.getName(),

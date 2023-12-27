@@ -12,6 +12,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -76,6 +77,28 @@ public class ChatRoomRepository {
     }
 
     /**
+     * 유저당 활성화 하는 채팅방 개수
+     */
+    public long countActiveRoomsByUserId(Long userId) {
+        long activeRoomsCount = 0;
+        try {
+            Set<Object> roomIds = redisTemplate.opsForHash().keys(CHAT_ROOMS);
+            if (roomIds != null) {
+                for (Object roomId : roomIds) {
+                    Boolean isMember = redisTemplate.opsForSet().isMember("chatRoom:" + roomId + ":members", userId.toString());
+                    if (isMember != null && isMember) {
+                        activeRoomsCount++;
+                    }
+                }
+            }
+            return activeRoomsCount;
+        } catch (Exception e) {
+            log.error("유저별 활성화된 채팅방 수 계산 오류: {}", userId, e);
+            return 0;
+        }
+    }
+
+    /**
      * 채팅방 인원수 증가/감소
      */
     public void incrementUserCount(String roomId) {
@@ -102,6 +125,7 @@ public class ChatRoomRepository {
         }
     }
 
+    // 채팅방이 Redis에 존재하는지 확인
     public boolean existsById(String roomId) {
         return opsHashChatRoom.hasKey(CHAT_ROOMS, roomId);
     }
