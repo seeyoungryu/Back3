@@ -1,6 +1,7 @@
 package com.example.withdogandcat.domain.chat.repo;
 
 import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
+import com.example.withdogandcat.domain.chat.entity.MessageType;
 import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
@@ -21,5 +22,8 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntit
 
     @Query("SELECT cm FROM ChatMessageEntity cm WHERE cm.roomId = :roomId ORDER BY cm.createdAt ASC")
     List<ChatMessageEntity> findOldestMessages(@Param("roomId") String roomId);
+
+    // 각 채팅방의 최신 TALK 메시지를 가져오는 메서드
+    ChatMessageEntity findTopByRoomIdAndTypeOrderByIdDesc(String roomId, MessageType type);
 }
 

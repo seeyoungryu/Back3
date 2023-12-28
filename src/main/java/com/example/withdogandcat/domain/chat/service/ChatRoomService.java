@@ -1,6 +1,7 @@
 package com.example.withdogandcat.domain.chat.service;
 
 import com.example.withdogandcat.domain.chat.dto.*;
+import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
@@ -151,10 +152,15 @@ public class ChatRoomService {
      */
     private ChatRoomListDto convertToRoomListDto(ChatRoomEntity chatRoomEntity) {
         CreatorDto creatorDto = createCreatorDto(chatRoomEntity.getCreatorId());
+
+        // 각 채팅방의 최신 TALK 메시지를 조회
+        ChatMessage lastTalkMessage = chatMessageService.getLastTalkMessage(chatRoomEntity.getRoomId());
+
         return new ChatRoomListDto(
                 chatRoomEntity.getRoomId(),
                 chatRoomEntity.getName(),
-                creatorDto
+                creatorDto,
+                lastTalkMessage
         );
     }
 
