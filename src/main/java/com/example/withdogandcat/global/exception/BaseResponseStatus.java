@@ -45,6 +45,7 @@ public enum BaseResponseStatus {
     POST_REGISTRATION_FAILED(false, 4502, "게시물 등록에 실패하였습니다."),
     IMAGE_UPLOAD_FAILED(false, 4503, "이미지 업로드에 실패하였습니다."),
     EXCEED_MAX_CHATROOM_LIMIT(false, 4504, "개설 가능한 채팅방의 수를 넘었습니다."),
+    EXCEED_MAX_TAG_LIMIT(false, 4505, "등록 가능한 해시태그의 수를 넘었습니다."),
 
     // 조회 실패 (4600번대)
     RETRIEVAL_FAILED(false, 4600, "조회에 실패하였습니다."),

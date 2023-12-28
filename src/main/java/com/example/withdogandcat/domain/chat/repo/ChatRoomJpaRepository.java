@@ -17,4 +17,3 @@ public interface ChatRoomJpaRepository extends JpaRepository<ChatRoomEntity, Lon
     long countByCreatorId(User user);
 
 }
-

@@ -12,12 +12,15 @@ public class CreatorDto {
     /**
      * 채팅방 생성자 정보
      */
+    private Long userId;
     private String email;
     private String nickname;
 
     @Builder
-    public CreatorDto(String email, String nickname) {
+    public CreatorDto(Long userId, String email, String nickname) {
+        this.userId = userId;
         this.email = email;
         this.nickname = nickname;
     }
+
 }

@@ -24,7 +24,7 @@ public class ChatMessageEntity extends Timestamped {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User sender; // 메시지 보낸사람, User 엔티티 참조
+    private User sender;
 
     private String message;
 

@@ -1,7 +1,10 @@
 package com.example.withdogandcat.domain.chat.dto;
 
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
+import com.example.withdogandcat.domain.chat.hashtag.TagDto;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,13 +17,16 @@ public class ChatRoomListDto {
     private String name;
     private CreatorDto creator;
     private ChatMessage lastTalkMessage;
+    private List<TagDto> tags;
+
 
     @Builder
-    public ChatRoomListDto(String roomId, String name, CreatorDto creator, ChatMessage lastTalkMessage) {
+    public ChatRoomListDto(String roomId, String name, CreatorDto creator, ChatMessage lastTalkMessage, List<TagDto> tags) {
         this.roomId = roomId;
         this.name = name;
         this.creator = creator;
         this.lastTalkMessage = lastTalkMessage;
+        this.tags = tags;
     }
 
 }

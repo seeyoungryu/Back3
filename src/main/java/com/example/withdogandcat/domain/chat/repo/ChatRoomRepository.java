@@ -118,8 +118,8 @@ public class ChatRoomRepository {
     public void deleteRoom(String roomId) {
         try {
             String key = "CHAT_ROOM";
-            String field = roomId; // 채팅방 ID가 field로 사용됨
-            redisTemplate.opsForHash().delete(key, field); // 특정 field 삭제
+            String field = roomId;
+            redisTemplate.opsForHash().delete(key, field);
         } catch (Exception e) {
             log.error("레디스에서 채팅방 삭제 오류: {}", roomId, e);
         }

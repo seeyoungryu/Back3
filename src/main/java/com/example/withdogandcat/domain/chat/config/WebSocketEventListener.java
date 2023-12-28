@@ -26,7 +26,6 @@ public class WebSocketEventListener {
         if (token != null && jwtUtil.validateToken(token)) {
             String userEmail = jwtUtil.getUserEmailFromToken(token);
 
-            // 세션 ID와 사용자 이메일만 저장
             redisTemplate.opsForValue().set("websocket_session:" + sessionId, userEmail);
         }
     }

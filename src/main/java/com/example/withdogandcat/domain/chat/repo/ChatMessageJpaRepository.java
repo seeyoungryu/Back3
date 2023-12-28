@@ -23,7 +23,5 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntit
     @Query("SELECT cm FROM ChatMessageEntity cm WHERE cm.roomId = :roomId ORDER BY cm.createdAt ASC")
     List<ChatMessageEntity> findOldestMessages(@Param("roomId") String roomId);
 
-    // 각 채팅방의 최신 TALK 메시지를 가져오는 메서드
     ChatMessageEntity findTopByRoomIdAndTypeOrderByIdDesc(String roomId, MessageType type);
 }
-
