@@ -1,11 +1,15 @@
 package com.example.withdogandcat.domain.map;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.withdogandcat.domain.shop.entity.Shop;
+import com.example.withdogandcat.domain.user.entity.User;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class MapShop {
 
     @Id
@@ -16,41 +20,21 @@ public class MapShop {
     private double latitude;
     private double longitude;
 
-    public MapShop(String address, double latitude, double longitude) {
+    @OneToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
+
+    @Builder
+    public MapShop(String address, double latitude, double longitude, Shop shop) {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.shop = shop;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
+    public void updateLocation(String address, double latitude, double longitude) {
         this.address = address;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
         this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }

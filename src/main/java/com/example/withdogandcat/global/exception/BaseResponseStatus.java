@@ -53,6 +53,7 @@ public enum BaseResponseStatus {
     CHATROOM_NOT_FOUND(false, 4603, "채팅방을 찾을 수 없습니다."),
     PET_NOT_FOUND(false,4604,"반려동물을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(false, 4607, "후기를 찾을 수 없습니다."),
+    MAP_LOCATION_NOT_FOUND(false, 4605, "지도 위치를 찾을 수 없습니다."),
 
     /**
      * 서버 오류 (5000번대)

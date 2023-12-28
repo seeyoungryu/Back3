@@ -49,7 +49,7 @@ public class GeoLocationService {
         public GeoLocation(double latitude, double longitude, String address) {
             this.latitude = latitude;
             this.longitude = longitude;
-            this.address = address; // 주소 초기화
+            this.address = address;
         }
 
         public double getLatitude() {
