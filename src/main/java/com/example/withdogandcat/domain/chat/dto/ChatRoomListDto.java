@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.chat.dto;
 
+import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import lombok.*;
 
 @Getter
@@ -12,12 +13,14 @@ public class ChatRoomListDto {
     private String roomId;
     private String name;
     private CreatorDto creator;
+    private ChatMessage lastTalkMessage;
 
     @Builder
-    public ChatRoomListDto(String roomId, String name, CreatorDto creator) {
+    public ChatRoomListDto(String roomId, String name, CreatorDto creator, ChatMessage lastTalkMessage) {
         this.roomId = roomId;
         this.name = name;
         this.creator = creator;
+        this.lastTalkMessage = lastTalkMessage;
     }
 
 }

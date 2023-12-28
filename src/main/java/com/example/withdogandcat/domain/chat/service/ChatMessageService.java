@@ -2,6 +2,7 @@ package com.example.withdogandcat.domain.chat.service;
 
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
+import com.example.withdogandcat.domain.chat.entity.MessageType;
 import com.example.withdogandcat.domain.chat.repo.ChatMessageJpaRepository;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.User;
@@ -45,10 +46,10 @@ public class ChatMessageService {
         chatMessageJpaRepository.save(chatMessageEntity);
 
         // 각 채팅방의 메시지 수가 최대치를 초과할 경우 오래된 메시지 삭제
-        long dbSize = chatMessageJpaRepository.countByRoomId(roomId); // 메시지 개수 가져오기
+        long dbSize = chatMessageJpaRepository.countByRoomId(roomId);
         if (dbSize >= maxMessagesPerRoom) {
             List<ChatMessageEntity> messagesToDeleteList = chatMessageJpaRepository.findOldestMessages(roomId);
-            chatMessageJpaRepository.deleteAll(messagesToDeleteList); // 오래된 메시지 삭제
+            chatMessageJpaRepository.deleteAll(messagesToDeleteList);
         }
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
@@ -78,6 +79,30 @@ public class ChatMessageService {
                 .sender(sender)
                 .message(chatMessage.getMessage())
                 .build();
+    }
+
+    // 각 채팅방의 최신 TALK 메시지를 가져오는 메서드
+    public ChatMessage getLastTalkMessage(String roomId) {
+        ChatMessageEntity messageEntity = chatMessageJpaRepository.findTopByRoomIdAndTypeOrderByIdDesc(roomId, MessageType.TALK);
+        if (messageEntity == null) {
+            return null;
+        }
+        return convertEntityToDto(messageEntity);
+    }
+
+    // ChatMessageEntity를 ChatMessage로 변환하는 메서드
+    private ChatMessage convertEntityToDto(ChatMessageEntity entity) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setType(entity.getType());
+        chatMessage.setRoomId(entity.getRoomId());
+        chatMessage.setMessage(entity.getMessage());
+
+        // User 엔티티의 특정 속성(예: email 또는 nickname)을 sender로 설정
+        if (entity.getSender() != null) {
+            chatMessage.setSender(entity.getSender().getEmail());
+        }
+
+        return chatMessage;
     }
 
 }
