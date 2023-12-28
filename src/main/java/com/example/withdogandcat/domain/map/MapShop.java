@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Place {
+public class MapShop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +16,7 @@ public class Place {
     private double latitude;
     private double longitude;
 
-    public Place() {
-    }
-
-    public Place(String address, double latitude, double longitude) {
+    public MapShop(String address, double latitude, double longitude) {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
