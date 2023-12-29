@@ -34,6 +34,11 @@ public class ReviewService {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
+        boolean alreadyReviewed = reviewRepository.existsByUserAndShop(user, shop);
+        if (alreadyReviewed) {
+            throw new BaseException(BaseResponseStatus.ALREADY_REVIEWED);
+        }
+
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
