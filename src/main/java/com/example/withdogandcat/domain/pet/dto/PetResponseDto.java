@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.pet.dto;
 
-
+import com.example.withdogandcat.domain.Image.Image;
 import com.example.withdogandcat.domain.pet.entity.Pet;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.amazonaws.services.ec2.model.ResourceType.Image;
 
 @Getter
 public class PetResponseDto {

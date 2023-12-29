@@ -1,5 +1,7 @@
 package com.example.withdogandcat.global.security.impl;
 
+import com.example.withdogandcat.domain.user.UserRepository;
+import com.example.withdogandcat.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

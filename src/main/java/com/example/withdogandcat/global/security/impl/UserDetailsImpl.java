@@ -1,5 +1,6 @@
 package com.example.withdogandcat.global.security.impl;
 
+import com.example.withdogandcat.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

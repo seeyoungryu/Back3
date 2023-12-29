@@ -1,5 +1,6 @@
 package com.example.withdogandcat.global.exception;
 
+import com.example.withdogandcat.global.common.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

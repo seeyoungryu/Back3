@@ -1,5 +1,9 @@
 package com.example.withdogandcat.global.security.jwt;
 
+import com.example.withdogandcat.domain.user.entity.UserRole;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
