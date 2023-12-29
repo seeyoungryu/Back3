@@ -1,5 +1,14 @@
 package com.example.withdogandcat.domain.pet;
 
+import com.example.withdogandcat.domain.Image.Image;
+import com.example.withdogandcat.domain.Image.ImageS3Service;
+import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
+import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
+import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

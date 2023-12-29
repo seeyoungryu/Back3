@@ -1,5 +1,15 @@
 package com.example.withdogandcat.domain.chat.controller;
 
+import com.example.withdogandcat.domain.chat.dto.ChatRoomDetailDto;
+import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
+import com.example.withdogandcat.domain.chat.dto.ChatRoomListDto;
+import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
+import com.example.withdogandcat.domain.chat.service.ChatMessageService;
+import com.example.withdogandcat.domain.chat.service.ChatRoomService;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.exception.BaseException;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.chat.redis;
 
+import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

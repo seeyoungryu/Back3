@@ -1,9 +1,12 @@
 package com.example.withdogandcat.domain.chat.repo;
 
 
+import com.example.withdogandcat.domain.chat.entity.ChatRoom;
+import com.example.withdogandcat.domain.chat.redis.RedisSubscriber;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;

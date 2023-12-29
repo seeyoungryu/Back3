@@ -1,5 +1,13 @@
 package com.example.withdogandcat.domain.shop;
 
+import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
+import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
+import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
+import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.withdogandcat.global.common.LoginAccount;
+import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

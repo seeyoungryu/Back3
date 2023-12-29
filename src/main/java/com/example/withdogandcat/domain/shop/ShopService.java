@@ -1,5 +1,8 @@
 package com.example.withdogandcat.domain.shop;
 
+import com.example.withdogandcat.domain.Image.ImageS3Service;
+import com.example.withdogandcat.domain.review.ReviewRepository;
+import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
+import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

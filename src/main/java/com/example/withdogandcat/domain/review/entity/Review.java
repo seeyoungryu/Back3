@@ -1,5 +1,9 @@
 package com.example.withdogandcat.domain.review.entity;
 
+import com.example.withdogandcat.domain.like.Like;
+import com.example.withdogandcat.domain.shop.entity.Shop;
+import com.example.withdogandcat.domain.user.entity.User;
+import com.example.withdogandcat.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

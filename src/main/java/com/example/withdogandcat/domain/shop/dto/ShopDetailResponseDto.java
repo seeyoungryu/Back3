@@ -1,7 +1,10 @@
 package com.example.withdogandcat.domain.shop.dto;
 
+import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 
 @Getter

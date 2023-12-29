@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
+import com.example.withdogandcat.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.*;
 

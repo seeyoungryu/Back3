@@ -1,5 +1,8 @@
 package com.example.withdogandcat.domain.shop.entity;
 
+import com.example.withdogandcat.domain.Image.Image;
+import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
+import com.example.withdogandcat.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
