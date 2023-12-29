@@ -2,8 +2,11 @@ package com.example.withdogandcat.domain.chat.service;
 
 import com.example.withdogandcat.domain.chat.dto.*;
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
+import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
+import com.example.withdogandcat.domain.chat.entity.MessageType;
 import com.example.withdogandcat.domain.chat.hashtag.*;
+import com.example.withdogandcat.domain.chat.repo.ChatMessageJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
@@ -38,6 +41,7 @@ public class ChatRoomService {
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
+    private final ChatMessageJpaRepository chatMessageJpaRepository;
 
     private final int MAX_ROOM_COUNT = 2;
 
@@ -69,7 +73,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public BaseResponse<Void> deleteChatRoom(String roomId, String userEmail) {
+    public void deleteChatRoom(String roomId, String userEmail) {
         ChatRoomEntity chatRoomEntity = chatRoomJpaRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND));
 
@@ -77,6 +81,7 @@ public class ChatRoomService {
             throw new BaseException(BaseResponseStatus.AUTHENTICATION_FAILED);
         }
 
+        // 해시태그 삭제 로직 추가
         List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(chatRoomEntity);
         for (ChatRoomTagMap tagMap : tagMaps) {
             Tag tag = tagMap.getTag();
@@ -88,13 +93,17 @@ public class ChatRoomService {
             }
         }
 
-        redisTemplate.delete("chatRoom:" + roomId + ":members");
-        chatMessageService.deleteMessages(roomId);
+        // 메시지 삭제 로직 추가
+        chatMessageJpaRepository.deleteByRoomId(roomId);
+        chatMessageJpaRepository.deleteByRoomIdAndType(roomId, MessageType.DELETED_USER_MESSAGE);
+
+        // 채팅방 삭제
         chatRoomRepository.deleteRoom(roomId);
         chatRoomJpaRepository.deleteByRoomId(roomId);
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 삭제 성공", null);
+        redisTemplate.delete("chatRoom:" + roomId + ":members");
     }
+
 
     /**
      * 사용자가 생성한 채팅방 목록 조회

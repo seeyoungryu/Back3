@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntity, Long> {
 
     void deleteByRoomId(String roomId);
+    void deleteByRoomIdAndType(String roomId, MessageType type);
+
 
     long countByRoomId(String roomId);
 
@@ -26,4 +28,5 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntit
     ChatMessageEntity findTopByRoomIdAndTypeOrderByIdDesc(String roomId, MessageType type);
 
     List<ChatMessageEntity> findBySender_UserId(Long userId);
+
 }
