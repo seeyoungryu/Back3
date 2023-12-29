@@ -14,4 +14,5 @@ public interface ChatRoomTagMapRepository extends JpaRepository<ChatRoomTagMap, 
     Optional<ChatRoomTagMap> findByChatRoomAndTag(ChatRoomEntity chatRoom, Tag tag);
     List<ChatRoomTagMap> findByTag(Tag tag);
     long countByChatRoom(ChatRoomEntity chatRoom);
+    long countByTag(Tag tag);
 }

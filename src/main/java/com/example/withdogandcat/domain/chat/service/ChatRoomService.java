@@ -3,8 +3,7 @@ package com.example.withdogandcat.domain.chat.service;
 import com.example.withdogandcat.domain.chat.dto.*;
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.hashtag.TagDto;
-import com.example.withdogandcat.domain.chat.hashtag.TagService;
+import com.example.withdogandcat.domain.chat.hashtag.*;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
@@ -32,11 +31,13 @@ public class ChatRoomService {
 
     private final PetService petService;
     private final TagService tagService;
+    private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
     private final int MAX_ROOM_COUNT = 2;
 
@@ -74,6 +75,17 @@ public class ChatRoomService {
 
         if (!chatRoomEntity.getCreatorId().getEmail().equals(userEmail)) {
             throw new BaseException(BaseResponseStatus.AUTHENTICATION_FAILED);
+        }
+
+        List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(chatRoomEntity);
+        for (ChatRoomTagMap tagMap : tagMaps) {
+            Tag tag = tagMap.getTag();
+            chatRoomTagMapRepository.delete(tagMap);
+
+            long count = chatRoomTagMapRepository.countByTag(tag);
+            if (count == 0) {
+                tagRepository.delete(tag);
+            }
         }
 
         redisTemplate.delete("chatRoom:" + roomId + ":members");
