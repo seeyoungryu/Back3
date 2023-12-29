@@ -8,6 +8,3 @@ import java.util.Optional;
 public interface MapShopRepository extends JpaRepository<MapShop, Long> {
     Optional<MapShop> findByShop(Shop shop);
 }
-
-
-
