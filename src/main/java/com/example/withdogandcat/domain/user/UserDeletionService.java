@@ -88,7 +88,9 @@ public class UserDeletionService {
         shopRepository.deleteByUser(user);
 
         redisTemplate.delete(user.getEmail());
-        userRepository.delete(user);
+
+        user.delete();
+        userRepository.save(user);
     }
 
 }
