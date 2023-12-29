@@ -5,6 +5,7 @@ import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ public class ReviewController {
 
     @PostMapping("")
     public ResponseEntity<BaseResponse<ReviewResponseDto>> createReview(@PathVariable("shopId") Long shopId,
-                                                                        @RequestBody ReviewRequestDto requestDto,
+                                                                        @Valid @RequestBody ReviewRequestDto requestDto,
                                                                         Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         ReviewResponseDto responseDto = reviewService.createReview(userId, shopId, requestDto).getResult();

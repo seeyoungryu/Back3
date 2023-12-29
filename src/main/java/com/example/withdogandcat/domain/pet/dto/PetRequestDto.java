@@ -2,6 +2,7 @@ package com.example.withdogandcat.domain.pet.dto;
 
 import com.example.withdogandcat.domain.pet.entity.PetGender;
 import com.example.withdogandcat.domain.pet.entity.PetKind;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PetRequestDto {
+
+    @NotBlank(message = "반려동물 이름을 넣어주세요")
     private String petName;
     private PetGender petGender;
     private PetKind petKind;

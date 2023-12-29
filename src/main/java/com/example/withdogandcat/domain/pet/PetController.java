@@ -7,6 +7,7 @@ import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.common.LoginAccount;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class PetController {
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<PetResponseDto>> createPet(
-            @ModelAttribute PetRequestDto petRequestDto,
+            @Valid @ModelAttribute PetRequestDto petRequestDto,
             @RequestPart("imageUrl") List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
@@ -63,7 +64,7 @@ public class PetController {
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<PetResponseDto>> updatePet(
             @PathVariable("petId") Long petId,
-            @ModelAttribute PetRequestDto petRequestDto,
+            @Valid @ModelAttribute PetRequestDto petRequestDto,
             @RequestParam(value = "imageUrl", required = false) List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 

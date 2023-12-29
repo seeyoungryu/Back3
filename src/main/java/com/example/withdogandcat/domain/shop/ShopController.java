@@ -9,6 +9,7 @@ import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.common.LoginAccount;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class ShopController {
     @PostMapping("")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<ShopResponseDto>> createShop(
-            @ModelAttribute ShopRequestDto shopRequestDto,
+            @Valid @ModelAttribute ShopRequestDto shopRequestDto,
             @RequestPart("imageUrl") List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
@@ -71,7 +72,7 @@ public class ShopController {
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<ShopResponseDto>> updateShop(
             @PathVariable("shopId") Long shopId,
-            @ModelAttribute ShopRequestDto shopRequestDto,
+            @Valid @ModelAttribute ShopRequestDto shopRequestDto,
             @RequestParam(value = "imageUrl", required = false) List<MultipartFile> imageFiles,
             @LoginAccount User currentUser) throws IOException {
 
