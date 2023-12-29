@@ -1,9 +1,9 @@
 package com.example.withdogandcat.global.security.jwt;
 
-import com.example.withdogandcat.domain.user.entity.UserRole;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
-import com.example.withdogandcat.global.security.impl.UserDetailsServiceImpl;
+import com.example.mailtest.domain.user.entity.UserRole;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
+import com.example.mailtest.global.security.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;

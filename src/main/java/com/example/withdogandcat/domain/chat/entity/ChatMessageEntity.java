@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.chat.entity;
 
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.Timestamped;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,15 +22,11 @@ public class ChatMessageEntity extends Timestamped {
 
     private String roomId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User sender;
 
     private String message;
-
-    public void setType(MessageType type) {
-        this.type = type;
-    }
 
     @Builder
     private ChatMessageEntity(MessageType type, String roomId, User sender, String message) {

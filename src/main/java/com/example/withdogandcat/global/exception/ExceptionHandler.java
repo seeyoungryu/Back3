@@ -1,6 +1,6 @@
 package com.example.withdogandcat.global.exception;
 
-import com.example.withdogandcat.global.common.BaseResponse;
+import com.example.mailtest.global.common.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,7 +27,7 @@ public class ExceptionHandler {
                 .getAllErrors()
                 .get(0)
                 .getDefaultMessage();
-        BaseResponseStatus errorStatus = BaseResponseStatus.BAD_REQUEST; // 예시, 실제 상황에 맞게 조정
+        BaseResponseStatus errorStatus = BaseResponseStatus.BAD_REQUEST;
 
         return ResponseEntity
                 .status(errorStatus.getCode())

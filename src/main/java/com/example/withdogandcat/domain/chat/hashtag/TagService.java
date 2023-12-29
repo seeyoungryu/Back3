@@ -1,11 +1,11 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
-import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
-import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
-import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.chat.dto.ChatRoomDto;
+import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
+import com.example.mailtest.domain.chat.repo.ChatRoomJpaRepository;
+import com.example.mailtest.domain.chat.util.ChatRoomMapper;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +57,7 @@ public class TagService {
     // 새 해시태그 생성 (독립적 태그)
     @Transactional
     public TagDto createTag(TagDto tagDto) {
+        // 해시태그 중복 확인
         tagRepository.findByName(tagDto.getName()).ifPresent(t -> {
             throw new IllegalArgumentException("이미 존재하는 해시태그");
         });
@@ -83,6 +84,7 @@ public class TagService {
 
         chatRoomTagMapRepository.delete(chatRoomTagMap);
     }
+
 
     // 모든 태그 조회
     @Transactional(readOnly = true)

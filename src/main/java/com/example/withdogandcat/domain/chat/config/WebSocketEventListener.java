@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.chat.config;
 
-import com.example.withdogandcat.global.security.jwt.JwtUtil;
+import com.example.mailtest.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;

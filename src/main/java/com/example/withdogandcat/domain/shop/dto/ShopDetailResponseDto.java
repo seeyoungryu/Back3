@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.shop.dto;
 
-import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
+import com.example.mailtest.domain.review.dto.ReviewResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,14 +1,14 @@
 package com.example.withdogandcat.domain.shop;
 
-import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
-import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
-import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
-import com.example.withdogandcat.domain.shop.entity.ShopType;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.common.LoginAccount;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
-import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import com.example.mailtest.domain.shop.dto.ShopDetailResponseDto;
+import com.example.mailtest.domain.shop.dto.ShopRequestDto;
+import com.example.mailtest.domain.shop.dto.ShopResponseDto;
+import com.example.mailtest.domain.shop.entity.ShopType;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.common.LoginAccount;
+import com.example.mailtest.global.exception.BaseResponseStatus;
+import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

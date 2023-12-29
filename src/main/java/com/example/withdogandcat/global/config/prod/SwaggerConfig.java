@@ -16,7 +16,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import java.util.Collections;
 
@@ -104,6 +103,14 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("Chat-CRUD")
                 .pathsToMatch("/chat/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi tagApi() {
+        return GroupedOpenApi.builder()
+                .group("Tag-CRUD")
+                .pathsToMatch("/api/tags/**")
                 .build();
     }
 }

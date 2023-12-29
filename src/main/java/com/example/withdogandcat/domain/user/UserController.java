@@ -1,12 +1,12 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
-import com.example.withdogandcat.domain.email.EmailService;
-import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
-import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
-import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import com.example.mailtest.domain.email.EmailService;
+import com.example.mailtest.domain.email.dto.EmailRequestDto;
+import com.example.mailtest.domain.user.dto.DeleteRequestDto;
+import com.example.mailtest.domain.user.dto.SignupRequestDto;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseResponseStatus;
+import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class UserController {
     private final UserDeletionService userDeletionService;
 
     @PostMapping("/email")
-    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@RequestBody EmailRequestDto requestDto) {
+    public ResponseEntity<BaseResponse<Void>> requestEmailVerification(@Validated @RequestBody EmailRequestDto requestDto) {
         emailService.sendVerificationEmail(requestDto.getEmail());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "인증 성공", null));
     }

@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.chat.repo;
 
-import com.example.withdogandcat.domain.chat.entity.ChatRoom;
-import com.example.withdogandcat.domain.chat.redis.RedisSubscriber;
+import com.example.mailtest.domain.chat.entity.ChatRoom;
+import com.example.mailtest.domain.chat.redis.RedisSubscriber;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,8 +118,8 @@ public class ChatRoomRepository {
     public void deleteRoom(String roomId) {
         try {
             String key = "CHAT_ROOM";
-            String field = roomId;
-            redisTemplate.opsForHash().delete(key, field);
+            String field = roomId; // 채팅방 ID가 field로 사용됨
+            redisTemplate.opsForHash().delete(key, field); // 특정 field 삭제
         } catch (Exception e) {
             log.error("레디스에서 채팅방 삭제 오류: {}", roomId, e);
         }

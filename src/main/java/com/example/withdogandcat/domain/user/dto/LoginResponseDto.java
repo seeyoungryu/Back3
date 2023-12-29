@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.user.dto;
 
-import com.example.withdogandcat.domain.user.entity.User;
+import com.example.mailtest.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

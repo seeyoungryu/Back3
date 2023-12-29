@@ -1,9 +1,9 @@
 package com.example.withdogandcat.domain.review.entity;
 
-import com.example.withdogandcat.domain.like.Like;
-import com.example.withdogandcat.domain.shop.entity.Shop;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.Timestamped;
+import com.example.mailtest.domain.like.Like;
+import com.example.mailtest.domain.shop.entity.Shop;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class Review extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 

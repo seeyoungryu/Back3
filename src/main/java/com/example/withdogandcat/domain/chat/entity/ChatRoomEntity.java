@@ -1,12 +1,12 @@
 package com.example.withdogandcat.domain.chat.entity;
 
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.Timestamped;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.Timestamped;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
@@ -24,11 +24,8 @@ public class ChatRoomEntity extends Timestamped {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id")  // 이 부분을 확인하고 수정해야 합니다.
-    private User creatorId;  // User 엔티티와의 관계 설정을 올바르게 수정합니다.
-
-    @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)  // 채팅방과 채팅 메시지 간의 관계 설정
-    private List<ChatMessageEntity> messages = new ArrayList<>();
+    @JoinColumn(name = "creator_id")
+    private User creatorId;
 
     @Builder
     private ChatRoomEntity(String roomId, String name, User creatorId) {

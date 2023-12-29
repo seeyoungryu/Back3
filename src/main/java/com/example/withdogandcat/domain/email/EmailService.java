@@ -1,6 +1,9 @@
 package com.example.withdogandcat.domain.email;
 
-import com.example.withdogandcat.domain.email.entity.Email;
+import com.example.mailtest.domain.email.entity.Email;
+import com.example.mailtest.domain.user.UserRepository;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
@@ -22,6 +25,7 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
     private final EmailRepository emailRepository;
+    private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     /**
@@ -29,6 +33,11 @@ public class EmailService {
      */
     @Async
     public void sendVerificationEmail(String userEmail) {
+        if (userRepository.existsByEmail(userEmail)) {
+            logger.error("Email already registered: {}", userEmail);
+            throw new BaseException(BaseResponseStatus.EMAIL_ALREADY_EXISTS);
+        }
+
         emailRepository.findByEmail(userEmail).ifPresent(emailRepository::delete);
 
         String verificationCode = generateVerificationCode();

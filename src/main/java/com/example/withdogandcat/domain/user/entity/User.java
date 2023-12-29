@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.user.entity;
 
-import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
+import com.example.mailtest.domain.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,7 +37,6 @@ public class User {
 
     @Column(nullable = false)
     private boolean isActive = true;
-    private boolean isDeleted = false;
 
     private boolean emailVerified;
     private LocalDateTime expiryDate;
@@ -70,14 +69,13 @@ public class User {
         return Objects.equals(userId, user.userId);
     }
 
-    public void delete() {
-        this.isActive = false;
-        this.isDeleted = true;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(userId);
+    }
+
+    public void delete() {
+        this.isActive = false;
     }
 
 }

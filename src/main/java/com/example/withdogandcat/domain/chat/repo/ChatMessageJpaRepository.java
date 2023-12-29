@@ -1,23 +1,23 @@
 package com.example.withdogandcat.domain.chat.repo;
 
-import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
-import com.example.withdogandcat.domain.chat.entity.MessageType;
-import io.lettuce.core.dynamic.annotation.Param;
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
+import com.example.mailtest.domain.chat.entity.ChatMessageEntity;
+import com.example.mailtest.domain.chat.entity.MessageType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntity, Long> {
 
     void deleteByRoomId(String roomId);
-    void deleteByRoomIdAndType(String roomId, MessageType type);
+
+    @Modifying
+    @Query("DELETE FROM ChatMessageEntity c WHERE c.sender.id = :userId")
+    void deleteByUserId(@Param("userId") Long userId);
 
 
     long countByRoomId(String roomId);
@@ -26,7 +26,4 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntit
     List<ChatMessageEntity> findOldestMessages(@Param("roomId") String roomId);
 
     ChatMessageEntity findTopByRoomIdAndTypeOrderByIdDesc(String roomId, MessageType type);
-
-    List<ChatMessageEntity> findBySender_UserId(Long userId);
-
 }

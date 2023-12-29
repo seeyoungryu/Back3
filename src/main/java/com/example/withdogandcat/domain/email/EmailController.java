@@ -1,8 +1,6 @@
 package com.example.withdogandcat.domain.email;
 
-import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.email.dto.EmailRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

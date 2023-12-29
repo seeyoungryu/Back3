@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.chat.redis;
 
-import com.example.withdogandcat.domain.chat.entity.ChatMessage;
+import com.example.mailtest.domain.chat.entity.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +26,11 @@ public class RedisSubscriber implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
 
         try {
+            // redis에서 발행된 데이터를 받아 deserialize
             String publishMessage = redisTemplate.getStringSerializer().deserialize(message.getBody());
+            // ChatMessage 객채로 맵핑
             ChatMessage roomMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
-
+            // Websocket 구독자에게 채팅 메시지 Send
             messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), roomMessage);
 
         } catch (Exception e) {

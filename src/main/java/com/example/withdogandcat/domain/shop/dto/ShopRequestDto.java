@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.shop.dto;
 
-import com.example.withdogandcat.domain.shop.entity.ShopType;
+import com.example.mailtest.domain.shop.entity.ShopType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;

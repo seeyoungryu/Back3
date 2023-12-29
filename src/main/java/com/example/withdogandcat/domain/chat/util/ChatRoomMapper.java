@@ -1,13 +1,12 @@
 package com.example.withdogandcat.domain.chat.util;
 
-
-import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
-import com.example.withdogandcat.domain.chat.dto.ChatRoomListDto;
-import com.example.withdogandcat.domain.chat.dto.CreatorDto;
-import com.example.withdogandcat.domain.chat.entity.ChatMessage;
-import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.hashtag.TagDto;
-import com.example.withdogandcat.domain.user.entity.User;
+import com.example.mailtest.domain.chat.dto.ChatRoomDto;
+import com.example.mailtest.domain.chat.dto.ChatRoomListDto;
+import com.example.mailtest.domain.chat.dto.CreatorDto;
+import com.example.mailtest.domain.chat.entity.ChatMessage;
+import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
+import com.example.mailtest.domain.chat.hashtag.TagDto;
+import com.example.mailtest.domain.user.entity.User;
 
 import java.util.List;
 

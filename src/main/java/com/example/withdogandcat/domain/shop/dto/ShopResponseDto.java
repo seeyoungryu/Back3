@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.shop.dto;
 
-import com.example.withdogandcat.domain.shop.entity.Shop;
-import com.example.withdogandcat.domain.shop.entity.ShopType;
+import com.example.mailtest.domain.shop.entity.Shop;
+import com.example.mailtest.domain.shop.entity.ShopType;
 import lombok.Builder;
 import lombok.Getter;
 

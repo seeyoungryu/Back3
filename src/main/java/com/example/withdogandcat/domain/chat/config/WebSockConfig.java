@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.chat.config;
 
-import com.example.withdogandcat.global.security.jwt.JwtUtil;
+import com.example.mailtest.global.security.jwt.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -21,7 +21,7 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
-        //.withSockJS();
+                //.withSockJS();
     }
 
     @Bean

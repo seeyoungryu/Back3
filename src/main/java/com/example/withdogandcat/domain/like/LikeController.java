@@ -1,8 +1,8 @@
 package com.example.withdogandcat.domain.like;
 
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
-import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseResponseStatus;
+import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

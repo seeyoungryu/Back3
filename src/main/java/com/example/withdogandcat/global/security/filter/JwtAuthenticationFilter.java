@@ -1,12 +1,12 @@
 package com.example.withdogandcat.global.security.filter;
 
-import com.example.withdogandcat.domain.user.dto.LoginRequestDto;
-import com.example.withdogandcat.domain.user.dto.LoginResponseDto;
-import com.example.withdogandcat.domain.user.entity.UserRole;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
-import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
-import com.example.withdogandcat.global.security.jwt.JwtUtil;
+import com.example.mailtest.domain.user.dto.LoginRequestDto;
+import com.example.mailtest.domain.user.dto.LoginResponseDto;
+import com.example.mailtest.domain.user.entity.UserRole;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseResponseStatus;
+import com.example.mailtest.global.security.impl.UserDetailsImpl;
+import com.example.mailtest.global.security.jwt.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

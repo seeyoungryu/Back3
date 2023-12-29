@@ -1,18 +1,18 @@
 package com.example.withdogandcat.domain.shop;
 
-import com.example.withdogandcat.domain.image.Image;
-import com.example.withdogandcat.domain.image.ImageS3Service;
-import com.example.withdogandcat.domain.review.ReviewRepository;
-import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
-import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
-import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
-import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
-import com.example.withdogandcat.domain.shop.entity.Shop;
-import com.example.withdogandcat.domain.shop.entity.ShopType;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.Image.Image;
+import com.example.mailtest.domain.Image.ImageS3Service;
+import com.example.mailtest.domain.review.ReviewRepository;
+import com.example.mailtest.domain.review.dto.ReviewResponseDto;
+import com.example.mailtest.domain.shop.dto.ShopDetailResponseDto;
+import com.example.mailtest.domain.shop.dto.ShopRequestDto;
+import com.example.mailtest.domain.shop.dto.ShopResponseDto;
+import com.example.mailtest.domain.shop.entity.Shop;
+import com.example.mailtest.domain.shop.entity.ShopType;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,6 @@ public class ShopService {
                 .map(ShopResponseDto::from).collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
-
 
     // 가게 등록
     @Transactional
@@ -132,7 +131,6 @@ public class ShopService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop));
     }
 
-
     // 가게 삭제
     @Transactional
     public BaseResponse<Void> deleteShop(Long shopId) {
@@ -157,4 +155,5 @@ public class ShopService {
                 .map(ShopResponseDto::from).collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
+
 }

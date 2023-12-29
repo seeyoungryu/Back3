@@ -1,22 +1,21 @@
 package com.example.withdogandcat.domain.chat.service;
 
-import com.example.withdogandcat.domain.chat.dto.*;
-import com.example.withdogandcat.domain.chat.entity.ChatMessage;
-import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
-import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.entity.MessageType;
-import com.example.withdogandcat.domain.chat.hashtag.*;
-import com.example.withdogandcat.domain.chat.repo.ChatMessageJpaRepository;
-import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
-import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
-import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
-import com.example.withdogandcat.domain.pet.PetService;
-import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
-import com.example.withdogandcat.domain.user.UserRepository;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.chat.dto.ChatRoomDetailDto;
+import com.example.mailtest.domain.chat.dto.ChatRoomDto;
+import com.example.mailtest.domain.chat.dto.ChatRoomListDto;
+import com.example.mailtest.domain.chat.dto.UserInfoDto;
+import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
+import com.example.mailtest.domain.chat.hashtag.*;
+import com.example.mailtest.domain.chat.repo.ChatRoomJpaRepository;
+import com.example.mailtest.domain.chat.repo.ChatRoomRepository;
+import com.example.mailtest.domain.chat.util.ChatRoomMapper;
+import com.example.mailtest.domain.pet.PetService;
+import com.example.mailtest.domain.pet.dto.PetResponseDto;
+import com.example.mailtest.domain.user.UserRepository;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,6 @@ public class ChatRoomService {
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
-    private final ChatMessageJpaRepository chatMessageJpaRepository;
 
     private final int MAX_ROOM_COUNT = 2;
 
@@ -73,7 +71,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public void deleteChatRoom(String roomId, String userEmail) {
+    public BaseResponse<Void> deleteChatRoom(String roomId, String userEmail) {
         ChatRoomEntity chatRoomEntity = chatRoomJpaRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND));
 
@@ -81,7 +79,6 @@ public class ChatRoomService {
             throw new BaseException(BaseResponseStatus.AUTHENTICATION_FAILED);
         }
 
-        // 해시태그 삭제 로직 추가
         List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(chatRoomEntity);
         for (ChatRoomTagMap tagMap : tagMaps) {
             Tag tag = tagMap.getTag();
@@ -93,18 +90,13 @@ public class ChatRoomService {
             }
         }
 
-        // 메시지 삭제 로직 추가
-        chatMessageJpaRepository.deleteByRoomId(roomId);
-        chatMessageJpaRepository.deleteByRoomIdAndType(roomId, MessageType.DELETED_USER_MESSAGE);
-
-        // 채팅방 삭제
+        redisTemplate.delete("chatRoom:" + roomId + ":members");
+        chatMessageService.deleteMessages(roomId);
         chatRoomRepository.deleteRoom(roomId);
         chatRoomJpaRepository.deleteByRoomId(roomId);
 
-        redisTemplate.delete("chatRoom:" + roomId + ":members");
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 삭제 성공", null);
     }
-
-
 
     /**
      * 사용자가 생성한 채팅방 목록 조회
@@ -117,7 +109,7 @@ public class ChatRoomService {
         List<ChatRoomEntity> userRooms = chatRoomJpaRepository.findByCreatorId(user);
         List<ChatRoomListDto> chatRoomListDtos = userRooms.stream()
                 .map(room -> {
-                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId());
+                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId()); // 태그 조회
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
                 })

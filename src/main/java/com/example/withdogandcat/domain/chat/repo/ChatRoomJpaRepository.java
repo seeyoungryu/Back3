@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.chat.repo;
 
-import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.user.entity.User;
+import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
+import com.example.mailtest.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

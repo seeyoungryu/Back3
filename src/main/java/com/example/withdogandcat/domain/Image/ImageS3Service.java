@@ -1,12 +1,12 @@
-package com.example.withdogandcat.domain.image;
+package com.example.withdogandcat.domain.Image;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.withdogandcat.domain.pet.entity.Pet;
-import com.example.withdogandcat.domain.shop.entity.Shop;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.pet.entity.Pet;
+import com.example.mailtest.domain.shop.entity.Shop;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

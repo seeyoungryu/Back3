@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
-import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.global.common.Timestamped;
+import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
+import com.example.mailtest.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

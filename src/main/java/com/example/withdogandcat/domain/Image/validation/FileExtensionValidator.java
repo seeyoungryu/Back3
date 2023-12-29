@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.image.validation;
+package com.example.withdogandcat.domain.Image.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

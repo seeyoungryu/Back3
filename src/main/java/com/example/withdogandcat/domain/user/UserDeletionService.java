@@ -1,25 +1,24 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
-import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.entity.MessageType;
-import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMap;
-import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMapRepository;
-import com.example.withdogandcat.domain.chat.hashtag.TagRepository;
-import com.example.withdogandcat.domain.chat.repo.ChatMessageJpaRepository;
-import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
-import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
-import com.example.withdogandcat.domain.chat.service.ChatMessageService;
-import com.example.withdogandcat.domain.image.Image;
-import com.example.withdogandcat.domain.image.ImageRepository;
-import com.example.withdogandcat.domain.image.ImageS3Service;
-import com.example.withdogandcat.domain.like.LikeRepository;
-import com.example.withdogandcat.domain.pet.PetRepository;
-import com.example.withdogandcat.domain.review.ReviewRepository;
-import com.example.withdogandcat.domain.shop.ShopRepository;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.Image.Image;
+import com.example.mailtest.domain.Image.ImageRepository;
+import com.example.mailtest.domain.Image.ImageS3Service;
+import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
+import com.example.mailtest.domain.chat.hashtag.ChatRoomTagMap;
+import com.example.mailtest.domain.chat.hashtag.ChatRoomTagMapRepository;
+import com.example.mailtest.domain.chat.hashtag.Tag;
+import com.example.mailtest.domain.chat.hashtag.TagRepository;
+import com.example.mailtest.domain.chat.repo.ChatRoomJpaRepository;
+import com.example.mailtest.domain.chat.repo.ChatRoomRepository;
+import com.example.mailtest.domain.chat.service.ChatMessageService;
+import com.example.mailtest.domain.like.LikeRepository;
+import com.example.mailtest.domain.pet.PetRepository;
+import com.example.mailtest.domain.review.ReviewRepository;
+import com.example.mailtest.domain.shop.ShopRepository;
+import com.example.mailtest.domain.shop.entity.Shop;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,6 +30,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserDeletionService {
+
+    /**
+     * 회원탈퇴
+     */
 
     private final TagRepository tagRepository;
     private final PetRepository petRepository;
@@ -45,7 +48,6 @@ public class UserDeletionService {
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
-    private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
     @Transactional
@@ -57,41 +59,48 @@ public class UserDeletionService {
             throw new BaseException(BaseResponseStatus.PASSWORD_MISMATCH);
         }
 
-        List<ChatMessageEntity> userMessages = chatMessageJpaRepository.findBySender_UserId(userId);
-        for (ChatMessageEntity message : userMessages) {
-            message.setType(MessageType.DELETED_USER_MESSAGE);
-            chatMessageJpaRepository.save(message);
+        likeRepository.deleteByUser(user);
+
+        reviewRepository.deleteByUser(user);
+
+        List<Shop> userShops = shopRepository.findByUser(user);
+        for (Shop shop : userShops) {
+            reviewRepository.deleteByShop(shop);
         }
+        shopRepository.deleteAll(userShops);
+        shopRepository.deleteByUser(user);
+
+        List<Image> userImages = imageRepository.findByUserId(userId);
+        imageS3Service.deleteImages(userImages);
+
+        petRepository.deleteByUser(user);
+
+        chatMessageService.deleteAllMessagesByUser(userId);
 
         List<ChatRoomEntity> userChatRooms = chatRoomJpaRepository.findByCreatorId(user);
+
         for (ChatRoomEntity room : userChatRooms) {
 
             List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(room);
+
             for (ChatRoomTagMap tagMap : tagMaps) {
+                Tag tag = tagMap.getTag();
                 chatRoomTagMapRepository.delete(tagMap);
 
-                if (chatRoomTagMapRepository.countByTag(tagMap.getTag()) == 0) {
-                    tagRepository.delete(tagMap.getTag());
+                long count = chatRoomTagMapRepository.countByTag(tag);
+                if (count == 0) {
+                    tagRepository.delete(tag);
                 }
             }
 
             chatMessageService.deleteMessages(room.getRoomId());
+
             chatRoomRepository.deleteRoom(room.getRoomId());
             chatRoomJpaRepository.delete(room);
         }
 
-        likeRepository.deleteByUser(user);
-        reviewRepository.deleteByUser(user);
-        List<Image> userImages = imageRepository.findByUserId(userId);
-        imageS3Service.deleteImages(userImages);
-        petRepository.deleteByUser(user);
-        shopRepository.deleteByUser(user);
-
         redisTemplate.delete(user.getEmail());
-
-        user.delete();
-        userRepository.save(user);
+        userRepository.delete(user);
     }
 
 }
-

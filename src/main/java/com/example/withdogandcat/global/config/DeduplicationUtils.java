@@ -18,7 +18,7 @@ public class DeduplicationUtils {
                 .collect(Collectors.toList());
     }
 
-    private static <T> Predicate<T> deduplication(Function<? super T,?> key){
+   private static <T> Predicate<T> deduplication(Function<? super T,?> key){
         final Set<Object> set = ConcurrentHashMap.newKeySet();
         return predicate -> set.add(key.apply(predicate));
     }

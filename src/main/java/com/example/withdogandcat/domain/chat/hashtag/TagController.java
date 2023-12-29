@@ -1,10 +1,10 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
-import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
-import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import com.example.mailtest.domain.chat.dto.ChatRoomDto;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
+import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -91,7 +91,7 @@ public class TagController {
         }
     }
 
-    // 인기 태그를 반환하는 API 엔드포인트
+    // 인기 태그를 반환
     @GetMapping("/popular")
     public BaseResponse<List<TagDto>> getPopularTags() {
         try {

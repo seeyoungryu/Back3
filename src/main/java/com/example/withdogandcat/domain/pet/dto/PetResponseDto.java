@@ -1,6 +1,7 @@
 package com.example.withdogandcat.domain.pet.dto;
 
-import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.mailtest.domain.Image.Image;
+import com.example.mailtest.domain.pet.entity.Pet;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -36,12 +37,12 @@ public class PetResponseDto {
     public static PetResponseDto from(Pet pet) {
 
         List<String> imageUrls = pet.getImages().stream()
-                .map(image -> image.getStoredImagePath())
+                .map(Image::getStoredImagePath)
                 .collect(Collectors.toList());
 
         return PetResponseDto.builder()
-                .userId(pet.getUser().getUserId())
                 .petId(pet.getPetId())
+                .userId(pet.getUser().getUserId())
                 .nickname(pet.getUser().getNickname())
                 .petName(pet.getPetName())
                 .petGender(pet.getPetGender().name())

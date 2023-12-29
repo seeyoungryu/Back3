@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.email;
 
-import com.example.withdogandcat.domain.email.entity.Email;
+import com.example.mailtest.domain.email.entity.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

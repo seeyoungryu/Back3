@@ -1,16 +1,16 @@
 package com.example.withdogandcat.domain.review;
 
-import com.example.withdogandcat.domain.like.LikeRepository;
-import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
-import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
-import com.example.withdogandcat.domain.review.entity.Review;
-import com.example.withdogandcat.domain.shop.ShopRepository;
-import com.example.withdogandcat.domain.shop.entity.Shop;
-import com.example.withdogandcat.domain.user.UserRepository;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.example.mailtest.domain.like.LikeRepository;
+import com.example.mailtest.domain.review.dto.ReviewRequestDto;
+import com.example.mailtest.domain.review.dto.ReviewResponseDto;
+import com.example.mailtest.domain.review.entity.Review;
+import com.example.mailtest.domain.shop.ShopRepository;
+import com.example.mailtest.domain.shop.entity.Shop;
+import com.example.mailtest.domain.user.UserRepository;
+import com.example.mailtest.domain.user.entity.User;
+import com.example.mailtest.global.common.BaseResponse;
+import com.example.mailtest.global.exception.BaseException;
+import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
