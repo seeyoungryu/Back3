@@ -22,11 +22,15 @@ public class ChatMessageEntity extends Timestamped {
 
     private String roomId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User sender;
 
     private String message;
+
+    public void setType(MessageType type) {
+        this.type = type;
+    }
 
     @Builder
     private ChatMessageEntity(MessageType type, String roomId, User sender, String message) {

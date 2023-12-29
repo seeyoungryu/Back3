@@ -27,23 +27,27 @@ public class ChatMessageService {
     // 채팅방 메시지 저장
     @Transactional
     public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, String userEmail) {
+
         String redisKey = "chatRoom:" + roomId + ":messages";
         Long redisSize = redisTemplate.opsForList().size(redisKey);
         int redisMaxSize = 20;
-
         if (redisSize != null && redisSize >= redisMaxSize) {
             redisTemplate.opsForList().leftPop(redisKey);
         }
 
+        User sender = userRepository.findByEmail(userEmail).orElseThrow();
+
+        if (sender.isDeleted()) {
+            chatMessage.setType(MessageType.DELETED_USER_MESSAGE);
+        }
+
         redisTemplate.opsForList().rightPush(redisKey, chatMessage);
 
-        int maxMessagesPerRoom = 30;
-
-        User sender = userRepository.findByEmail(userEmail).orElseThrow();
         ChatMessageEntity chatMessageEntity = convertToEntity(chatMessage, sender);
         chatMessageJpaRepository.save(chatMessageEntity);
 
         long dbSize = chatMessageJpaRepository.countByRoomId(roomId);
+        int maxMessagesPerRoom = 30;
         if (dbSize >= maxMessagesPerRoom) {
             List<ChatMessageEntity> messagesToDeleteList = chatMessageJpaRepository.findOldestMessages(roomId);
             chatMessageJpaRepository.deleteAll(messagesToDeleteList);
@@ -78,7 +82,6 @@ public class ChatMessageService {
                 .build();
     }
 
-    // 각 채팅방의 최신 TALK 메시지를 가져오는 메서드
     public ChatMessage getLastTalkMessage(String roomId) {
         ChatMessageEntity messageEntity = chatMessageJpaRepository.findTopByRoomIdAndTypeOrderByIdDesc(roomId, MessageType.TALK);
         if (messageEntity == null) {
@@ -87,7 +90,6 @@ public class ChatMessageService {
         return convertEntityToDto(messageEntity);
     }
 
-    // ChatMessageEntity를 ChatMessage로 변환하는 메서드
     private ChatMessage convertEntityToDto(ChatMessageEntity entity) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setType(entity.getType());

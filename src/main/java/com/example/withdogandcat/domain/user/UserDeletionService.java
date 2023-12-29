@@ -1,10 +1,12 @@
 package com.example.withdogandcat.domain.user;
 
+import com.example.withdogandcat.domain.chat.entity.ChatMessageEntity;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
+import com.example.withdogandcat.domain.chat.entity.MessageType;
 import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMap;
 import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMapRepository;
-import com.example.withdogandcat.domain.chat.hashtag.Tag;
 import com.example.withdogandcat.domain.chat.hashtag.TagRepository;
+import com.example.withdogandcat.domain.chat.repo.ChatMessageJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.service.ChatMessageService;
@@ -43,12 +45,9 @@ public class UserDeletionService {
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
-
-    /**
-     * 회원탈퇴
-     */
     @Transactional
     public void deleteAccount(Long userId, String inputPassword) {
         User user = userRepository.findById(userId)
@@ -58,33 +57,32 @@ public class UserDeletionService {
             throw new BaseException(BaseResponseStatus.PASSWORD_MISMATCH);
         }
 
-        List<ChatRoomEntity> userChatRooms = chatRoomJpaRepository.findByCreatorId(user);
+        List<ChatMessageEntity> userMessages = chatMessageJpaRepository.findBySender_UserId(userId);
+        for (ChatMessageEntity message : userMessages) {
+            message.setType(MessageType.DELETED_USER_MESSAGE);
+            chatMessageJpaRepository.save(message);
+        }
 
+        List<ChatRoomEntity> userChatRooms = chatRoomJpaRepository.findByCreatorId(user);
         for (ChatRoomEntity room : userChatRooms) {
 
             List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(room);
-
             for (ChatRoomTagMap tagMap : tagMaps) {
-                Tag tag = tagMap.getTag();
                 chatRoomTagMapRepository.delete(tagMap);
 
-                long count = chatRoomTagMapRepository.countByTag(tag);
-                if (count == 0) {
-                    tagRepository.delete(tag);
+                if (chatRoomTagMapRepository.countByTag(tagMap.getTag()) == 0) {
+                    tagRepository.delete(tagMap.getTag());
                 }
             }
 
             chatMessageService.deleteMessages(room.getRoomId());
-
             chatRoomRepository.deleteRoom(room.getRoomId());
             chatRoomJpaRepository.delete(room);
         }
 
         likeRepository.deleteByUser(user);
         reviewRepository.deleteByUser(user);
-
         List<Image> userImages = imageRepository.findByUserId(userId);
-
         imageS3Service.deleteImages(userImages);
         petRepository.deleteByUser(user);
         shopRepository.deleteByUser(user);
@@ -94,3 +92,4 @@ public class UserDeletionService {
     }
 
 }
+
