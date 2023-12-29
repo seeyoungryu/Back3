@@ -25,6 +25,8 @@ public class PetService {
     private final PetRepository petRepository;
     private final ImageS3Service imageS3Service;
 
+    private static final int MAX_PETS_PER_USER = 10;
+
     @Transactional(readOnly = true)
     public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
@@ -37,6 +39,12 @@ public class PetService {
     @Transactional
     public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles,
                                                   User user) throws IOException {
+
+        int currentPetCount = petRepository.countByUser(user);
+        if (currentPetCount >= MAX_PETS_PER_USER) {
+            throw new BaseException(BaseResponseStatus.EXCEED_MAX_PET_LIMIT);
+        }
+
         Pet pet = Pet.of(petRequestDto, user);
         List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
         uploadedImages.forEach(pet::addImage);

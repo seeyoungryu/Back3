@@ -13,4 +13,5 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     List<Shop> findByUser(User user);
     List<Shop> findAllByShopType(ShopType shopType);
     void deleteByUser(User user);
+    int countByUser(User user);
 }

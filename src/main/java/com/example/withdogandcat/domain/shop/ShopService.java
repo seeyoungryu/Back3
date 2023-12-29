@@ -30,6 +30,8 @@ public class ShopService {
     private final ReviewRepository reviewRepository;
     private final ImageS3Service imageS3Service;
 
+    private static final int MAX_SHOPS_PER_USER = 5;
+
     // 마이페이지 가게 조회
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
@@ -46,7 +48,14 @@ public class ShopService {
 
     // 가게 등록
     @Transactional
-    public ShopResponseDto createShop(ShopRequestDto shopRequestDto, List<MultipartFile> imageFiles, User user) throws IOException {
+    public ShopResponseDto createShop(ShopRequestDto shopRequestDto,
+                                      List<MultipartFile> imageFiles, User user) throws IOException {
+
+        int currentShopCount = shopRepository.countByUser(user);
+        if (currentShopCount >= MAX_SHOPS_PER_USER) {
+            throw new BaseException(BaseResponseStatus.EXCEED_MAX_SHOP_LIMIT);
+        }
+
         Shop shop = Shop.of(shopRequestDto, user);
         List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForShop(imageFiles, shop);
         uploadedImages.forEach(shop::addImage);
