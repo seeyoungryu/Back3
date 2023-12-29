@@ -1,13 +1,5 @@
 package com.example.withdogandcat.domain.chat.service;
 
-import com.example.mailtest.domain.chat.entity.ChatMessage;
-import com.example.mailtest.domain.chat.entity.ChatMessageEntity;
-import com.example.mailtest.domain.chat.entity.MessageType;
-import com.example.mailtest.domain.chat.repo.ChatMessageJpaRepository;
-import com.example.mailtest.domain.user.UserRepository;
-import com.example.mailtest.domain.user.entity.User;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

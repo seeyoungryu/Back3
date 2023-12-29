@@ -1,11 +1,5 @@
 package com.example.withdogandcat.domain.like;
 
-import com.example.mailtest.domain.review.ReviewRepository;
-import com.example.mailtest.domain.review.entity.Review;
-import com.example.mailtest.domain.user.UserRepository;
-import com.example.mailtest.domain.user.entity.User;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

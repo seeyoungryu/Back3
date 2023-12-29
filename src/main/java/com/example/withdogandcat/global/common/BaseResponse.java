@@ -1,6 +1,5 @@
 package com.example.withdogandcat.global.common;
 
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

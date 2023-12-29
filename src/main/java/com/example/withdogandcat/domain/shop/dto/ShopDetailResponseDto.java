@@ -1,10 +1,8 @@
 package com.example.withdogandcat.domain.shop.dto;
 
-import com.example.mailtest.domain.review.dto.ReviewResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
 
 @Getter
 public class ShopDetailResponseDto {

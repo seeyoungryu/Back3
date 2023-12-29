@@ -1,7 +1,5 @@
 package com.example.withdogandcat.domain.chat.entity;
 
-import com.example.mailtest.domain.user.entity.User;
-import com.example.mailtest.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

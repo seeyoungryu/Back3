@@ -1,9 +1,5 @@
 package com.example.withdogandcat.domain.email;
 
-import com.example.mailtest.domain.email.entity.Email;
-import com.example.mailtest.domain.user.UserRepository;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;

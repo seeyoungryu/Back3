@@ -1,21 +1,5 @@
 package com.example.withdogandcat.domain.chat.service;
 
-import com.example.mailtest.domain.chat.dto.ChatRoomDetailDto;
-import com.example.mailtest.domain.chat.dto.ChatRoomDto;
-import com.example.mailtest.domain.chat.dto.ChatRoomListDto;
-import com.example.mailtest.domain.chat.dto.UserInfoDto;
-import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
-import com.example.mailtest.domain.chat.hashtag.*;
-import com.example.mailtest.domain.chat.repo.ChatRoomJpaRepository;
-import com.example.mailtest.domain.chat.repo.ChatRoomRepository;
-import com.example.mailtest.domain.chat.util.ChatRoomMapper;
-import com.example.mailtest.domain.pet.PetService;
-import com.example.mailtest.domain.pet.dto.PetResponseDto;
-import com.example.mailtest.domain.user.UserRepository;
-import com.example.mailtest.domain.user.entity.User;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

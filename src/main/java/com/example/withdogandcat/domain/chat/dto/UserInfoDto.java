@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.chat.dto;
 
-import com.example.mailtest.domain.pet.dto.PetResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

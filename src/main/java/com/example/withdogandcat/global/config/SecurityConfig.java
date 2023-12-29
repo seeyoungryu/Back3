@@ -1,9 +1,5 @@
 package com.example.withdogandcat.global.config;
 
-import com.example.mailtest.global.security.filter.JwtAuthenticationFilter;
-import com.example.mailtest.global.security.filter.JwtAuthorizationFilter;
-import com.example.mailtest.global.security.impl.UserDetailsServiceImpl;
-import com.example.mailtest.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,5 @@
 package com.example.withdogandcat.domain.Image;
 
-import com.example.mailtest.domain.pet.entity.Pet;
-import com.example.mailtest.domain.shop.entity.Shop;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

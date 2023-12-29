@@ -1,10 +1,5 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
-import com.example.mailtest.domain.chat.dto.ChatRoomDto;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
-import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,10 +1,5 @@
 package com.example.withdogandcat.domain.review;
 
-import com.example.mailtest.domain.review.dto.ReviewRequestDto;
-import com.example.mailtest.domain.review.dto.ReviewResponseDto;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseResponseStatus;
-import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,24 +1,5 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.mailtest.domain.Image.Image;
-import com.example.mailtest.domain.Image.ImageRepository;
-import com.example.mailtest.domain.Image.ImageS3Service;
-import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
-import com.example.mailtest.domain.chat.hashtag.ChatRoomTagMap;
-import com.example.mailtest.domain.chat.hashtag.ChatRoomTagMapRepository;
-import com.example.mailtest.domain.chat.hashtag.Tag;
-import com.example.mailtest.domain.chat.hashtag.TagRepository;
-import com.example.mailtest.domain.chat.repo.ChatRoomJpaRepository;
-import com.example.mailtest.domain.chat.repo.ChatRoomRepository;
-import com.example.mailtest.domain.chat.service.ChatMessageService;
-import com.example.mailtest.domain.like.LikeRepository;
-import com.example.mailtest.domain.pet.PetRepository;
-import com.example.mailtest.domain.review.ReviewRepository;
-import com.example.mailtest.domain.shop.ShopRepository;
-import com.example.mailtest.domain.shop.entity.Shop;
-import com.example.mailtest.domain.user.entity.User;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

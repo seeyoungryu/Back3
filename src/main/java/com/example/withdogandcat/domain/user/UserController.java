@@ -1,12 +1,5 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.mailtest.domain.email.EmailService;
-import com.example.mailtest.domain.email.dto.EmailRequestDto;
-import com.example.mailtest.domain.user.dto.DeleteRequestDto;
-import com.example.mailtest.domain.user.dto.SignupRequestDto;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseResponseStatus;
-import com.example.mailtest.global.security.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

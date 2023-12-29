@@ -1,7 +1,6 @@
 package com.example.withdogandcat.domain.pet.dto;
 
-import com.example.mailtest.domain.Image.Image;
-import com.example.mailtest.domain.pet.entity.Pet;
+
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.chat.config;
 
-import com.example.mailtest.global.security.jwt.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

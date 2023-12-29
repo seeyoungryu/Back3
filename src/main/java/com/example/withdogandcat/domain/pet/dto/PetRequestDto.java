@@ -1,7 +1,6 @@
 package com.example.withdogandcat.domain.pet.dto;
 
-import com.example.mailtest.domain.pet.entity.PetGender;
-import com.example.mailtest.domain.pet.entity.PetKind;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.chat.redis;
 
-import com.example.mailtest.domain.chat.entity.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;

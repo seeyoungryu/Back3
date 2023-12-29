@@ -1,9 +1,5 @@
 package com.example.withdogandcat.global.security.filter;
 
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseResponseStatus;
-import com.example.mailtest.global.security.impl.UserDetailsServiceImpl;
-import com.example.mailtest.global.security.jwt.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

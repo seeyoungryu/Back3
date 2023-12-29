@@ -1,13 +1,5 @@
 package com.example.withdogandcat.domain.chat.controller;
 
-import com.example.mailtest.domain.chat.entity.ChatMessage;
-import com.example.mailtest.domain.chat.entity.MessageType;
-import com.example.mailtest.domain.chat.redis.RedisPublisher;
-import com.example.mailtest.domain.chat.repo.ChatRoomRepository;
-import com.example.mailtest.domain.chat.service.ChatMessageService;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
-import com.example.mailtest.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;

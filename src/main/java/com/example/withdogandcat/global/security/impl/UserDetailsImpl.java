@@ -1,6 +1,5 @@
 package com.example.withdogandcat.global.security.impl;
 
-import com.example.mailtest.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

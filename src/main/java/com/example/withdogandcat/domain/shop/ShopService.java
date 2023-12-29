@@ -1,18 +1,5 @@
 package com.example.withdogandcat.domain.shop;
 
-import com.example.mailtest.domain.Image.Image;
-import com.example.mailtest.domain.Image.ImageS3Service;
-import com.example.mailtest.domain.review.ReviewRepository;
-import com.example.mailtest.domain.review.dto.ReviewResponseDto;
-import com.example.mailtest.domain.shop.dto.ShopDetailResponseDto;
-import com.example.mailtest.domain.shop.dto.ShopRequestDto;
-import com.example.mailtest.domain.shop.dto.ShopResponseDto;
-import com.example.mailtest.domain.shop.entity.Shop;
-import com.example.mailtest.domain.shop.entity.ShopType;
-import com.example.mailtest.domain.user.entity.User;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

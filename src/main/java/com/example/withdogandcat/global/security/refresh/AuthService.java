@@ -1,10 +1,5 @@
 package com.example.withdogandcat.global.security.refresh;
 
-import com.example.mailtest.domain.user.entity.UserRole;
-import com.example.mailtest.global.common.BaseResponse;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
-import com.example.mailtest.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;

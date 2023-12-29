@@ -1,7 +1,5 @@
 package com.example.withdogandcat.domain.chat.config;
 
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;

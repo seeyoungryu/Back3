@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.user.entity;
 
-import com.example.mailtest.domain.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

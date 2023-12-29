@@ -1,11 +1,5 @@
 package com.example.withdogandcat.domain.chat.hashtag;
 
-import com.example.mailtest.domain.chat.dto.ChatRoomDto;
-import com.example.mailtest.domain.chat.entity.ChatRoomEntity;
-import com.example.mailtest.domain.chat.repo.ChatRoomJpaRepository;
-import com.example.mailtest.domain.chat.util.ChatRoomMapper;
-import com.example.mailtest.global.exception.BaseException;
-import com.example.mailtest.global.exception.BaseResponseStatus;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
