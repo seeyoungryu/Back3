@@ -30,8 +30,8 @@ public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String REFRESH_TOKEN_HEADER = "Refresh-Token";
-    private final long ACCESS_EXPIRATION_TIME = 60 * 60 * 1000L; // 60분
-    private final long REFRESH_EXPIRATION_TIME = 72 * 60 * 60 * 1000L; // 72시간
+    private final long ACCESS_EXPIRATION_TIME = 60 * 60 * 1000L;
+    private final long REFRESH_EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretKey;

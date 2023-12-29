@@ -53,7 +53,9 @@ public class ChatController {
             chatRoomRepository.decrementUserCount(message.getRoomId());
 
         } else if (MessageType.TALK.equals(message.getType())) {
-
+            if (message.getMessage() == null || message.getMessage().trim().isEmpty()) {
+                throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
+            }
         }
 
         redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()), message);

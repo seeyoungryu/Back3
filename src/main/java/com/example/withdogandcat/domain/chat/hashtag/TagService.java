@@ -29,6 +29,11 @@ public class TagService {
     // 태그 추가
     @Transactional
     public TagDto addTagToChatRoom(String roomId, String tagName, Long userId) {
+
+        if (tagName == null || tagName.trim().isEmpty()) {
+            throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
+        }
+
         ChatRoomEntity chatRoom = chatRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new EntityNotFoundException("채팅방 못찾음: " + roomId));
 
@@ -114,9 +119,9 @@ public class TagService {
                 .collect(Collectors.toList());
     }
 
-    // 인기 태그 목록을 반환하는 메소드 (상위 10개)
+    // 인기 태그 목록을 반환하는 메소드 (상위 5개)
     public List<TagDto> getPopularTags() {
-        Pageable limit = PageRequest.of(0, 10);
+        Pageable limit = PageRequest.of(0, 5);
         List<Object[]> tagFrequencies = tagRepository.findTagUsageFrequency(limit);
         return tagFrequencies.stream()
                 .map(obj -> new TagDto((Long) obj[0], (String) obj[1]))
