@@ -105,6 +105,7 @@ public class ChatRoomService {
     }
 
 
+
     /**
      * 사용자가 생성한 채팅방 목록 조회
      */
@@ -116,7 +117,7 @@ public class ChatRoomService {
         List<ChatRoomEntity> userRooms = chatRoomJpaRepository.findByCreatorId(user);
         List<ChatRoomListDto> chatRoomListDtos = userRooms.stream()
                 .map(room -> {
-                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId()); // 태그 조회
+                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
                 })
