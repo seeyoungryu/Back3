@@ -1,6 +1,10 @@
 package com.example.withdogandcat.domain.user;
 
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
+import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMap;
+import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMapRepository;
+import com.example.withdogandcat.domain.chat.hashtag.Tag;
+import com.example.withdogandcat.domain.chat.hashtag.TagRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.service.ChatMessageService;
@@ -26,18 +30,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserDeletionService {
 
-    private final LikeRepository likeRepository;
-    private final ReviewRepository reviewRepository;
+    private final TagRepository tagRepository;
     private final PetRepository petRepository;
-    private final ImageRepository imageRepository;
+    private final LikeRepository likeRepository;
     private final ImageS3Service imageS3Service;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final ImageRepository imageRepository;
+    private final ReviewRepository reviewRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomJpaRepository chatRoomJpaRepository;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
 
     /**
@@ -52,18 +58,27 @@ public class UserDeletionService {
             throw new BaseException(BaseResponseStatus.PASSWORD_MISMATCH);
         }
 
-        // 사용자가 생성한 채팅방에 대한 처리
         List<ChatRoomEntity> userChatRooms = chatRoomJpaRepository.findByCreatorId(user);
+
         for (ChatRoomEntity room : userChatRooms) {
 
-            // 먼저 MySQL 및 Redis의 채팅 메시지 삭제
+            List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(room);
+
+            for (ChatRoomTagMap tagMap : tagMaps) {
+                Tag tag = tagMap.getTag();
+                chatRoomTagMapRepository.delete(tagMap);
+
+                long count = chatRoomTagMapRepository.countByTag(tag);
+                if (count == 0) {
+                    tagRepository.delete(tag);
+                }
+            }
+
             chatMessageService.deleteMessages(room.getRoomId());
 
-            // 그 다음 MySQL 및 Redis의 채팅방 삭제
             chatRoomRepository.deleteRoom(room.getRoomId());
             chatRoomJpaRepository.delete(room);
         }
-
 
         likeRepository.deleteByUser(user);
         reviewRepository.deleteByUser(user);
@@ -74,7 +89,6 @@ public class UserDeletionService {
         petRepository.deleteByUser(user);
         shopRepository.deleteByUser(user);
 
-        // 관련데이터 삭제 -> 리프레시 토큰삭제 -> 유저삭제
         redisTemplate.delete(user.getEmail());
         userRepository.delete(user);
     }
