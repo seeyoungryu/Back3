@@ -36,7 +36,6 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-  
 
     @Transactional(readOnly = true)
     public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
@@ -58,11 +57,7 @@ public class MyPageService {
     public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
         List<PetResponseDto> petDtos = pets.stream()
-                .map(pet -> {
-                    Long petLikes = petLikeRepository.countByPet(pet);
-                    return PetResponseDto.from(pet, petLikes);
-                })
-                .collect(Collectors.toList());
+                .map(PetResponseDto::from).collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
 
@@ -78,4 +73,3 @@ public class MyPageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 }
-
