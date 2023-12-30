@@ -11,6 +11,7 @@ import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.withdogandcat.domain.pet.petLike.PetLikeRepository;
 import com.example.withdogandcat.domain.shop.ShopRepository;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
@@ -36,6 +37,7 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
+    private final PetLikeRepository petLikeRepository;
 
     @Transactional(readOnly = true)
     public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
@@ -57,7 +59,11 @@ public class MyPageService {
     public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
         List<PetResponseDto> petDtos = pets.stream()
-                .map(PetResponseDto::from).collect(Collectors.toList());
+                .map(pet -> {
+                    Long petLikes = petLikeRepository.countByPet(pet);
+                    return PetResponseDto.from(pet, petLikes);
+                })
+                .collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
 
@@ -73,3 +79,4 @@ public class MyPageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 }
+

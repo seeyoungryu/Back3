@@ -8,6 +8,8 @@ import com.example.withdogandcat.global.common.LoginAccount;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +37,11 @@ public class PetController {
     }
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<List<PetResponseDto>>> getAllPets() {
-        List<PetResponseDto> pets = petService.getAllPets().getResult();
+    public ResponseEntity<BaseResponse<Page<PetResponseDto>>> getAllPets(Pageable pageable) {
+        Page<PetResponseDto> pets = petService.getAllPetsSortedByPetLikes(pageable).getResult();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
     }
+
 
     @GetMapping("/{petId}")
     public ResponseEntity<BaseResponse<PetResponseDto>> getPet(@PathVariable("petId") Long petId) {
