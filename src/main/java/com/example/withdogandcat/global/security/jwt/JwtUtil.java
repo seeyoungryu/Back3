@@ -178,6 +178,7 @@ public class JwtUtil {
         redisTemplate.delete(username + "_access_jti");
         redisTemplate.delete(username + "_jti");
         redisTemplate.delete(username + "_refresh");
+        redisTemplate.delete("active_session:" + username);
     }
 
 }

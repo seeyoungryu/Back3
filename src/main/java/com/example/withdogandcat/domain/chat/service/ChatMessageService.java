@@ -105,5 +105,4 @@ public class ChatMessageService {
         chatMessageJpaRepository.deleteByUserId(userId);
     }
 
-
 }
