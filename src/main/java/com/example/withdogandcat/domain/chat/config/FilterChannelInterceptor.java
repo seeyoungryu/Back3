@@ -22,7 +22,6 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-
         StompHeaderAccessor headerAccessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         assert headerAccessor != null;
 
@@ -31,13 +30,22 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
 
             if (token != null) {
                 try {
-                    if (jwtUtil.validateToken(token)) {
+                    if (jwtUtil.validateToken(token, false)) {
                         String userEmail = jwtUtil.getUserEmailFromToken(token);
-                        headerAccessor.addNativeHeader("User", userEmail);
+                        String jti = jwtUtil.getJtiFromToken(token);
+                        String storedJti = jwtUtil.getStoredJtiForUser(userEmail);
+
+                        if (jti.equals(storedJti)) {
+                            headerAccessor.addNativeHeader("User", userEmail);
+                        } else {
+                            log.error("JTI 불일치 - 연결 거부");
+                            return null;
+                        }
                     }
 
                 } catch (BaseException e) {
                     log.error("토큰 검증 중 오류 발생: {}", e.getMessage());
+                    return null;
                 }
             }
         }

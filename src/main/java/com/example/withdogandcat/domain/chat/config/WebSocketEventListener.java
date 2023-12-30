@@ -18,23 +18,24 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
         String token = headerAccessor.getFirstNativeHeader(JwtUtil.AUTHORIZATION_HEADER);
 
-        if (token != null && jwtUtil.validateToken(token)) {
+        if (token != null && jwtUtil.validateToken(token, false)) {
             String userEmail = jwtUtil.getUserEmailFromToken(token);
+            String jti = jwtUtil.getJtiFromToken(token);
 
             redisTemplate.opsForValue().set("websocket_session:" + sessionId, userEmail);
+            redisTemplate.opsForValue().set("websocket_session_jti:" + sessionId, jti);
         }
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-
         String sessionId = event.getSessionId();
         redisTemplate.delete("websocket_session:" + sessionId);
+        redisTemplate.delete("websocket_session_jti:" + sessionId);
     }
 
 }

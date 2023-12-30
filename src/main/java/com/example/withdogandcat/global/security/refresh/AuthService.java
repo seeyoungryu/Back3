@@ -17,19 +17,19 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public TokenDto reissueToken(String refreshToken) throws BaseException {
-        // Refresh Token 검증
-        jwtUtil.validateToken(refreshToken);
 
-        // Access Token 에서 사용자 이름을 가져옴
-        Authentication authentication = jwtUtil.getAuthentication(refreshToken);
+        jwtUtil.validateToken(refreshToken, true);
 
-        // Redis에서 저장된 Refresh Token 값을 가져옴
-        String redisRefreshToken = redisTemplate.opsForValue().get(authentication.getName());
-        if (!redisRefreshToken.equals(refreshToken)) {
-            throw new BaseException(BaseResponseStatus.NOT_EXIST_REFRESH_JWT);
+        String jti = jwtUtil.getJtiFromToken(refreshToken);
+
+        String username = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
+        String redisJti = redisTemplate.opsForValue().get(username + "_jti");
+        if (redisJti == null || !jti.equals(redisJti)) {
+            throw new BaseException(BaseResponseStatus.INVALID_REFRESH_JWT);
         }
 
-        // 토큰 재발행
+        Authentication authentication = jwtUtil.getAuthentication(refreshToken);
+
         TokenDto tokenDto = new TokenDto(
                 jwtUtil.createAccessToken(authentication.getName(), UserRole.USER),
                 jwtUtil.createRefreshToken(authentication.getName())
@@ -37,4 +37,5 @@ public class AuthService {
 
         return tokenDto;
     }
+
 }

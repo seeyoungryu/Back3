@@ -27,23 +27,10 @@ import java.util.stream.Collectors;
 public class ShopService {
 
     private final ShopRepository shopRepository;
-    private final ReviewRepository reviewRepository;
     private final ImageS3Service imageS3Service;
+    private final ReviewRepository reviewRepository;
 
     private static final int MAX_SHOPS_PER_USER = 5;
-
-    // 마이페이지 가게 조회
-    @Transactional(readOnly = true)
-    public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
-        List<Shop> shops = shopRepository.findByUser(currentUser);
-        if (shops.isEmpty()) {
-            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
-        }
-
-        List<ShopResponseDto> shopDtos = shops.stream()
-                .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
-    }
 
     // 가게 등록
     @Transactional
@@ -155,5 +142,4 @@ public class ShopService {
                 .map(ShopResponseDto::from).collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
-
 }

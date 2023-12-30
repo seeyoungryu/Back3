@@ -36,15 +36,12 @@ public class ChatMessageService {
 
         redisTemplate.opsForList().rightPush(redisKey, chatMessage);
 
-        // 데이터베이스에 메시지 저장 전에 오래된 메시지 삭제
-        int maxMessagesPerRoom = 30; // 각 채팅방당 최대 메시지 수
+        int maxMessagesPerRoom = 30;
 
-        // 데이터베이스에 새 메시지 저장
         User sender = userRepository.findByEmail(userEmail).orElseThrow();
         ChatMessageEntity chatMessageEntity = convertToEntity(chatMessage, sender);
         chatMessageJpaRepository.save(chatMessageEntity);
 
-        // 각 채팅방의 메시지 수가 최대치를 초과할 경우 오래된 메시지 삭제
         long dbSize = chatMessageJpaRepository.countByRoomId(roomId);
         if (dbSize >= maxMessagesPerRoom) {
             List<ChatMessageEntity> messagesToDeleteList = chatMessageJpaRepository.findOldestMessages(roomId);
@@ -89,14 +86,12 @@ public class ChatMessageService {
         return convertEntityToDto(messageEntity);
     }
 
-    // ChatMessageEntity를 ChatMessage로 변환하는 메서드
     private ChatMessage convertEntityToDto(ChatMessageEntity entity) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setType(entity.getType());
         chatMessage.setRoomId(entity.getRoomId());
         chatMessage.setMessage(entity.getMessage());
 
-        // User 엔티티의 특정 속성(예: email 또는 nickname)을 sender로 설정
         if (entity.getSender() != null) {
             chatMessage.setSender(entity.getSender().getEmail());
         }

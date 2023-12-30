@@ -30,19 +30,8 @@ public class ShopController {
 
     private final ShopService shopService;
 
-    // 마이페이지 가게 조회
-    @GetMapping("/mypage")
-    @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<BaseResponse<List<ShopResponseDto>>> getShopsByCurrentUser(Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User currentUser = userDetails.getUser();
-        List<ShopResponseDto> shops = shopService.getShopsByCurrentUser(currentUser).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
-    }
-
     // 가게 등록
     @PostMapping("")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<ShopResponseDto>> createShop(
             @Valid @ModelAttribute ShopRequestDto shopRequestDto,
             @RequestPart("imageUrl") List<MultipartFile> imageFiles,
@@ -69,7 +58,6 @@ public class ShopController {
 
     // 가게 수정
     @PutMapping("/{shopId}")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<ShopResponseDto>> updateShop(
             @PathVariable("shopId") Long shopId,
             @Valid @ModelAttribute ShopRequestDto shopRequestDto,
@@ -82,7 +70,6 @@ public class ShopController {
 
     // 가게 삭제
     @DeleteMapping("/{shopId}")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<Void>> deleteShop(@PathVariable Long shopId) {
         shopService.deleteShop(shopId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));

@@ -31,28 +31,6 @@ public class ChatRoomController {
     private final ChatRoomRepository chatRoomRepository;
 
     /**
-     * 사용자가 생성한 채팅방 목록 조회(마이페이지)
-     */
-    @GetMapping("/mypage")
-    @ResponseBody
-    public ResponseEntity<BaseResponse<List<ChatRoomListDto>>> myRooms(HttpServletRequest request) {
-
-        try {
-            String token = jwtUtil.resolveToken(request);
-            jwtUtil.validateToken(token);
-            String userEmail = jwtUtil.getUserEmailFromToken(token);
-
-            List<ChatRoomListDto> userRooms = chatRoomService.findRoomsCreatedByUser(userEmail).getResult();
-            return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용자 채팅방 조회 성공", userRooms));
-
-        } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getStatus().getCode())
-                    .body(new BaseResponse<>(e.getStatus(), e.getMessage(), null));
-        }
-    }
-
-    /**
      * 채팅방 전체 조회
      */
     @GetMapping("/rooms")
@@ -71,7 +49,7 @@ public class ChatRoomController {
                                                                 HttpServletRequest request) {
         try {
             String token = jwtUtil.resolveToken(request);
-            jwtUtil.validateToken(token);
+            jwtUtil.validateToken(token, false);
             String userEmail = jwtUtil.getUserEmailFromToken(token);
 
             BaseResponse<ChatRoomDto> response = chatRoomService.createChatRoom(name, userEmail);
@@ -106,7 +84,7 @@ public class ChatRoomController {
                                                            HttpServletRequest request) {
         try {
             String token = jwtUtil.resolveToken(request);
-            jwtUtil.validateToken(token);
+            jwtUtil.validateToken(token, false);
             String userEmail = jwtUtil.getUserEmailFromToken(token);
 
             chatRoomService.deleteChatRoom(roomId, userEmail);
