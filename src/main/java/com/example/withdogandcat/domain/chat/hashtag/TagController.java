@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.hashtag;
+package com.example.withdogandcat.domain.chat.hashtag;
 
 import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
 import com.example.withdogandcat.global.common.BaseResponse;
@@ -16,19 +16,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tags")
-public class ChatRoomTagController {
+public class TagController {
 
     private final TagService tagService;
-    private final ChatRoomTagService chatRoomTagService;
 
+    // 채팅방에 태그 추가
     @PostMapping("/chatrooms/{roomId}")
     public BaseResponse<List<TagDto>> addTagToChatRoom(@PathVariable("roomId") String roomId,
                                                        @RequestBody List<String> tags,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             List<TagDto> addedTags = tags.stream()
-                    .map(tag -> chatRoomTagService.addTagToChatRoom(roomId, tag, userDetails.getUser().getUserId()))
-                    .map(tag -> TagDto.from(Tag.from(tag)))
+                    .map(tag -> tagService.addTagToChatRoom(roomId, tag, userDetails.getUser().getUserId()))
                     .collect(Collectors.toList());
             return new BaseResponse<>(BaseResponseStatus.SUCCESS, "태그가 추가되었습니다.", addedTags);
         } catch (EntityNotFoundException e) {
@@ -40,22 +39,37 @@ public class ChatRoomTagController {
         }
     }
 
-    @GetMapping("/chatrooms/{tagName}")
+    // 특정 해시태그가 포함된 모든 채팅방 조회
+    @GetMapping("/chatrooms/bytag/{tagName}")
     public BaseResponse<List<ChatRoomDto>> getChatRoomsByTag(@PathVariable("tagName") String tagName) {
         try {
-            List<ChatRoomDto> chatRooms = chatRoomTagService.getChatRoomsByTag(tagName);
+            List<ChatRoomDto> chatRooms = tagService.getChatRoomsByTag(tagName);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS, "조회 성공", chatRooms);
         } catch (Exception e) {
             return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
         }
     }
 
-    @DeleteMapping("/chatrooms/{roomId}/{tagName}")
+    // 새 해시태그 생성
+    @PostMapping
+    public BaseResponse<TagDto> createTag(@RequestParam String tagName) {
+        try {
+            TagDto createdTag = tagService.createTag(new TagDto(tagName));
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "새 태그가 생성되었습니다.", createdTag);
+        } catch (IllegalArgumentException e) {
+            return new BaseResponse<>(BaseResponseStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
+        }
+    }
+
+    // 특정 채팅방에서 태그 삭제
+    @DeleteMapping("/chatrooms/{roomId}/tags/{name}")
     public BaseResponse<Void> removeTagFromChatRoom(@PathVariable("roomId") String roomId,
-                                                    @PathVariable("tagName") String tagName,
+                                                    @PathVariable("name") String name,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            chatRoomTagService.removeTagFromChatRoom(roomId, tagName, userDetails.getUser().getUserId());
+            tagService.removeTagFromChatRoom(roomId, name, userDetails.getUser().getUserId());
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch (EntityNotFoundException e) {
             return new BaseResponse<>(BaseResponseStatus.CHATROOM_NOT_FOUND);
@@ -66,7 +80,8 @@ public class ChatRoomTagController {
         }
     }
 
-    @GetMapping("/chatrooms")
+    // 모든 해시태그 조회
+    @GetMapping
     public BaseResponse<List<TagDto>> getAllTags() {
         try {
             List<TagDto> allTags = tagService.getAllTags();
@@ -76,10 +91,11 @@ public class ChatRoomTagController {
         }
     }
 
-    @GetMapping("/chatrooms/popular")
+    // 인기 태그를 반환
+    @GetMapping("/popular")
     public BaseResponse<List<TagDto>> getPopularTags() {
         try {
-            List<TagDto> popularTags = tagService.getPopularChatRoomTags(5);
+            List<TagDto> popularTags = tagService.getPopularTags();
             return new BaseResponse<>(BaseResponseStatus.SUCCESS, "인기 태그 조회 성공", popularTags);
         } catch (Exception e) {
             return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);

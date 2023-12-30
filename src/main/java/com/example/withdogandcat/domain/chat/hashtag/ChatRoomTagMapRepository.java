@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.hashtag;
+package com.example.withdogandcat.domain.chat.hashtag;
 
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
