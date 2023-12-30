@@ -2,7 +2,6 @@ package com.example.withdogandcat.domain.pet.entity;
 
 import com.example.withdogandcat.domain.Image.Image;
 import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
-import com.example.withdogandcat.domain.pet.petLike.PetLike;
 import com.example.withdogandcat.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
