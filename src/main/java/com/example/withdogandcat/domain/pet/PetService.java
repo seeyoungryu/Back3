@@ -1,14 +1,14 @@
-package com.example.withdogandcat.domain.pet;
+package com.sparta.petshop.domain.pet;
 
-import com.example.withdogandcat.domain.Image.Image;
-import com.example.withdogandcat.domain.Image.ImageS3Service;
-import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
-import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
-import com.example.withdogandcat.domain.pet.entity.Pet;
-import com.example.withdogandcat.domain.user.entity.User;
-import com.example.withdogandcat.global.common.BaseResponse;
-import com.example.withdogandcat.global.exception.BaseException;
-import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import com.sparta.petshop.domain.Image.Image;
+import com.sparta.petshop.domain.Image.ImageS3Service;
+import com.sparta.petshop.domain.pet.dto.PetRequestDto;
+import com.sparta.petshop.domain.pet.dto.PetResponseDto;
+import com.sparta.petshop.domain.pet.entity.Pet;
+import com.sparta.petshop.domain.user.entity.User;
+import com.sparta.petshop.global.common.BaseResponse;
+import com.sparta.petshop.global.exception.BaseException;
+import com.sparta.petshop.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +22,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PetService {
 
-    private static final int MAX_PETS_PER_USER = 10;
     private final PetRepository petRepository;
     private final ImageS3Service imageS3Service;
+
+    private static final int MAX_PETS_PER_USER = 10;
 
     @Transactional
     public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles,
