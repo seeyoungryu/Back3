@@ -14,4 +14,4 @@ else
     exit 1
 fi
 
-echo "set \$service_url http://3.37.121.136:${TARGET_PORT};" | tee /home/ubuntu/service_url.inc
+echo "set \$service_url http://52.78.102.94:${TARGET_PORT};" | tee /home/ubuntu/service_url.inc
