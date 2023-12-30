@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.pet.dto;
 
-
 import com.example.withdogandcat.domain.pet.entity.PetGender;
 import com.example.withdogandcat.domain.pet.entity.PetKind;
 import jakarta.validation.constraints.NotBlank;

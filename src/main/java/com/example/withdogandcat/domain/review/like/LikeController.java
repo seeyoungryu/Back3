@@ -22,6 +22,13 @@ public class LikeController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<Boolean>> checkLikeStatus(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
+        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
+        boolean isLiked = likeService.isLiked(userId, reviewId);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", isLiked));
+    }
+
     @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> deleteLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();

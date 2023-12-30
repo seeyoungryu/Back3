@@ -66,7 +66,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String email = userDetails.getUsername();
         UserRole role = userDetails.getUser().getRole();
 
-        // 사용자 정보를 LoginResponseDto로 생성
         LoginResponseDto loginResponseDto = LoginResponseDto.from(userDetails.getUser());
 
         String accessToken = jwtUtil.createAccessToken(email, role);

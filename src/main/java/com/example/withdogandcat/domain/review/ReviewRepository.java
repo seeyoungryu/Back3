@@ -3,9 +3,9 @@ package com.example.withdogandcat.domain.review;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +26,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     void deleteByShop(Shop shop);
 
     void deleteByUser(User user);
+
 }

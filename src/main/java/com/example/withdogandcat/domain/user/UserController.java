@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.user;
 
-import com.example.withdogandcat.domain.email.EmailService;
 import com.example.withdogandcat.domain.email.dto.EmailRequestDto;
+import com.example.withdogandcat.domain.email.EmailService;
 import com.example.withdogandcat.domain.user.dto.DeleteRequestDto;
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.global.common.BaseResponse;
@@ -9,6 +9,7 @@ import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -59,4 +60,3 @@ public class UserController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그아웃 성공", null));
     }
 }
-

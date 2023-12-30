@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.chat.dto;
 
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
-import com.example.withdogandcat.domain.chat.hashtag.TagDto;
+import com.example.withdogandcat.domain.hashtag.TagDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

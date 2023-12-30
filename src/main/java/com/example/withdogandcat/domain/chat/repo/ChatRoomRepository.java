@@ -1,6 +1,5 @@
 package com.example.withdogandcat.domain.chat.repo;
 
-
 import com.example.withdogandcat.domain.chat.entity.ChatRoom;
 import com.example.withdogandcat.domain.chat.redis.RedisSubscriber;
 import jakarta.annotation.PostConstruct;

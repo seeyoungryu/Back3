@@ -81,10 +81,8 @@ public class SecurityConfig {
                         // 가게, 애견 조회
                         .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
-                        .requestMatchers("/api/map").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
-
+                        .requestMatchers("/health-check").permitAll()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -99,10 +97,9 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173","http://localhost:5174",
-                "http://war-war.s3-website.ap-northeast-2.amazonaws.com",
-                "https://final-pi-coral.vercel.app",
-                "https://warrwarr.co.kr"));
+                "http://localhost:5173","http://localhost:5174", "http://localhost:5175",
+                "https://final-pi-coral.vercel.app", "https://final-dyh-dyeons-projects.vercel.app",
+                "https://final-sub-test-ver.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));

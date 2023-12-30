@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.chat.hashtag;
+package com.example.withdogandcat.domain.hashtag;
 
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
 import com.example.withdogandcat.global.common.Timestamped;

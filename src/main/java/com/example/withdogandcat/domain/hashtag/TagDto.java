@@ -1,9 +1,6 @@
-package com.example.withdogandcat.domain.chat.hashtag;
+package com.example.withdogandcat.domain.hashtag;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -13,10 +10,6 @@ public class TagDto {
     private Long id;
     private String name;
 
-    public TagDto(String name) {
-        this.name = name;
-    }
-
     public TagDto(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -25,4 +18,5 @@ public class TagDto {
     public static TagDto from(Tag tag) {
         return new TagDto(tag.getId(), tag.getName());
     }
+
 }

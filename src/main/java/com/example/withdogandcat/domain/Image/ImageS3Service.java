@@ -1,8 +1,7 @@
 package com.example.withdogandcat.domain.Image;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.global.exception.BaseException;

@@ -1,16 +1,12 @@
 package com.example.withdogandcat.domain.chat.service;
 
-import com.example.withdogandcat.domain.chat.dto.ChatRoomDetailDto;
-import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
-import com.example.withdogandcat.domain.chat.dto.ChatRoomListDto;
-import com.example.withdogandcat.domain.chat.dto.UserInfoDto;
+import com.example.withdogandcat.domain.chat.dto.*;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.hashtag.*;
+import com.example.withdogandcat.domain.hashtag.*;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
 import com.example.withdogandcat.domain.mypage.MyPageService;
-import com.example.withdogandcat.domain.pet.PetService;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.User;
@@ -32,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final TagService tagService;
+    private final ChatRoomTagService chatRoomTagService;
     private final MyPageService myPageService;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
@@ -104,7 +100,7 @@ public class ChatRoomService {
         List<ChatRoomEntity> chatRoomEntities = chatRoomJpaRepository.findAll();
         List<ChatRoomListDto> chatRoomListDtos = chatRoomEntities.stream()
                 .map(room -> {
-                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId());
+                    List<TagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
                 })

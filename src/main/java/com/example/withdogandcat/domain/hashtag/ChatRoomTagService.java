@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.chat.hashtag;
+package com.example.withdogandcat.domain.hashtag;
 
 import com.example.withdogandcat.domain.chat.dto.ChatRoomDto;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
@@ -18,8 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TagService {
+public class ChatRoomTagService {
 
+    private final TagService tagService;
     private final TagRepository tagRepository;
     private final ChatRoomJpaRepository chatRoomRepository;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
@@ -46,28 +47,20 @@ public class TagService {
             throw new BaseException(BaseResponseStatus.EXCEED_MAX_TAG_LIMIT);
         }
 
-        Tag tag = tagRepository.findByName(tagName)
-                .orElseGet(() -> tagRepository.save(new Tag(tagName)));
+        // TagService를 사용하여 태그를 찾거나 새로 생성
+        Tag tag = tagService.getOrCreateTag(tagName);
+
+        // 중복 태그 검사
+        if (chatRoomTagMapRepository.findByChatRoomAndTag(chatRoom, tag).isPresent()) {
+            throw new BaseException(BaseResponseStatus.ALREADY_EXISTS);
+        }
 
         ChatRoomTagMap chatRoomTagMap = ChatRoomTagMap.builder()
                 .chatRoom(chatRoom)
                 .tag(tag)
                 .build();
-
         chatRoomTagMapRepository.save(chatRoomTagMap);
 
-        return TagDto.from(tag);
-    }
-
-    // 새 해시태그 생성 (독립적 태그)
-    @Transactional
-    public TagDto createTag(TagDto tagDto) {
-        // 해시태그 중복 확인
-        tagRepository.findByName(tagDto.getName()).ifPresent(t -> {
-            throw new IllegalArgumentException("이미 존재하는 해시태그");
-        });
-
-        Tag tag = tagRepository.save(new Tag(tagDto.getName()));
         return TagDto.from(tag);
     }
 
@@ -88,13 +81,6 @@ public class TagService {
         }
 
         chatRoomTagMapRepository.delete(chatRoomTagMap);
-    }
-
-
-    // 모든 태그 조회
-    @Transactional(readOnly = true)
-    public List<TagDto> getAllTags() {
-        return tagRepository.findAll().stream().map(this::createTagDto).collect(Collectors.toList());
     }
 
     // 특정 채팅방의 태그 조회
@@ -119,20 +105,5 @@ public class TagService {
                 .collect(Collectors.toList());
     }
 
-    // 인기 태그 목록을 반환하는 메소드 (상위 5개)
-    public List<TagDto> getPopularTags() {
-        Pageable limit = PageRequest.of(0, 5);
-        List<Object[]> tagFrequencies = tagRepository.findTagUsageFrequency(limit);
-        return tagFrequencies.stream()
-                .map(obj -> new TagDto((Long) obj[0], (String) obj[1]))
-                .collect(Collectors.toList());
-    }
-
-    private TagDto createTagDto(Tag tag) {
-        TagDto dto = new TagDto();
-        dto.setId(tag.getId());
-        dto.setName(tag.getName());
-        return dto;
-    }
 
 }

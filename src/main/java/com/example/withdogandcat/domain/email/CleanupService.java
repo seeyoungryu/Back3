@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.email;
 
+import com.example.withdogandcat.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

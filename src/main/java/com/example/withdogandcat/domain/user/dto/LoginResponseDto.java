@@ -1,8 +1,8 @@
 package com.example.withdogandcat.domain.user.dto;
 
 import com.example.withdogandcat.domain.user.entity.User;
-import lombok.Builder;
-import lombok.Getter;
+import com.example.withdogandcat.domain.user.entity.UserRole;
+import lombok.*;
 
 @Getter
 public class LoginResponseDto {

@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.chat.hashtag;
+package com.example.withdogandcat.domain.hashtag;
 
 import com.example.withdogandcat.global.common.Timestamped;
 import jakarta.persistence.*;
@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "tag")
+@Table(name = "tags")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag extends Timestamped {
 

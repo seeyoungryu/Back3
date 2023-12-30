@@ -28,7 +28,7 @@ public enum BaseResponseStatus {
     INVALID_TOKEN(false, 4104, "토큰이 유효하지 않습니다."),
     ACCESS_DENIED(false, 4105, "접근 권한이 없습니다."),
     NOT_FOUND_TOKEN(false, 4106, "토큰을 찾을 수 없습니다."),
-    INVALID_REFRESH_JWT(false, 4107, "잘못된 리르레시 토큰"),
+    INVALID_REFRESH_JWT(false, 4107, "잘못된 리프레시 토큰"),
 
     // 접근 및 상태 관련
     EMAIL_DIFFERENT_FORMAT(false, 4200, "이메일 형식이 올바르지 않습니다."),
@@ -49,7 +49,7 @@ public enum BaseResponseStatus {
     EXCEED_MAX_TAG_LIMIT(false, 4505, "등록 가능한 해시태그의 수를 넘었습니다."),
     EXCEED_MAX_SHOP_LIMIT(false, 4506, "등록 가능한 가게의 수를 넘었습니다."),
     EXCEED_MAX_PET_LIMIT(false, 4507, "등록 가능한 반려동물의 수를 넘었습니다."),
-    ALREADY_REVIEWED(false, 4508, "이미 리뷰를 작성하셨습니다."),
+    ALREADY_EXISTS(false, 4508, "이미 존재 합니다."),
 
     // 조회 실패 (4600번대)
     RETRIEVAL_FAILED(false, 4600, "조회에 실패하였습니다."),

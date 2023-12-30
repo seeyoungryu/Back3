@@ -31,6 +31,16 @@ public class LikeService {
         reviewLikeRepository.save(new Like(user, review));
     }
 
+    @Transactional(readOnly = true)
+    public boolean isLiked(Long userId, Long reviewId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.REVIEW_NOT_FOUND));
+
+        return reviewLikeRepository.findByUserAndReview(user, review).isPresent();
+    }
+
     @Transactional
     public void deleteLike(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
