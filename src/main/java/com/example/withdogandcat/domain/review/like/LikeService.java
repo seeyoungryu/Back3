@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.like;
+package com.example.withdogandcat.domain.review.like;
 
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.entity.Review;

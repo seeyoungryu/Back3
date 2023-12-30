@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.like;
+package com.example.withdogandcat.domain.review.like;
 
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;

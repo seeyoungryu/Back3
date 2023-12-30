@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.review;
 
-import com.example.withdogandcat.domain.like.LikeRepository;
+import com.example.withdogandcat.domain.review.like.LikeRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
@@ -11,6 +11,7 @@ import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class ReviewService {
     private final LikeRepository likeRepository;
 
     @Transactional
-    public BaseResponse<ReviewResponseDto> createReview(Long userId, Long shopId, ReviewRequestDto requestDto) {
+    public BaseResponse<ReviewResponseDto> createReview(Long userId, Long shopId, @Valid ReviewRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
         Shop shop = shopRepository.findById(shopId)

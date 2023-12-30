@@ -11,7 +11,7 @@ import com.example.withdogandcat.domain.chat.hashtag.TagRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.service.ChatMessageService;
-import com.example.withdogandcat.domain.like.LikeRepository;
+import com.example.withdogandcat.domain.review.like.LikeRepository;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.shop.ShopRepository;
