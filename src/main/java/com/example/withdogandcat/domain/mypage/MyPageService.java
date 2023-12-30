@@ -79,3 +79,4 @@ public class MyPageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 }
+
