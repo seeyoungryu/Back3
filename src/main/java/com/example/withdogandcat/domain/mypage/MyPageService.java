@@ -36,7 +36,7 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private final PetLikeRepository petLikeRepository;
+  
 
     @Transactional(readOnly = true)
     public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
