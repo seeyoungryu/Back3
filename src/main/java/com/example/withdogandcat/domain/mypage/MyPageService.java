@@ -3,11 +3,11 @@ package com.example.withdogandcat.domain.mypage;
 
 import com.example.withdogandcat.domain.chat.dto.ChatRoomListDto;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.hashtag.ChatRoomTagService;
+import com.example.withdogandcat.domain.chat.hashtag.TagDto;
+import com.example.withdogandcat.domain.chat.hashtag.TagService;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.service.ChatMessageService;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
-import com.example.withdogandcat.domain.hashtag.TagDto;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MyPageService {
 
-    private final ChatRoomTagService chatRoomTagService;
+    private final TagService tagService;
     private final PetRepository petRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
@@ -45,7 +45,7 @@ public class MyPageService {
         List<ChatRoomEntity> userRooms = chatRoomJpaRepository.findByCreatorId(user);
         List<ChatRoomListDto> chatRoomListDtos = userRooms.stream()
                 .map(room -> {
-                    List<TagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
+                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
                 }).collect(Collectors.toList());

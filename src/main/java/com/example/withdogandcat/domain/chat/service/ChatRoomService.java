@@ -2,7 +2,7 @@ package com.example.withdogandcat.domain.chat.service;
 
 import com.example.withdogandcat.domain.chat.dto.*;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.hashtag.*;
+import com.example.withdogandcat.domain.chat.hashtag.*;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final ChatRoomTagService chatRoomTagService;
+    private final TagService tagService;
     private final MyPageService myPageService;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
@@ -100,7 +100,7 @@ public class ChatRoomService {
         List<ChatRoomEntity> chatRoomEntities = chatRoomJpaRepository.findAll();
         List<ChatRoomListDto> chatRoomListDtos = chatRoomEntities.stream()
                 .map(room -> {
-                    List<TagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
+                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
                 })
