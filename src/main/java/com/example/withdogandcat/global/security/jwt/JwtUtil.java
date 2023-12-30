@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -53,28 +54,48 @@ public class JwtUtil {
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + ACCESS_EXPIRATION_TIME);
 
-        return Jwts.builder()
+        String jti = UUID.randomUUID().toString();
+        String accessToken = Jwts.builder()
                 .setSubject(username)
+                .setId(jti)
                 .claim(AUTHORIZATION_KEY, role)
-                .setIssuedAt(now)
-                .setExpiration(expireDate)
-                .signWith(key, signatureAlgorithm)
-                .compact();
-    }
-
-    public String createRefreshToken(String username) {
-        Date now = new Date();
-        Date expireDate = new Date(now.getTime() + REFRESH_EXPIRATION_TIME);
-
-        String refreshToken = Jwts.builder()
-                .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expireDate)
                 .signWith(key, signatureAlgorithm)
                 .compact();
 
         redisTemplate.opsForValue().set(
-                username,
+                username + "_access_jti",
+                jti,
+                ACCESS_EXPIRATION_TIME,
+                TimeUnit.MILLISECONDS
+        );
+
+        return accessToken;
+    }
+
+    public String createRefreshToken(String username) {
+        Date now = new Date();
+        Date expireDate = new Date(now.getTime() + REFRESH_EXPIRATION_TIME);
+
+        String jti = UUID.randomUUID().toString();
+        String refreshToken = Jwts.builder()
+                .setSubject(username)
+                .setId(jti)
+                .setIssuedAt(now)
+                .setExpiration(expireDate)
+                .signWith(key, signatureAlgorithm)
+                .compact();
+
+        redisTemplate.opsForValue().set(
+                username + "_jti",
+                jti,
+                REFRESH_EXPIRATION_TIME,
+                TimeUnit.MILLISECONDS
+        );
+
+        redisTemplate.opsForValue().set(
+                username + "_refresh",
                 refreshToken,
                 REFRESH_EXPIRATION_TIME,
                 TimeUnit.MILLISECONDS
@@ -93,15 +114,24 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // HttpServletRequest 헤더 추출
     public String resolveToken(HttpServletRequest req) {
         return req.getHeader(AUTHORIZATION_HEADER);
     }
 
-    public boolean validateToken(String token) throws BaseException {
+    public boolean validateToken(String token, boolean isRefreshToken) throws BaseException {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            String username = claims.getSubject();
+            String jti = claims.getId();
+
+            if (!isRefreshToken) {
+                String redisJti = redisTemplate.opsForValue().get(username + "_access_jti");
+                if (redisJti == null || !jti.equals(redisJti)) {
+                    throw new BaseException(BaseResponseStatus.INVALID_TOKEN);
+                }
+            }
             return true;
+
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid token: {}", e.getMessage());
             throw new BaseException(BaseResponseStatus.INVALID_TOKEN);
@@ -114,6 +144,15 @@ public class JwtUtil {
         } catch (IllegalArgumentException e) {
             logger.error("Token not found: {}", e.getMessage());
             throw new BaseException(BaseResponseStatus.NOT_FOUND_TOKEN);
+        }
+    }
+
+    public String getJtiFromToken(String token) throws BaseException {
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            return claims.getId();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new BaseException(BaseResponseStatus.INVALID_TOKEN);
         }
     }
 
@@ -130,4 +169,16 @@ public class JwtUtil {
         response.setHeader(AUTHORIZATION_HEADER, accessToken);
         response.setHeader(REFRESH_TOKEN_HEADER, refreshToken);
     }
+
+    public String getStoredJtiForUser(String username) {
+        return redisTemplate.opsForValue().get(username + "_access_jti");
+    }
+
+    public void logout(String username) {
+        redisTemplate.delete(username + "_access_jti");
+        redisTemplate.delete(username + "_jti");
+        redisTemplate.delete(username + "_refresh");
+        redisTemplate.delete("active_session:" + username);
+    }
+
 }

@@ -7,6 +7,7 @@ import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
+import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
 
+    private final JwtUtil jwtUtil;
     private final UserService userService;
     private final EmailService emailService;
     private final UserDeletionService userDeletionService;
@@ -44,4 +46,17 @@ public class UserController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
+    /**
+     * 로그아웃
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse<Void>> logout(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+
+        jwtUtil.logout(username);
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "로그아웃 성공", null));
+    }
 }
+

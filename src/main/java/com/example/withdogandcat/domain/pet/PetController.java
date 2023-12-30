@@ -26,18 +26,7 @@ public class PetController {
 
     private final PetService petService;
 
-
-    @GetMapping("/mypage")
-    @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<BaseResponse<List<PetResponseDto>>> getUserPets(Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User currentUser = userDetails.getUser();
-        List<PetResponseDto> pets = petService.getUserPets(currentUser).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
-    }
-
     @PostMapping("")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<PetResponseDto>> createPet(
             @Valid @ModelAttribute PetRequestDto petRequestDto,
             @RequestPart("imageUrl") List<MultipartFile> imageFiles,
@@ -61,7 +50,6 @@ public class PetController {
     }
 
     @PutMapping("/{petId}")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<PetResponseDto>> updatePet(
             @PathVariable("petId") Long petId,
             @Valid @ModelAttribute PetRequestDto petRequestDto,
@@ -74,7 +62,6 @@ public class PetController {
 
 
     @DeleteMapping("/{petId}")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<BaseResponse<Void>> deletePet(@PathVariable Long petId, @LoginAccount User currentUser) {
         petService.deletePet(petId, currentUser);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));

@@ -32,7 +32,7 @@ public class ChatController {
     public void message(ChatMessage message, StompHeaderAccessor headerAccessor) {
 
         String token = headerAccessor.getFirstNativeHeader(JwtUtil.AUTHORIZATION_HEADER);
-        jwtUtil.validateToken(token);
+        jwtUtil.validateToken(token, false);
         String userEmail = jwtUtil.getUserEmailFromToken(token);
 
         if (!chatRoomRepository.existsById(message.getRoomId())) {

@@ -9,6 +9,7 @@ import com.example.withdogandcat.domain.chat.hashtag.*;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
+import com.example.withdogandcat.domain.mypage.MyPageService;
 import com.example.withdogandcat.domain.pet.PetService;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.user.UserRepository;
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final PetService petService;
     private final TagService tagService;
+    private final MyPageService myPageService;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -98,27 +99,6 @@ public class ChatRoomService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 삭제 성공", null);
     }
 
-    /**
-     * 사용자가 생성한 채팅방 목록 조회
-     */
-    @Transactional(readOnly = true)
-    public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
-
-        List<ChatRoomEntity> userRooms = chatRoomJpaRepository.findByCreatorId(user);
-        List<ChatRoomListDto> chatRoomListDtos = userRooms.stream()
-                .map(room -> {
-                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId()); // 태그 조회
-                    return ChatRoomMapper.toChatRoomListDto(
-                            room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
-                })
-                .collect(Collectors.toList());
-
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용자가 생성한 채팅방 목록 조회 성공", chatRoomListDtos);
-    }
-
-
     @Transactional(readOnly = true)
     public BaseResponse<List<ChatRoomListDto>> findAllRoomListDtos() {
         List<ChatRoomEntity> chatRoomEntities = chatRoomJpaRepository.findAll();
@@ -145,7 +125,7 @@ public class ChatRoomService {
         List<UserInfoDto> memberDtos = members.stream()
                 .map(user -> {
                     try {
-                        BaseResponse<List<PetResponseDto>> petsResponse = petService.getUserPets(user);
+                        BaseResponse<List<PetResponseDto>> petsResponse = myPageService.getUserPets(user);
                         List<PetResponseDto> petDtos = petsResponse.getResult();
                         return new UserInfoDto(
                                 user.getUserId(),
