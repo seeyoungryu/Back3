@@ -41,9 +41,6 @@ public class Pet {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pet")
-    private Set<PetLike> petLikes;
-
     @Builder
     public Pet(User user, String petName, PetGender petGender,
                PetKind petKind, String petInfo,
