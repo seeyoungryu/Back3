@@ -4,13 +4,17 @@ import com.example.withdogandcat.domain.Image.Image;
 import com.example.withdogandcat.domain.Image.ImageRepository;
 import com.example.withdogandcat.domain.Image.ImageS3Service;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMap;
-import com.example.withdogandcat.domain.chat.hashtag.ChatRoomTagMapRepository;
-import com.example.withdogandcat.domain.chat.hashtag.Tag;
-import com.example.withdogandcat.domain.chat.hashtag.TagRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.service.ChatMessageService;
+import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTag;
+import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagMap;
+import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagMapRepository;
+import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagRepository;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTag;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMap;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMapRepository;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagRepository;
 import com.example.withdogandcat.domain.review.like.LikeRepository;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.review.ReviewRepository;
@@ -31,11 +35,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserDeletionService {
 
-    /**
-     * 회원탈퇴
-     */
-
-    private final TagRepository tagRepository;
     private final PetRepository petRepository;
     private final LikeRepository likeRepository;
     private final ImageS3Service imageS3Service;
@@ -44,12 +43,18 @@ public class UserDeletionService {
     private final PasswordEncoder passwordEncoder;
     private final ImageRepository imageRepository;
     private final ReviewRepository reviewRepository;
+    private final ShopTagRepository shopTagRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
+    private final ShopTagMapRepository shopTagMapRepository;
+    private final ChatRoomTagRepository chatRoomTagRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
+    /**
+     * 회원탈퇴
+     */
     @Transactional
     public void deleteAccount(Long userId, String inputPassword) {
         User user = userRepository.findById(userId)
@@ -60,15 +65,24 @@ public class UserDeletionService {
         }
 
         likeRepository.deleteByUser(user);
-
         reviewRepository.deleteByUser(user);
 
         List<Shop> userShops = shopRepository.findByUser(user);
         for (Shop shop : userShops) {
+            List<ShopTagMap> tagMaps = shopTagMapRepository.findByShop(shop);
+            for (ShopTagMap tagMap : tagMaps) {
+                ShopTag tag = tagMap.getShopTag();
+                shopTagMapRepository.delete(tagMap);
+
+                long count = shopTagMapRepository.countByShopTag(tag);
+                if (count == 0) {
+                    shopTagRepository.delete(tag);
+                }
+            }
             reviewRepository.deleteByShop(shop);
         }
+
         shopRepository.deleteAll(userShops);
-        shopRepository.deleteByUser(user);
 
         List<Image> userImages = imageRepository.findByUserId(userId);
         imageS3Service.deleteImages(userImages);
@@ -78,23 +92,19 @@ public class UserDeletionService {
         chatMessageService.deleteAllMessagesByUser(userId);
 
         List<ChatRoomEntity> userChatRooms = chatRoomJpaRepository.findByCreatorId(user);
-
         for (ChatRoomEntity room : userChatRooms) {
-
             List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(room);
-
             for (ChatRoomTagMap tagMap : tagMaps) {
-                Tag tag = tagMap.getTag();
+                ChatRoomTag tag = tagMap.getChatRoomTag();
                 chatRoomTagMapRepository.delete(tagMap);
 
-                long count = chatRoomTagMapRepository.countByTag(tag);
+                long count = chatRoomTagMapRepository.countByChatRoomTag(tag);
                 if (count == 0) {
-                    tagRepository.delete(tag);
+                    chatRoomTagRepository.delete(tag);
                 }
             }
 
             chatMessageService.deleteMessages(room.getRoomId());
-
             chatRoomRepository.deleteRoom(room.getRoomId());
             chatRoomJpaRepository.delete(room);
         }
@@ -102,5 +112,4 @@ public class UserDeletionService {
         redisTemplate.delete(user.getEmail());
         userRepository.delete(user);
     }
-
 }

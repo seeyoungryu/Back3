@@ -5,7 +5,7 @@ import com.example.withdogandcat.domain.chat.dto.ChatRoomListDto;
 import com.example.withdogandcat.domain.chat.dto.CreatorDto;
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.hashtag.TagDto;
+import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagDto;
 import com.example.withdogandcat.domain.user.entity.User;
 
 import java.util.List;
@@ -26,10 +26,9 @@ public class ChatRoomMapper {
                 .build();
     }
 
-
     public static ChatRoomListDto toChatRoomListDto(ChatRoomEntity chatRoomEntity,
                                                     ChatMessage lastTalkMessage,
-                                                    List<TagDto> tags) {
+                                                    List<ChatRoomTagDto> tags) {
         return ChatRoomListDto.builder()
                 .roomId(chatRoomEntity.getRoomId())
                 .name(chatRoomEntity.getName())

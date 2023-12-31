@@ -2,10 +2,10 @@ package com.example.withdogandcat.domain.chat.service;
 
 import com.example.withdogandcat.domain.chat.dto.*;
 import com.example.withdogandcat.domain.chat.entity.ChatRoomEntity;
-import com.example.withdogandcat.domain.chat.hashtag.*;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomJpaRepository;
 import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
+import com.example.withdogandcat.domain.hashtag.chattag.*;
 import com.example.withdogandcat.domain.mypage.MyPageService;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.user.UserRepository;
@@ -28,14 +28,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final TagService tagService;
     private final MyPageService myPageService;
-    private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomTagService chatRoomTagService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final ChatRoomTagRepository chatRoomTagRepository;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
     private final int MAX_ROOM_COUNT = 2;
@@ -78,19 +78,19 @@ public class ChatRoomService {
 
         List<ChatRoomTagMap> tagMaps = chatRoomTagMapRepository.findByChatRoom(chatRoomEntity);
         for (ChatRoomTagMap tagMap : tagMaps) {
-            Tag tag = tagMap.getTag();
+            ChatRoomTag chatRoomTag = tagMap.getChatRoomTag();
             chatRoomTagMapRepository.delete(tagMap);
 
-            long count = chatRoomTagMapRepository.countByTag(tag);
+            long count = chatRoomTagMapRepository.countByChatRoomTag(chatRoomTag);
             if (count == 0) {
-                tagRepository.delete(tag);
+                chatRoomTagRepository.delete(chatRoomTag);
             }
         }
 
         redisTemplate.delete("chatRoom:" + roomId + ":members");
         chatMessageService.deleteMessages(roomId);
         chatRoomRepository.deleteRoom(roomId);
-        chatRoomJpaRepository.deleteByRoomId(roomId);
+        chatRoomJpaRepository.delete(chatRoomEntity);
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 삭제 성공", null);
     }
@@ -100,7 +100,7 @@ public class ChatRoomService {
         List<ChatRoomEntity> chatRoomEntities = chatRoomJpaRepository.findAll();
         List<ChatRoomListDto> chatRoomListDtos = chatRoomEntities.stream()
                 .map(room -> {
-                    List<TagDto> tags = tagService.getTagsForChatRoom(room.getRoomId());
+                    List<ChatRoomTagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
                 })

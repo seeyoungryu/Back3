@@ -16,11 +16,20 @@ public class ShopRequestDto {
     @NotBlank(message = "가게명을 입력해주세요")
     private String shopName;
 
-    @NotBlank(message = "영업시간을 입력해주세요")
-    private String shopTime;
+    @NotBlank(message = "영업 시작 시간을 입력해주세요")
+    private String shopStartTime;
 
-    @NotBlank(message = "전화번호를 입력해주세요")
-    private String shopTel;
+    @NotBlank(message = "영업 종료 시간을 입력해주세요")
+    private String shopEndTime;
+
+    @NotBlank(message = "전화번호 첫 부분을 입력해주세요")
+    private String shopTel1;
+
+    @NotBlank(message = "전화번호 중간 부분을 입력해주세요")
+    private String shopTel2;
+
+    @NotBlank(message = "전화번호 마지막 부분을 입력해주세요")
+    private String shopTel3;
 
     @NotBlank(message = "주소를 입력해주세요")
     private String shopAddress;
@@ -32,12 +41,16 @@ public class ShopRequestDto {
 
     private List<MultipartFile> imageFiles;
 
-    public ShopRequestDto(String shopName, String shopTime, String shopTel,
+    public ShopRequestDto(String shopName, String shopStartTime, String shopEndTime,
+                          String shopTel1, String shopTel2, String shopTel3,
                           String shopAddress, ShopType shopType, String shopDescribe,
                           List<MultipartFile> imageFiles) {
         this.shopName = shopName;
-        this.shopTime = shopTime;
-        this.shopTel = shopTel;
+        this.shopStartTime = shopStartTime;
+        this.shopEndTime = shopEndTime;
+        this.shopTel1 = shopTel1;
+        this.shopTel2 = shopTel2;
+        this.shopTel3 = shopTel3;
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;

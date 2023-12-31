@@ -58,6 +58,9 @@ public enum BaseResponseStatus {
     CHATROOM_NOT_FOUND(false, 4603, "채팅방을 찾을 수 없습니다."),
     PET_NOT_FOUND(false,4604,"반려동물을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(false, 4607, "후기를 찾을 수 없습니다."),
+    TAG_NOT_FOUND(false, 4608, "해시태그를 찾을 수 없습니다."),
+    CHATROOM_TAG_NOT_FOUND(false, 4609, "채팅방의 해시태그를 찾을 수 없습니다."),
+    SHOP_TAG_NOT_FOUND(false, 4610, "가게의 해시태그를 찾을 수 없습니다."),
 
     /**
      * 서버 오류 (5000번대)

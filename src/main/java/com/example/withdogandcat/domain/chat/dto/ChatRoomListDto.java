@@ -1,7 +1,7 @@
 package com.example.withdogandcat.domain.chat.dto;
 
 import com.example.withdogandcat.domain.chat.entity.ChatMessage;
-import com.example.withdogandcat.domain.chat.hashtag.TagDto;
+import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +20,11 @@ public class ChatRoomListDto {
     private String name;
     private CreatorDto creator;
     private ChatMessage lastTalkMessage;
-    private List<TagDto> tags;
+    private List<ChatRoomTagDto> tags;
 
 
     @Builder
-    public ChatRoomListDto(String roomId, String name, CreatorDto creator, ChatMessage lastTalkMessage, List<TagDto> tags) {
+    public ChatRoomListDto(String roomId, String name, CreatorDto creator, ChatMessage lastTalkMessage, List<ChatRoomTagDto> tags) {
         this.roomId = roomId;
         this.name = name;
         this.creator = creator;

@@ -14,22 +14,32 @@ public class ShopResponseDto {
     private final Long shopId;
     private final Long userId;
     private final String shopName;
-    private final String shopTime;
-    private final String shopTel;
+
+    private final String shopStartTime;
+    private final String shopEndTime;
+
+    private final String shopTel1;
+    private final String shopTel2;
+    private final String shopTel3;
+
     private final String shopAddress;
     private final ShopType shopType;
     private final String shopDescribe;
     private final List<String> imageUrls;
 
     @Builder
-    public ShopResponseDto(Long shopId, Long userId, String shopName, String shopTime,
-                           String shopTel, String shopAddress, ShopType shopType,
-                           String shopDescribe, List<String> imageUrls) {
+    public ShopResponseDto(Long shopId, Long userId, String shopName, String shopStartTime,
+                           String shopEndTime, String shopTel1, String shopTel2, String shopTel3,
+                           String shopAddress, ShopType shopType, String shopDescribe,
+                           List<String> imageUrls) {
         this.shopId = shopId;
         this.userId = userId;
         this.shopName = shopName;
-        this.shopTime = shopTime;
-        this.shopTel = shopTel;
+        this.shopStartTime = shopStartTime;
+        this.shopEndTime = shopEndTime;
+        this.shopTel1 = shopTel1;
+        this.shopTel2 = shopTel2;
+        this.shopTel3 = shopTel3;
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
@@ -37,7 +47,6 @@ public class ShopResponseDto {
     }
 
     public static ShopResponseDto from(Shop shop) {
-
         List<String> imageUrls = shop.getImages().stream()
                 .map(image -> image.getStoredImagePath())
                 .collect(Collectors.toList());
@@ -46,8 +55,11 @@ public class ShopResponseDto {
                 .shopId(shop.getShopId())
                 .userId(shop.getUser().getUserId())
                 .shopName(shop.getShopName())
-                .shopTime(shop.getShopTime())
-                .shopTel(shop.getShopTel())
+                .shopStartTime(shop.getShopStartTime())
+                .shopEndTime(shop.getShopEndTime())
+                .shopTel1(shop.getShopTel1())
+                .shopTel2(shop.getShopTel2())
+                .shopTel3(shop.getShopTel3())
                 .shopAddress(shop.getShopAddress())
                 .shopType(shop.getShopType())
                 .shopDescribe(shop.getShopDescribe())

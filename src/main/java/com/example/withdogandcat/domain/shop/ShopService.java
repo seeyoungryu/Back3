@@ -2,6 +2,10 @@ package com.example.withdogandcat.domain.shop;
 
 import com.example.withdogandcat.domain.Image.Image;
 import com.example.withdogandcat.domain.Image.ImageS3Service;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTag;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMap;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMapRepository;
+import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagRepository;
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
@@ -29,6 +33,8 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final ImageS3Service imageS3Service;
     private final ReviewRepository reviewRepository;
+    private final ShopTagRepository shopTagRepository;
+    private final ShopTagMapRepository shopTagMapRepository;
 
     private static final int MAX_SHOPS_PER_USER = 5;
 
@@ -109,8 +115,11 @@ public class ShopService {
 
         shop.updateShopDetails(
                 shopRequestDto.getShopName(),
-                shopRequestDto.getShopTime(),
-                shopRequestDto.getShopTel(),
+                shopRequestDto.getShopStartTime(),
+                shopRequestDto.getShopEndTime(),
+                shopRequestDto.getShopTel1(),
+                shopRequestDto.getShopTel2(),
+                shopRequestDto.getShopTel3(),
                 shopRequestDto.getShopType(),
                 shopRequestDto.getShopAddress(),
                 shopRequestDto.getShopDescribe());
@@ -120,14 +129,26 @@ public class ShopService {
 
     // 가게 삭제
     @Transactional
-    public BaseResponse<Void> deleteShop(Long shopId) {
+    public void deleteShop(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
+        List<ShopTagMap> relatedTags = shopTagMapRepository.findByShop(shop);
+
+        for (ShopTagMap tagMap : relatedTags) {
+            ShopTag tag = tagMap.getShopTag();
+            shopTagMapRepository.delete(tagMap);
+
+            // 태그가 다른 가게에 사용되지 않는 경우 태그 삭제
+            if (shopTagMapRepository.countByShopTag(tag) == 0) {
+                shopTagRepository.delete(tag);
+            }
+        }
+
+        // 나머지 가게 관련 데이터 삭제
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
     // 카테고리별 가게 조회

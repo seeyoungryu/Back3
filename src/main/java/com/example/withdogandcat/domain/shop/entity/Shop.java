@@ -23,8 +23,14 @@ public class Shop {
     private Long shopId;
 
     private String shopName;
-    private String shopTime;
-    private String shopTel;
+
+    private String shopStartTime;
+    private String shopEndTime;
+
+    private String shopTel1;
+    private String shopTel2;
+    private String shopTel3;
+
     private String shopAddress;
     private String shopDescribe;
 
@@ -39,12 +45,15 @@ public class Shop {
     private List<Image> images = new ArrayList<>();
 
     @Builder
-    public Shop(String shopName, String shopTime, String shopTel,
-                String shopAddress, ShopType shopType,
+    public Shop(String shopName, String shopStartTime, String shopEndTime, String shopTel1,
+                String shopTel2, String shopTel3, String shopAddress, ShopType shopType,
                 String shopDescribe, User user, List<Image> images) {
         this.shopName = shopName;
-        this.shopTime = shopTime;
-        this.shopTel = shopTel;
+        this.shopStartTime = shopStartTime;
+        this.shopEndTime = shopEndTime;
+        this.shopTel1 = shopTel1;
+        this.shopTel2 = shopTel2;
+        this.shopTel3 = shopTel3;
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
@@ -55,8 +64,11 @@ public class Shop {
     public static Shop of(ShopRequestDto shopRequestDto, User user) {
         return Shop.builder()
                 .shopName(shopRequestDto.getShopName())
-                .shopTime(shopRequestDto.getShopTime())
-                .shopTel(shopRequestDto.getShopTel())
+                .shopStartTime(shopRequestDto.getShopStartTime())
+                .shopEndTime(shopRequestDto.getShopEndTime())
+                .shopTel1(shopRequestDto.getShopTel1())
+                .shopTel2(shopRequestDto.getShopTel2())
+                .shopTel3(shopRequestDto.getShopTel3())
                 .shopAddress(shopRequestDto.getShopAddress())
                 .shopType(shopRequestDto.getShopType())
                 .shopDescribe(shopRequestDto.getShopDescribe())
@@ -65,12 +77,15 @@ public class Shop {
                 .build();
     }
 
-    public void updateShopDetails(String shopName, String shopTime, String shopTel,
-                                  ShopType shopType, String shopAddress,
+    public void updateShopDetails(String shopName, String shopStartTime, String shopEndTime, String shopTel1,
+                                  String shopTel2, String shopTel3, ShopType shopType, String shopAddress,
                                   String shopDescribe) {
         this.shopName = shopName;
-        this.shopTime = shopTime;
-        this.shopTel = shopTel;
+        this.shopStartTime = shopStartTime;
+        this.shopEndTime = shopEndTime;
+        this.shopTel1 = shopTel1;
+        this.shopTel2 = shopTel2;
+        this.shopTel3 = shopTel3;
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
