@@ -38,10 +38,6 @@ public class User {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    private boolean emailVerified;
-    private LocalDateTime expiryDate;
-    private boolean registrationComplete;
-
     @Builder
     private User(String email, String password, String phoneNumber, String nickname, UserRole role) {
         this.email = email;
