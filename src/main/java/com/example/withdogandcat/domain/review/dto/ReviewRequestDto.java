@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class ReviewRequestDto {
 
     @NotBlank(message = "댓글 내용은 비어 있을 수 없습니다.")
-    @Size(min = 2, max = 35, message = "댓글은 최소 2자 이상, 최대 35자 이하로 작성해주세요.")
+    @Size(min = 2, max = 50, message = "댓글은 최소 2자 이상, 최대 50자 이하로 작성해주세요.")
     private String comment;
 }
