@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,9 +41,20 @@ public class PetController {
                 .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", createdPet));
     }
 
+
+    //nextpage 반영 전 코드
+//    @GetMapping("")
+//    public ResponseEntity<BaseResponse<Page<PetResponseDto>>> getAllPets(Pageable pageable) {
+//        Page<PetResponseDto> pets = petService.getAllPetsSortedByPetLikes(pageable).getResult();
+//        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
+//    }
+
+
+
+    //페이지네이션 (프론트 요구사항:nextpage 반영)
     @GetMapping("")
-    public ResponseEntity<BaseResponse<Page<PetResponseDto>>> getAllPets(Pageable pageable) {
-        Page<PetResponseDto> pets = petService.getAllPetsSortedByPetLikes(pageable).getResult();
+    public ResponseEntity<BaseResponse<Map<String, Object>>> getAllPets(Pageable pageable) {
+        Map<String, Object> pets = petService.getAllPetsSortedByPetLikes(pageable).getResult();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
     }
 

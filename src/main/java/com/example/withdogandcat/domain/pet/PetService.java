@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -47,17 +49,40 @@ public class PetService {
     }
 
 
-    // 좋아요 순으로 정렬된 전체 펫 조회 (페이지네이션)
+
+    //nextpage 반영 전 코드
+//    // 좋아요 순으로 정렬된 전체 펫 조회 (페이지네이션)
+//    @Transactional(readOnly = true)
+//    public BaseResponse<Page<PetResponseDto>> getAllPetsSortedByPetLikes(Pageable pageable) {
+//        Page<PetResponseDto> pets = petRepository.findAllOrderByPetLikes(pageable)
+//                .map(objects -> {
+//                    Pet pet = (Pet) objects[0];
+//                    Long petLikes = (Long) objects[1];
+//                    return PetResponseDto.from(pet, petLikes);
+//                });
+//        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets);
+//    }
+
+
+
+    //페이지네이션 (프론트 요구사항:nextpage 반영)
+
     @Transactional(readOnly = true)
-    public BaseResponse<Page<PetResponseDto>> getAllPetsSortedByPetLikes(Pageable pageable) {
-        Page<PetResponseDto> pets = petRepository.findAllOrderByPetLikes(pageable)
+    public BaseResponse<Map<String, Object>> getAllPetsSortedByPetLikes(Pageable pageable) {
+        Page<PetResponseDto> petsPage = petRepository.findAllOrderByPetLikes(pageable)
                 .map(objects -> {
                     Pet pet = (Pet) objects[0];
                     Long petLikes = (Long) objects[1];
                     return PetResponseDto.from(pet, petLikes);
                 });
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", petsPage.getContent());
+        response.put("nextPage", petsPage.hasNext() ? petsPage.getNumber() + 2 : null); // 페이지 인덱스는 0부터 시작하므로 +2를 합니다.
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", response);
     }
+
 
 
     // 상세조회 (펫 단건)
