@@ -14,4 +14,7 @@ public interface PetLikeRepository extends JpaRepository<PetLike, Long> {
     void deleteByUser(User user);
 
     Long countByPet(Pet pet);
+
+    // Pet 엔티티와 연관된 모든 PetLike 엔티티를 삭제하는 메서드
+    void deleteByPet(Pet pet);
 }

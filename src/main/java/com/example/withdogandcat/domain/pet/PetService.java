@@ -130,6 +130,24 @@ public class PetService {
     }
 
 
+
+    //petlikes 반영 전 삭제로직
+
+//    @Transactional
+//    public BaseResponse<Void> deletePet(Long petId, User currentUser) {
+//        Pet pet = petRepository.findById(petId)
+//                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
+//
+//        if (!pet.getUser().getUserId().equals(currentUser.getUserId())) {
+//            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
+//        }
+//
+//        imageS3Service.deleteImages(pet.getImages());
+//        petRepository.delete(pet);
+//        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
+//    }
+
+
     @Transactional
     public BaseResponse<Void> deletePet(Long petId, User currentUser) {
         Pet pet = petRepository.findById(petId)
@@ -139,9 +157,14 @@ public class PetService {
             throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
         }
 
+        // pet_likes 테이블에서 해당 Pet과 관련된 레코드를 먼저 삭제
+        petLikeRepository.deleteByPet(pet);
+
+        // Pet 엔티티와 관련된 이미지를 삭제
         imageS3Service.deleteImages(pet.getImages());
         petRepository.delete(pet);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
+
 
 }
