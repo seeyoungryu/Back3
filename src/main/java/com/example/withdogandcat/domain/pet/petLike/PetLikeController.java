@@ -31,6 +31,14 @@ public class PetLikeController {
         petLikeService.deletePetLike(petId, userId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "좋아요 삭제 성공", null));
     }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<Boolean>> checkPetLikeStatus(@PathVariable("petId") Long petId, Authentication authentication) {
+        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
+        boolean isPetLiked = petLikeService.isPetLiked(userId, petId);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공",isPetLiked));
+    }
+
 }
 
 

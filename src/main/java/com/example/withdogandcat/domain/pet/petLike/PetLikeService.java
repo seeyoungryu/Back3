@@ -2,6 +2,7 @@ package com.example.withdogandcat.domain.pet.petLike;
 
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.exception.BaseException;
@@ -44,5 +45,16 @@ public class PetLikeService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.LIKE_NOT_FOUND));
 
         petLikeRepository.delete(petLike);
+    }
+
+
+    @Transactional(readOnly = true)
+    public boolean isPetLiked(Long userId, Long petId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
+
+        return petLikeRepository.findByUserAndPet(user, pet).isPresent();
     }
 }
