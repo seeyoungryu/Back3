@@ -43,19 +43,29 @@ public class ChatController {
         }
 
         if (MessageType.ENTER.equals(message.getType())) {
-            chatRoomRepository.enterChatRoom(message.getRoomId());
-            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+            boolean isUserAlreadyInRoom = redisTemplate.opsForSet().isMember("chatRoom:" + message.getRoomId() + ":members", userEmail);
 
-            redisTemplate.opsForSet().add("chatRoom:" + message.getRoomId() + ":members", userEmail);
+            if (!isUserAlreadyInRoom) {
+                chatRoomRepository.enterChatRoom(message.getRoomId());
+                message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+
+                redisTemplate.opsForSet().add("chatRoom:" + message.getRoomId() + ":members", userEmail);
+                redisTemplate.opsForValue().set("user:" + userEmail + ":room:" + message.getRoomId(), "true");
+            }
 
         } else if (MessageType.QUIT.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
 
             redisTemplate.opsForSet().remove("chatRoom:" + message.getRoomId() + ":members", userEmail);
+            redisTemplate.delete("user:" + userEmail + ":room:" + message.getRoomId());
 
         } else if (MessageType.TALK.equals(message.getType())) {
             if (message.getMessage() == null || message.getMessage().trim().isEmpty()) {
                 throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
+            }
+
+            if (message.getMessage().length() >= 300) {
+                throw new BaseException(BaseResponseStatus.MESSAGE_TOO_LONG);
             }
         }
 
