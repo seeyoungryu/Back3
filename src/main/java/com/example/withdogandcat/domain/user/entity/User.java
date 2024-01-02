@@ -2,6 +2,7 @@ package com.example.withdogandcat.domain.user.entity;
 
 import com.example.withdogandcat.domain.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

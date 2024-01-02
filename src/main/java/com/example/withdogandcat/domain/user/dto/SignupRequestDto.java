@@ -22,6 +22,7 @@ public class SignupRequestDto {
 
 
     @NotBlank(message = "닉네임은 비어있을 수 없습니다")
+    @Pattern(regexp = "^.{1,10}$", message = "닉네임은 1~10자리 이내여야 합니다")
     private String nickname;
 
     @NotBlank(message = "전화번호는 비어있을 수 없습니다")

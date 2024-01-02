@@ -8,6 +8,7 @@ import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ChatRoomTagController {
 
     @PostMapping("/chatrooms/{roomId}")
     public BaseResponse<List<ChatRoomTagDto>> addTagToChatRoom(@PathVariable("roomId") String roomId,
-                                                               @RequestBody List<String> tags,
+                                                               @Validated @RequestBody List<String> tags,
                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             List<ChatRoomTagDto> addedTags = tags.stream()

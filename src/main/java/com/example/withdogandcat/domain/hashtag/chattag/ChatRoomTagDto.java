@@ -1,6 +1,7 @@
 package com.example.withdogandcat.domain.hashtag.chattag;
 
 import com.example.withdogandcat.domain.hashtag.TagDtoInterface;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import lombok.Setter;
 public class ChatRoomTagDto implements TagDtoInterface {
 
     private Long id;
+
+    @Size(max = 10, message = "해시태그는 최대 10자까지 가능합니다.")
     private String name;
 
     public ChatRoomTagDto(Long id, String name) {
