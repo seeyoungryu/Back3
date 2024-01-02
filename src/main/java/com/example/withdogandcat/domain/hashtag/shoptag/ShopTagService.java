@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.hashtag.shoptag;
 
-import com.example.withdogandcat.domain.shop.ShopRepository;
+import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;

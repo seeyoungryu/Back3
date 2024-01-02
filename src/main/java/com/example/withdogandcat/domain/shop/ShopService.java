@@ -13,6 +13,7 @@ import com.example.withdogandcat.domain.shop.dto.ShopRequestDto;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
+import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.exception.BaseException;
@@ -176,6 +177,23 @@ public class ShopService {
 
         List<ShopResponseDto> shopDtos = shops.stream()
                 .map(ShopResponseDto::from).collect(Collectors.toList());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
+    }
+
+    /**
+     * 가게 검색
+     */
+    @Transactional(readOnly = true)
+    public BaseResponse<List<ShopResponseDto>> searchShops(String keyword) {
+        List<Shop> searchResults = shopRepository.searchShops(keyword);
+        if (searchResults.isEmpty()) {
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
+        }
+
+        List<ShopResponseDto> shopDtos = searchResults.stream()
+                .map(ShopResponseDto::from)
+                .collect(Collectors.toList());
+
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 }

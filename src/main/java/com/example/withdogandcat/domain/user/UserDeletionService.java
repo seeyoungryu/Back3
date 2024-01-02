@@ -18,7 +18,7 @@ import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagRepository;
 import com.example.withdogandcat.domain.review.like.LikeRepository;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.review.ReviewRepository;
-import com.example.withdogandcat.domain.shop.ShopRepository;
+import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.exception.BaseException;

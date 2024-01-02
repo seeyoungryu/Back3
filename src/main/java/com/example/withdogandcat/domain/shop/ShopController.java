@@ -98,4 +98,13 @@ public class ShopController {
         List<ShopResponseDto> shops = shopService.getShopsByCategory(shopType).getResult();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops));
     }
+
+    /**
+     * 가게 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<List<ShopResponseDto>>> searchShops(@RequestParam(name = "keyword") String keyword) {
+        BaseResponse<List<ShopResponseDto>> response = shopService.searchShops(keyword);
+        return ResponseEntity.ok(response);
+    }
 }

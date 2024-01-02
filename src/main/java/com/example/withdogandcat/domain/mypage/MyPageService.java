@@ -11,7 +11,7 @@ import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagService;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
-import com.example.withdogandcat.domain.shop.ShopRepository;
+import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.UserRepository;

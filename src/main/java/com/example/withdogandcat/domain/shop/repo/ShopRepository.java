@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.shop;
+package com.example.withdogandcat.domain.shop.repo;
 
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.shop.entity.ShopType;
@@ -9,9 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ShopRepository extends JpaRepository<Shop, Long> {
+public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositoryCustom{
     List<Shop> findByUser(User user);
     List<Shop> findAllByShopType(ShopType shopType);
-    void deleteByUser(User user);
     int countByUser(User user);
 }
