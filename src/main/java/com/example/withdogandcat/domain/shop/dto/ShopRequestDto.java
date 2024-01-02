@@ -2,6 +2,7 @@ package com.example.withdogandcat.domain.shop.dto;
 
 import com.example.withdogandcat.domain.shop.entity.ShopType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 public class ShopRequestDto {
 
     @NotBlank(message = "가게명을 입력해주세요")
+    @Size(min = 1, max = 20, message = "최소 1자 이상, 최대 20자 이하로 작성해주세요.")
     private String shopName;
 
     @NotBlank(message = "영업 시작 시간을 입력해주세요")
@@ -32,11 +34,13 @@ public class ShopRequestDto {
     private String shopTel3;
 
     @NotBlank(message = "주소를 입력해주세요")
+    @Size(min = 1, max = 20, message = "최소 1자 이상, 최대 20자 이하로 작성해주세요.")
     private String shopAddress;
 
     private ShopType shopType;
 
     @NotBlank(message = "가게 설명을 입력해주세요")
+    @Size(min = 1, max = 100, message = "최소 1자 이상, 최대 100자 이하로 작성해주세요.")
     private String shopDescribe;
 
     private List<MultipartFile> imageFiles;
