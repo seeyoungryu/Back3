@@ -19,6 +19,12 @@ public class WebSocketEventListener {
     private final RedisTemplate<String, String> redisTemplate;
     private final JwtUtil jwtUtil;
 
+    /**
+     * websocket 연결 이벤트에 대한 세션관련 로직
+     * connect 되면 세션 생성 -> 레디스 저장
+     * disconnect 되면 세션 -> 레디스 삭제
+     */
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
 
