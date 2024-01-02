@@ -1,11 +1,16 @@
 package com.example.withdogandcat.domain.chat.config;
 
+import com.example.withdogandcat.domain.chat.entity.ChatMessage;
+import com.example.withdogandcat.domain.chat.entity.MessageType;
+import com.example.withdogandcat.domain.chat.redis.RedisPublisher;
+import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -16,8 +21,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class WebSocketEventListener {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private final JwtUtil jwtUtil;
+    private final RedisPublisher redisPublisher;
+    private final ChatRoomRepository chatRoomRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     /**
      * websocket 연결 이벤트에 대한 세션관련 로직
@@ -57,4 +64,42 @@ public class WebSocketEventListener {
             redisTemplate.delete("active_session:" + userEmail);
         }
     }
+
+    /**
+     * 비활동 사용자 관련 로직
+     */
+    @Scheduled(fixedRate = 60000)
+    public void removeInactiveUsers() {
+        Set<String> users = redisTemplate.keys("heartbeat:*");
+        long currentTime = System.currentTimeMillis();
+        for (String userKey : users) {
+            String userEmail = userKey.split(":")[1];
+            String lastHeartbeatStr = redisTemplate.opsForValue().get(userKey);
+            long lastHeartbeat = Long.parseLong(lastHeartbeatStr);
+
+            if (currentTime - lastHeartbeat > 300000) { // 5분 초과 비활동
+                Set<String> chatRooms = redisTemplate.keys("chatRoom:*:members");
+                for (String chatRoomKey : chatRooms) {
+                    boolean removed = redisTemplate.opsForSet().remove(chatRoomKey, userEmail) > 0;
+                    if (removed) {
+                        sendExitMessageToChatRoom(chatRoomKey, userEmail);
+                    }
+                }
+
+                redisTemplate.delete("active_session:" + userEmail);
+            }
+        }
+    }
+
+    private void sendExitMessageToChatRoom(String chatRoomKey, String userEmail) {
+        String roomId = chatRoomKey.split(":")[1];
+        ChatMessage exitMessage = new ChatMessage();
+        exitMessage.setSender("System");
+        exitMessage.setType(MessageType.QUIT);
+        exitMessage.setMessage(userEmail + " 장시간 비활동으로 퇴장 처리");
+        exitMessage.setRoomId(roomId);
+
+        redisPublisher.publish(chatRoomRepository.getTopic(roomId), exitMessage);
+    }
+
 }

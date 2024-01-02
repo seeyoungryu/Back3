@@ -42,7 +42,7 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
                         String storedActiveSession = redisTemplate.opsForValue().get("active_session:" + userEmail);
 
                         if (storedActiveSession != null && !storedActiveSession.equals(headerAccessor.getSessionId())) {
-                            throw new IllegalStateException("이미 활성화된 세션 존재");
+                            throw new IllegalStateException("중복접속으로 새로운 세션으로 업데이트");
                         }
 
                         headerAccessor.addNativeHeader("User", userEmail);
@@ -54,6 +54,7 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
                 }
             }
         }
+
         return message;
     }
 }
