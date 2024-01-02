@@ -38,7 +38,9 @@ public class ShopService {
 
     private static final int MAX_SHOPS_PER_USER = 5;
 
-    // 가게 등록
+    /**
+     * 가게 등록
+     */
     @Transactional
     public ShopResponseDto createShop(ShopRequestDto shopRequestDto,
                                       List<MultipartFile> imageFiles, User user) throws IOException {
@@ -55,7 +57,9 @@ public class ShopService {
         return ShopResponseDto.from(shop);
     }
 
-    // 가게 전체 조회
+    /**
+     * 가게 전체 조회
+     */
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getAllShops() {
         List<ShopResponseDto> shops = shopRepository.findAll().stream()
@@ -68,7 +72,9 @@ public class ShopService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shops);
     }
 
-    // 가게 상세 조회
+    /**
+     * 가게 상세 조회
+     */
     @Transactional(readOnly = true)
     public BaseResponse<ShopDetailResponseDto> getShopDetails(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
@@ -95,7 +101,9 @@ public class ShopService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", detailResponse);
     }
 
-    // 가게 수정
+    /**
+     * 가게 수정
+     */
     @Transactional
     public BaseResponse<ShopResponseDto> updateShop(Long shopId, ShopRequestDto shopRequestDto,
                                                     List<MultipartFile> imageFiles, User currentUser) throws IOException {
@@ -103,7 +111,7 @@ public class ShopService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
         if (!shop.getUser().getUserId().equals(currentUser.getUserId())) {
-            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND, "유저를 찾을 수 없습니다.", null);
+            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
         }
 
         if (imageFiles != null && !imageFiles.isEmpty() && !imageFiles.stream().allMatch(MultipartFile::isEmpty)) {
@@ -127,11 +135,17 @@ public class ShopService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop));
     }
 
-    // 가게 삭제
+    /**
+     * 가게 삭제
+     */
     @Transactional
-    public void deleteShop(Long shopId) {
+    public void deleteShop(Long shopId, User currentUser) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
+
+        if (!shop.getUser().equals(currentUser)) {
+            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
+        }
 
         List<ShopTagMap> relatedTags = shopTagMapRepository.findByShop(shop);
 
@@ -139,19 +153,20 @@ public class ShopService {
             ShopTag tag = tagMap.getShopTag();
             shopTagMapRepository.delete(tagMap);
 
-            // 태그가 다른 가게에 사용되지 않는 경우 태그 삭제
             if (shopTagMapRepository.countByShopTag(tag) == 0) {
                 shopTagRepository.delete(tag);
             }
         }
 
-        // 나머지 가게 관련 데이터 삭제
         imageS3Service.deleteImages(shop.getImages());
         reviewRepository.deleteByShop(shop);
         shopRepository.delete(shop);
     }
 
-    // 카테고리별 가게 조회
+
+    /**
+     * 카테고리 별 가게 조회
+     */
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getShopsByCategory(ShopType shopType) {
         List<Shop> shops = shopRepository.findAllByShopType(shopType);
