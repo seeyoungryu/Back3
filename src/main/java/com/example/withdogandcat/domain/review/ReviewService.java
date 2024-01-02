@@ -40,6 +40,10 @@ public class ReviewService {
             throw new BaseException(BaseResponseStatus.ALREADY_EXISTS);
         }
 
+        if (shop.getUser().getUserId().equals(userId)) {
+            throw new BaseException(BaseResponseStatus.OPERATION_NOT_ALLOWED);
+        }
+
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
