@@ -32,6 +32,8 @@ public class QPet extends EntityPathBase<Pet> {
 
     public final EnumPath<PetKind> petKind = createEnum("petKind", PetKind.class);
 
+    public final SetPath<com.example.withdogandcat.domain.pet.petLike.PetLike, com.example.withdogandcat.domain.pet.petLike.QPetLike> petLikes = this.<com.example.withdogandcat.domain.pet.petLike.PetLike, com.example.withdogandcat.domain.pet.petLike.QPetLike>createSet("petLikes", com.example.withdogandcat.domain.pet.petLike.PetLike.class, com.example.withdogandcat.domain.pet.petLike.QPetLike.class, PathInits.DIRECT2);
+
     public final StringPath petName = createString("petName");
 
     public final com.example.withdogandcat.domain.user.entity.QUser user;
