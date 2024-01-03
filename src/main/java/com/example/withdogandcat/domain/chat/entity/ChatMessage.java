@@ -13,5 +13,6 @@ public class ChatMessage implements Serializable {
     private String roomId;
     private String sender;
     private String message;
+    private String sentAt;
 
 }

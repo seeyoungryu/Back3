@@ -11,8 +11,7 @@ import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagService;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
-import com.example.withdogandcat.domain.pet.petLike.PetLikeRepository;
-import com.example.withdogandcat.domain.shop.ShopRepository;
+import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.UserRepository;
@@ -37,8 +36,6 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private final PetLikeRepository petLikeRepository;
-
 
     @Transactional(readOnly = true)
     public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
@@ -56,20 +53,13 @@ public class MyPageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용자가 생성한 채팅방 목록 조회 성공", chatRoomListDtos);
     }
 
-
-
     @Transactional(readOnly = true)
     public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
         List<PetResponseDto> petDtos = pets.stream()
-                .map(pet -> {
-                    Long petLikes = petLikeRepository.countByPet(pet);
-                    return PetResponseDto.from(pet, petLikes);
-                })
-                .collect(Collectors.toList());
+                .map(PetResponseDto::from).collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
-
 
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {

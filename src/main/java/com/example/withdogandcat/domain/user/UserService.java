@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Service
@@ -27,9 +28,9 @@ public class UserService {
      * 회원가입
      */
     @Transactional
-    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) {
+    public BaseResponse<User> registerNewAccount(SignupRequestDto requestDto) throws IOException {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            return new BaseResponse<>(BaseResponseStatus.EMAIL_ALREADY_EXISTS, "이미 가입된 이메일 주소입니다.", null);
+            throw new BaseException(BaseResponseStatus.EMAIL_ALREADY_EXISTS);
         }
 
         Email email = emailRepository.findByEmailAndExpiryDateAfterAndEmailVerifiedTrue(

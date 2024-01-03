@@ -22,6 +22,10 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * Websocket으로 들어오는 요청을 가져와서 먼저 검증
+     */
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
@@ -38,7 +42,7 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
                         String storedActiveSession = redisTemplate.opsForValue().get("active_session:" + userEmail);
 
                         if (storedActiveSession != null && !storedActiveSession.equals(headerAccessor.getSessionId())) {
-                            throw new IllegalStateException("이미 활성화된 세션 존재");
+                            throw new IllegalStateException("중복접속으로 새로운 세션으로 업데이트");
                         }
 
                         headerAccessor.addNativeHeader("User", userEmail);
@@ -50,6 +54,7 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
                 }
             }
         }
+
         return message;
     }
 }

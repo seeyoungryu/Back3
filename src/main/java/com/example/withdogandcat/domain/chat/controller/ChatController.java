@@ -35,26 +35,37 @@ public class ChatController {
         jwtUtil.validateToken(token, false);
         String userEmail = jwtUtil.getUserEmailFromToken(token);
 
+        long currentTime = System.currentTimeMillis();
+        redisTemplate.opsForValue().set("heartbeat:" + userEmail, String.valueOf(currentTime));
+
         if (!chatRoomRepository.existsById(message.getRoomId())) {
             throw new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND);
         }
 
         if (MessageType.ENTER.equals(message.getType())) {
-            chatRoomRepository.enterChatRoom(message.getRoomId());
-            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+            boolean isUserAlreadyInRoom = redisTemplate.opsForSet().isMember("chatRoom:" + message.getRoomId() + ":members", userEmail);
 
-            redisTemplate.opsForSet().add("chatRoom:" + message.getRoomId() + ":members", userEmail);
-            chatRoomRepository.incrementUserCount(message.getRoomId());
+            if (!isUserAlreadyInRoom) {
+                chatRoomRepository.enterChatRoom(message.getRoomId());
+                message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+
+                redisTemplate.opsForSet().add("chatRoom:" + message.getRoomId() + ":members", userEmail);
+                redisTemplate.opsForValue().set("user:" + userEmail + ":room:" + message.getRoomId(), "true");
+            }
 
         } else if (MessageType.QUIT.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
 
             redisTemplate.opsForSet().remove("chatRoom:" + message.getRoomId() + ":members", userEmail);
-            chatRoomRepository.decrementUserCount(message.getRoomId());
+            redisTemplate.delete("user:" + userEmail + ":room:" + message.getRoomId());
 
         } else if (MessageType.TALK.equals(message.getType())) {
             if (message.getMessage() == null || message.getMessage().trim().isEmpty()) {
                 throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
+            }
+
+            if (message.getMessage().length() >= 300) {
+                throw new BaseException(BaseResponseStatus.MESSAGE_TOO_LONG);
             }
         }
 

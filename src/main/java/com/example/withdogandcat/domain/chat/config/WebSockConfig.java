@@ -24,6 +24,9 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/pub");
     }
 
+    /**
+     * Websocket 연결을 위한 엔드포인트
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*");

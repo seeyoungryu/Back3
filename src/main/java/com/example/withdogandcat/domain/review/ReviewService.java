@@ -4,7 +4,7 @@ import com.example.withdogandcat.domain.review.dto.ReviewRequestDto;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.review.entity.Review;
 import com.example.withdogandcat.domain.review.like.LikeRepository;
-import com.example.withdogandcat.domain.shop.ShopRepository;
+import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.entity.Shop;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.User;
@@ -38,6 +38,10 @@ public class ReviewService {
         boolean alreadyReviewed = reviewRepository.existsByUserAndShop(user, shop);
         if (alreadyReviewed) {
             throw new BaseException(BaseResponseStatus.ALREADY_EXISTS);
+        }
+
+        if (shop.getUser().getUserId().equals(userId)) {
+            throw new BaseException(BaseResponseStatus.OPERATION_NOT_ALLOWED);
         }
 
         Review review = Review.createReview(user, requestDto.getComment(), shop);

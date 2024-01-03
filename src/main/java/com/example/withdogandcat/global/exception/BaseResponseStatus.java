@@ -50,6 +50,8 @@ public enum BaseResponseStatus {
     EXCEED_MAX_SHOP_LIMIT(false, 4506, "등록 가능한 가게의 수를 넘었습니다."),
     EXCEED_MAX_PET_LIMIT(false, 4507, "등록 가능한 반려동물의 수를 넘었습니다."),
     ALREADY_EXISTS(false, 4508, "이미 존재 합니다."),
+    OPERATION_NOT_ALLOWED(false, 4509, "가게 주인은 리뷰 작성이 불가합니다."),
+    MESSAGE_TOO_LONG(false, 4510, "메세지는 300자까지 가능합니다."),
 
     // 조회 실패 (4600번대)
     RETRIEVAL_FAILED(false, 4600, "조회에 실패하였습니다."),
