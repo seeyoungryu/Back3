@@ -28,6 +28,9 @@ public class ReviewService {
     private final ShopRepository shopRepository;
     private final LikeRepository likeRepository;
 
+    /**
+     * 리뷰 등록
+     */
     @Transactional
     public BaseResponse<ReviewResponseDto> createReview(Long userId, Long shopId, @Valid ReviewRequestDto requestDto) {
         User user = userRepository.findById(userId)
@@ -47,17 +50,23 @@ public class ReviewService {
         Review review = Review.createReview(user, requestDto.getComment(), shop);
         reviewRepository.save(review);
 
-        ReviewResponseDto responseDto = new ReviewResponseDto(
-                review.getReviewId(),
-                user.getUserId(),
-                shop.getShopId(),
-                user.getNickname(),
-                review.getComment(),
-                0,
-                review.getCreatedAt());
+        int likeCount = 0;
+
+        ReviewResponseDto responseDto = ReviewResponseDto.builder()
+                .reviewId(review.getReviewId())
+                .userId(user.getUserId())
+                .shopId(shop.getShopId())
+                .nickname(user.getNickname())
+                .comment(review.getComment())
+                .likeCount(likeCount)
+                .createdAt(review.getCreatedAt())
+                .build();
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDto);
     }
 
+    /**
+     * 모든 리뷰 조회
+     */
     @Transactional(readOnly = true)
     public BaseResponse<List<ReviewResponseDto>> getAllReviews(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
@@ -67,19 +76,53 @@ public class ReviewService {
         List<ReviewResponseDto> responseDtos = reviews.stream()
                 .map(review -> {
                     int likeCount = likeRepository.countByReview(review);
-                    return new ReviewResponseDto(
-                            review.getReviewId(),
-                            review.getUser().getUserId(),
-                            review.getShop().getShopId(),
-                            review.getUser().getNickname(),
-                            review.getComment(),
-                            likeCount,
-                            review.getCreatedAt());
+                    return ReviewResponseDto.builder()
+                            .reviewId(review.getReviewId())
+                            .userId(review.getUser().getUserId())
+                            .shopId(review.getShop().getShopId())
+                            .nickname(review.getUser().getNickname())
+                            .comment(review.getComment())
+                            .likeCount(likeCount)
+                            .createdAt(review.getCreatedAt())
+                            .build();
                 })
                 .collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDtos);
     }
 
+    /**
+     * 사용자 리뷰 조회
+     */
+    @Transactional(readOnly = true)
+    public BaseResponse<List<ReviewResponseDto>> getUserReviewsByShop(Long shopId, Long userId) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+
+        List<Review> userReviews = reviewRepository.findByShopAndUser(shop, user);
+        List<ReviewResponseDto> responseDtos = userReviews.stream()
+                .map(review -> {
+                    int likeCount = likeRepository.countByReview(review);
+                    return ReviewResponseDto.builder()
+                            .reviewId(review.getReviewId())
+                            .userId(review.getUser().getUserId())
+                            .shopId(review.getShop().getShopId())
+                            .nickname(review.getUser().getNickname())
+                            .comment(review.getComment())
+                            .likeCount(likeCount)
+                            .createdAt(review.getCreatedAt())
+                            .isAuthor(true)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDtos);
+    }
+
+
+    /**
+     * 리뷰 삭제
+     */
     @Transactional
     public BaseResponse<Void> deleteReview(Long userId, Long shopId, Long reviewId) {
         Shop shop = shopRepository.findById(shopId)

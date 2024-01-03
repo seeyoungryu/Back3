@@ -34,7 +34,7 @@ public class ShopRequestDto {
     private String shopTel3;
 
     @NotBlank(message = "주소를 입력해주세요")
-    @Size(min = 1, max = 20, message = "최소 1자 이상, 최대 20자 이하로 작성해주세요.")
+    @Size(min = 1, max = 30, message = "최소 1자 이상, 최대 30자 이하로 작성해주세요.")
     private String shopAddress;
 
     private ShopType shopType;

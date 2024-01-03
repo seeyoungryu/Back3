@@ -27,4 +27,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     void deleteByUser(User user);
 
+    List<Review> findByShopAndUser(Shop shop, User user);
+
 }
