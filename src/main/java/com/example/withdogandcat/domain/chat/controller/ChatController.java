@@ -64,7 +64,7 @@ public class ChatController {
                 throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
             }
 
-            if (message.getMessage().length() >= 300) {
+            if (message.getMessage().length() > 300) {
                 throw new BaseException(BaseResponseStatus.MESSAGE_TOO_LONG);
             }
         }
