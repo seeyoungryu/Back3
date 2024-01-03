@@ -9,9 +9,9 @@ import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
 import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagDto;
 import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagService;
 import com.example.withdogandcat.domain.pet.PetRepository;
-import com.example.withdogandcat.domain.pet.petLike.PetLikeRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.withdogandcat.domain.pet.petLike.PetLikeRepository;
 import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
@@ -31,31 +31,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MyPageService {
 
-    private final ChatRoomTagService chatRoomTagService;
     private final PetRepository petRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
+    private final ChatRoomTagService chatRoomTagService;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final PetLikeRepository petLikeRepository;
 
 
+    /**
+     * 등록 가게 조회
+     */
     @Transactional(readOnly = true)
-    public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
+    public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
+        List<Shop> shops = shopRepository.findByUser(currentUser);
+        if (shops.isEmpty()) {
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
+        }
 
-        List<ChatRoomEntity> userRooms = chatRoomJpaRepository.findByCreatorId(user);
-        List<ChatRoomListDto> chatRoomListDtos = userRooms.stream()
-                .map(room -> {
-                    List<ChatRoomTagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
-                    return ChatRoomMapper.toChatRoomListDto(
-                            room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
-                }).collect(Collectors.toList());
-
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용자가 생성한 채팅방 목록 조회 성공", chatRoomListDtos);
+        List<ShopResponseDto> shopDtos = shops.stream()
+                .map(ShopResponseDto::from).collect(Collectors.toList());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
+    /**
+     * 등록 반려동물 조회
+     */
     @Transactional(readOnly = true)
     public BaseResponse<List<PetResponseDto>> getUserPets(User currentUser) {
         List<Pet> pets = petRepository.findByUser(currentUser);
@@ -68,15 +70,23 @@ public class MyPageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petDtos);
     }
 
+    /**
+     * 등록 채팅방 조회 + 태그
+     */
     @Transactional(readOnly = true)
-    public BaseResponse<List<ShopResponseDto>> getShopsByCurrentUser(User currentUser) {
-        List<Shop> shops = shopRepository.findByUser(currentUser);
-        if (shops.isEmpty()) {
-            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
-        }
+    public BaseResponse<List<ChatRoomListDto>> findRoomsCreatedByUser(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
 
-        List<ShopResponseDto> shopDtos = shops.stream()
-                .map(ShopResponseDto::from).collect(Collectors.toList());
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
+        List<ChatRoomEntity> userRooms = chatRoomJpaRepository.findByCreatorId(user);
+        List<ChatRoomListDto> chatRoomListDtos = userRooms.stream()
+                .map(room -> {
+                    List<ChatRoomTagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
+                    return ChatRoomMapper.toChatRoomListDto(
+                            room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags, petRepository);
+                }).collect(Collectors.toList());
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "사용자가 생성한 채팅방 목록 조회 성공", chatRoomListDtos);
     }
+
 }

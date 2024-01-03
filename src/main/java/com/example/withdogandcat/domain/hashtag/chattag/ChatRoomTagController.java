@@ -81,7 +81,7 @@ public class ChatRoomTagController {
     @GetMapping("/chatrooms/popular")
     public BaseResponse<List<ChatRoomTagDto>> getPopularTags() {
         try {
-            List<ChatRoomTagDto> popularTags = chatRoomTagService.getPopularChatRoomTags(5);
+            List<ChatRoomTagDto> popularTags = chatRoomTagService.getPopularChatRoomTags(7);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS, "인기 태그 조회 성공", popularTags);
         } catch (Exception e) {
             return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);

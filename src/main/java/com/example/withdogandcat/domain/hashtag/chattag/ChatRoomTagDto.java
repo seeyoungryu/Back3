@@ -14,7 +14,7 @@ public class ChatRoomTagDto implements TagDtoInterface {
 
     private Long id;
 
-    @Size(max = 10, message = "해시태그는 최대 10자까지 가능합니다.")
+    @Size(max = 7, message = "해시태그는 최대 7자까지 가능합니다.")
     private String name;
 
     public ChatRoomTagDto(Long id, String name) {

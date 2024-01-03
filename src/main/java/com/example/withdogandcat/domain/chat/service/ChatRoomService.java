@@ -7,7 +7,9 @@ import com.example.withdogandcat.domain.chat.repo.ChatRoomRepository;
 import com.example.withdogandcat.domain.chat.util.ChatRoomMapper;
 import com.example.withdogandcat.domain.hashtag.chattag.*;
 import com.example.withdogandcat.domain.mypage.MyPageService;
+import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
+import com.example.withdogandcat.domain.pet.entity.Pet;
 import com.example.withdogandcat.domain.user.UserRepository;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
+    private final PetRepository petRepository;
     private final MyPageService myPageService;
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -40,6 +43,9 @@ public class ChatRoomService {
 
     private final int MAX_ROOM_COUNT = 2;
 
+    /**
+     * 채팅방 생성
+     */
     @Transactional
     public BaseResponse<ChatRoomDto> createChatRoom(String name, String userEmail) {
         User user = userRepository.findByEmail(userEmail)
@@ -63,9 +69,15 @@ public class ChatRoomService {
             chatRoomRepository.createChatRoom(chatRoomEntity.getRoomId(), name, user.getUserId());
         }
 
-        ChatRoomDto chatRoomDto = ChatRoomMapper.toDto(chatRoomEntity);
+        List<Pet> pets = petRepository.findByUser(user);
+        List<PetResponseDto> petDtos = pets.stream()
+                .map(PetResponseDto::from)
+                .collect(Collectors.toList());
+
+        ChatRoomDto chatRoomDto = ChatRoomMapper.toDto(chatRoomEntity, petDtos);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 생성 성공", chatRoomDto);
     }
+
 
     @Transactional
     public BaseResponse<Void> deleteChatRoom(String roomId, String userEmail) {
@@ -102,9 +114,8 @@ public class ChatRoomService {
                 .map(room -> {
                     List<ChatRoomTagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
-                            room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
-                })
-                .collect(Collectors.toList());
+                            room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags, petRepository);
+                }).collect(Collectors.toList());
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 목록 조회 성공", chatRoomListDtos);
     }
@@ -131,16 +142,14 @@ public class ChatRoomService {
                         );
                     } catch (Exception e) {
                         return new UserInfoDto(user.getUserId(), user.getEmail(), user.getNickname(), null);
-                    }}).collect(Collectors.toList());
-
-        long userCount = chatRoomRepository.getUserCount(roomId);
+                    }
+                }).collect(Collectors.toList());
 
         ChatRoomDetailDto chatRoomDetailDto = new ChatRoomDetailDto(
                 chatRoomEntity.getRoomId(),
                 chatRoomEntity.getName(),
-                ChatRoomMapper.toCreatorDto(chatRoomEntity.getCreatorId()),
-                memberDtos,
-                userCount
+                ChatRoomMapper.toCreatorDto(chatRoomEntity.getCreatorId(), petRepository),
+                memberDtos
         );
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 상세 조회 성공", chatRoomDetailDto);

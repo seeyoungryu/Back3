@@ -21,7 +21,4 @@ public class ChatRoomDetailDto {
     private CreatorDto creator;
     private List<UserInfoDto> members;
 
-    @Setter
-    private long userCount;
-
 }
