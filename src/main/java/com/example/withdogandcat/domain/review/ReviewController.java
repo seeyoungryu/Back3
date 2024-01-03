@@ -45,18 +45,6 @@ public class ReviewController {
     }
 
     /**
-     * 사용자가 작성한 리뷰 조회
-     */
-    @GetMapping("/user")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<BaseResponse<List<ReviewResponseDto>>> getUserReviewsByShop(@PathVariable("shopId") Long shopId,
-                                                                                      Authentication authentication) {
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
-        List<ReviewResponseDto> reviews = reviewService.getUserReviewsByShop(shopId, userId).getResult();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", reviews));
-    }
-
-    /**
      * 리뷰 삭제
      */
     @DeleteMapping("/{reviewId}")
