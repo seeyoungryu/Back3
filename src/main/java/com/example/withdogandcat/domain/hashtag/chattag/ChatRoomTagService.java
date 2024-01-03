@@ -29,7 +29,7 @@ public class ChatRoomTagService {
     private final ChatRoomTagRepository chatRoomTagRepository;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
-    private final int MAX_TAGS_PER_ROOM = 3;
+    private final int MAX_TAGS_PER_ROOM = 2;
 
     /**
      * 태그 등록
