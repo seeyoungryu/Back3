@@ -16,9 +16,19 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     void deleteByUser(User user);
     int countByUser(User user);
 
+
+    //정리 필요
+
+
     Page<Pet> findAll(Pageable pageable);
 
-    @Query("SELECT p, COUNT(pl) as petLikes FROM Pet p LEFT JOIN p.petLikes pl GROUP BY p.petId ORDER BY petLikes DESC")
-    Page<Object[]> findAllOrderByPetLikes(Pageable pageable);
+//    @Query("SELECT p, COUNT(pl) as petLikes FROM Pet p LEFT JOIN p.petLikes pl GROUP BY p.petId ORDER BY petLikes DESC")
+//    Page<Object[]> findAllOrderByPetLikes(Pageable pageable);
+
+    @Query("SELECT p, COUNT(pl) as petLikes FROM Pet p LEFT JOIN p.petLikes pl WHERE p.petId > :lastPetId GROUP BY p.petId ORDER BY petLikes DESC")
+    List<Object[]> findPetsAfterCursor(Long lastPetId, Pageable pageable);
+
+
+
 }
 

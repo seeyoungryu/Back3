@@ -12,7 +12,9 @@ import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,36 +53,51 @@ public class PetService {
 
 
 
-    //nextpage 반영 전 코드
-//    // 좋아요 순으로 정렬된 전체 펫 조회 (페이지네이션)
+
+//    //페이지네이션 (프론트 요구사항:nextpage 반영)
+//
 //    @Transactional(readOnly = true)
-//    public BaseResponse<Page<PetResponseDto>> getAllPetsSortedByPetLikes(Pageable pageable) {
-//        Page<PetResponseDto> pets = petRepository.findAllOrderByPetLikes(pageable)
+//    public BaseResponse<Map<String, Object>> getAllPetsSortedByPetLikes(Pageable pageable) {
+//        Page<PetResponseDto> petsPage = petRepository.findAllOrderByPetLikes(pageable)
 //                .map(objects -> {
 //                    Pet pet = (Pet) objects[0];
 //                    Long petLikes = (Long) objects[1];
 //                    return PetResponseDto.from(pet, petLikes);
 //                });
-//        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets);
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("data", petsPage.getContent());
+//        response.put("nextPage", petsPage.hasNext() ? petsPage.getNumber() + 2 : null); // 페이지 인덱스는 0부터 시작하므로 +2를 합니다.
+//
+//        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", response);
 //    }
 
 
-
-    //페이지네이션 (프론트 요구사항:nextpage 반영)
-
     @Transactional(readOnly = true)
-    public BaseResponse<Map<String, Object>> getAllPetsSortedByPetLikes(Pageable pageable) {
-        Page<PetResponseDto> petsPage = petRepository.findAllOrderByPetLikes(pageable)
-                .map(objects -> {
-                    Pet pet = (Pet) objects[0];
-                    Long petLikes = (Long) objects[1];
-                    return PetResponseDto.from(pet, petLikes);
-                });
+    public BaseResponse<Map<String, Object>> getAllPetsSortedByPetLikes(Long lastPetId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "petLikes"));
+
+        List<PetResponseDto> pets;
+        if (lastPetId == null) {
+            // lastPetId가 null인 경우, 최초 요청으로 처리
+            pets = petRepository.findAll(pageable).stream()
+                    .map(pet -> PetResponseDto.from(pet, petLikeRepository.countByPet(pet)))
+                    .collect(Collectors.toList());
+        } else {
+            // lastPetId가 있는 경우, 커서 기반 로직 적용
+            pets = petRepository.findPetsAfterCursor(lastPetId, pageable).stream()
+                    .map(objects -> {
+                        Pet pet = (Pet) objects[0];
+                        Long petLikes = (Long) objects[1];
+                        return PetResponseDto.from(pet, petLikes);
+                    }).collect(Collectors.toList());
+        }
+
+        String nextCursor = pets.isEmpty() ? null : pets.get(pets.size() - 1).getPetId().toString();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("data", petsPage.getContent());
-        response.put("nextPage", petsPage.hasNext() ? petsPage.getNumber() + 2 : null); // 페이지 인덱스는 0부터 시작하므로 +2를 합니다.
-
+        response.put("data", pets);
+        response.put("nextCursor", nextCursor);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", response);
     }
 
@@ -129,23 +147,6 @@ public class PetService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDto);
     }
 
-
-
-    //petlikes 반영 전 삭제로직
-
-//    @Transactional
-//    public BaseResponse<Void> deletePet(Long petId, User currentUser) {
-//        Pet pet = petRepository.findById(petId)
-//                .orElseThrow(() -> new BaseException(BaseResponseStatus.PET_NOT_FOUND));
-//
-//        if (!pet.getUser().getUserId().equals(currentUser.getUserId())) {
-//            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
-//        }
-//
-//        imageS3Service.deleteImages(pet.getImages());
-//        petRepository.delete(pet);
-//        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
-//    }
 
 
     @Transactional
