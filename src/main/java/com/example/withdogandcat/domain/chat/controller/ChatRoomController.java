@@ -29,7 +29,6 @@ public class ChatRoomController {
     private final JwtUtil jwtUtil;
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
-    private final ChatRoomRepository chatRoomRepository;
 
     /**
      * 채팅방 전체 조회
@@ -70,8 +69,6 @@ public class ChatRoomController {
     @ResponseBody
     public ResponseEntity<BaseResponse<ChatRoomDetailDto>> roomInfo(@PathVariable("roomId") String roomId) {
         ChatRoomDetailDto chatRoomDetail = chatRoomService.findRoomDetailById(roomId).getResult();
-        long userCount = chatRoomRepository.getUserCount(roomId);
-        chatRoomDetail.setUserCount(userCount);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 상세 조회 성공", chatRoomDetail));
     }

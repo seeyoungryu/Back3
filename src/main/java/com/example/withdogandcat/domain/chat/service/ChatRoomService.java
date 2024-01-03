@@ -103,8 +103,7 @@ public class ChatRoomService {
                     List<ChatRoomTagDto> tags = chatRoomTagService.getTagsForChatRoom(room.getRoomId());
                     return ChatRoomMapper.toChatRoomListDto(
                             room, chatMessageService.getLastTalkMessage(room.getRoomId()), tags);
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 목록 조회 성공", chatRoomListDtos);
     }
@@ -133,14 +132,11 @@ public class ChatRoomService {
                         return new UserInfoDto(user.getUserId(), user.getEmail(), user.getNickname(), null);
                     }}).collect(Collectors.toList());
 
-        long userCount = chatRoomRepository.getUserCount(roomId);
-
         ChatRoomDetailDto chatRoomDetailDto = new ChatRoomDetailDto(
                 chatRoomEntity.getRoomId(),
                 chatRoomEntity.getName(),
                 ChatRoomMapper.toCreatorDto(chatRoomEntity.getCreatorId()),
-                memberDtos,
-                userCount
+                memberDtos
         );
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "채팅방 상세 조회 성공", chatRoomDetailDto);
