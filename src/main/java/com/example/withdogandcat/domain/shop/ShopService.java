@@ -6,6 +6,8 @@ import com.example.withdogandcat.domain.hashtag.shoptag.ShopTag;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMap;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMapRepository;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagRepository;
+import com.example.withdogandcat.domain.map.mapshop.MapShop;
+import com.example.withdogandcat.domain.map.mapshop.MapShopRepository;
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
@@ -31,13 +33,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShopService {
 
+    private static final int MAX_SHOPS_PER_USER = 5;
     private final ShopRepository shopRepository;
     private final ImageS3Service imageS3Service;
     private final ReviewRepository reviewRepository;
     private final ShopTagRepository shopTagRepository;
     private final ShopTagMapRepository shopTagMapRepository;
-
-    private static final int MAX_SHOPS_PER_USER = 5;
+    private final MapShopRepository mapShopRepository;
 
     /**
      * 가게 등록
@@ -50,7 +52,6 @@ public class ShopService {
         if (currentShopCount >= MAX_SHOPS_PER_USER) {
             throw new BaseException(BaseResponseStatus.EXCEED_MAX_SHOP_LIMIT);
         }
-
         Shop shop = Shop.of(shopRequestDto, user);
         List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForShop(imageFiles, shop);
         uploadedImages.forEach(shop::addImage);
@@ -131,7 +132,10 @@ public class ShopService {
                 shopRequestDto.getShopTel3(),
                 shopRequestDto.getShopType(),
                 shopRequestDto.getShopAddress(),
-                shopRequestDto.getShopDescribe());
+                shopRequestDto.getShopDescribe(),
+                shopRequestDto.getLatitude(),
+                shopRequestDto.getLongitude()
+        );
         Shop updatedShop = shopRepository.save(shop);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop));
     }

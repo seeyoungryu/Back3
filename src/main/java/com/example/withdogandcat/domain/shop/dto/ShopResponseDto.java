@@ -27,6 +27,11 @@ public class ShopResponseDto {
     private final String shopDescribe;
     private final List<String> imageUrls;
 
+
+    private Double latitude;
+    private Double longitude;
+    private String location;
+
     @Builder
     public ShopResponseDto(Long shopId, Long userId, String shopName, String shopStartTime,
                            String shopEndTime, String shopTel1, String shopTel2, String shopTel3,

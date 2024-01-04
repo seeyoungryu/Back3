@@ -39,6 +39,9 @@ public class ShopRequestDto {
 
     private ShopType shopType;
 
+    private Double latitude;
+    private Double longitude;
+
     @NotBlank(message = "가게 설명을 입력해주세요")
     @Size(min = 1, max = 100, message = "최소 1자 이상, 최대 100자 이하로 작성해주세요.")
     private String shopDescribe;
@@ -48,7 +51,7 @@ public class ShopRequestDto {
     public ShopRequestDto(String shopName, String shopStartTime, String shopEndTime,
                           String shopTel1, String shopTel2, String shopTel3,
                           String shopAddress, ShopType shopType, String shopDescribe,
-                          List<MultipartFile> imageFiles) {
+                          List<MultipartFile> imageFiles, Double latitude, Double longitude) {
         this.shopName = shopName;
         this.shopStartTime = shopStartTime;
         this.shopEndTime = shopEndTime;
@@ -59,5 +62,7 @@ public class ShopRequestDto {
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
         this.imageFiles = imageFiles;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }
