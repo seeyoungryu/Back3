@@ -40,6 +40,7 @@ public enum BaseResponseStatus {
     ALREADY_LIKED(false, 4206, "이미 추천 하셨습니다."),
     LOGIN_FAILURE(false, 4207, "로그인 실패"),
 
+
     // 등록 실패 (4500번대)
     REGISTRATION_FAILED(false, 4500, "등록에 실패하였습니다."),
     USER_REGISTRATION_FAILED(false, 4501, "유저 등록에 실패하였습니다."),
@@ -56,13 +57,14 @@ public enum BaseResponseStatus {
     // 조회 실패 (4600번대)
     RETRIEVAL_FAILED(false, 4600, "조회에 실패하였습니다."),
     USER_NOT_FOUND(false, 4601, "유저를 찾을 수 없습니다."),
-    SHOP_NOT_FOUND(false,4602,"가게를 찾을 수 없습니다."),
+    SHOP_NOT_FOUND(false, 4602, "가게를 찾을 수 없습니다."),
     CHATROOM_NOT_FOUND(false, 4603, "채팅방을 찾을 수 없습니다."),
-    PET_NOT_FOUND(false,4604,"반려동물을 찾을 수 없습니다."),
+    PET_NOT_FOUND(false, 4604, "반려동물을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(false, 4607, "후기를 찾을 수 없습니다."),
     TAG_NOT_FOUND(false, 4608, "해시태그를 찾을 수 없습니다."),
     CHATROOM_TAG_NOT_FOUND(false, 4609, "채팅방의 해시태그를 찾을 수 없습니다."),
     SHOP_TAG_NOT_FOUND(false, 4610, "가게의 해시태그를 찾을 수 없습니다."),
+    MAP_LOCATION_NOT_FOUND(false, 4611, "위치를 찾을 수 없습니다."),
 
     /**
      * 서버 오류 (5000번대)
