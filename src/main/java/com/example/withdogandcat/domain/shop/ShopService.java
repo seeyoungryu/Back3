@@ -6,8 +6,6 @@ import com.example.withdogandcat.domain.hashtag.shoptag.ShopTag;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMap;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMapRepository;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagRepository;
-import com.example.withdogandcat.domain.map.mapshop.MapShop;
-import com.example.withdogandcat.domain.map.mapshop.MapShopRepository;
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
@@ -39,7 +37,6 @@ public class ShopService {
     private final ReviewRepository reviewRepository;
     private final ShopTagRepository shopTagRepository;
     private final ShopTagMapRepository shopTagMapRepository;
-    private final MapShopRepository mapShopRepository;
 
     /**
      * 가게 등록
@@ -81,6 +78,7 @@ public class ShopService {
     public BaseResponse<ShopDetailResponseDto> getShopDetails(Long shopId) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
+
 
         List<ReviewResponseDto> reviews = reviewRepository.findByShopId(shopId).stream()
                 .map(review -> ReviewResponseDto.builder()
