@@ -19,7 +19,6 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     //정리 필요
 
-
     Page<Pet> findAll(Pageable pageable);
 
 //    @Query("SELECT p, COUNT(pl) as petLikes FROM Pet p LEFT JOIN p.petLikes pl GROUP BY p.petId ORDER BY petLikes DESC")
@@ -27,7 +26,6 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     @Query("SELECT p, COUNT(pl) as petLikes FROM Pet p LEFT JOIN p.petLikes pl WHERE p.petId > :lastPetId GROUP BY p.petId ORDER BY petLikes DESC")
     List<Object[]> findPetsAfterCursor(Long lastPetId, Pageable pageable);
-
 
 
 }

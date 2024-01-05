@@ -35,4 +35,5 @@ public class LikeController {
         likeService.deleteLike(userId, reviewId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
+
 }
