@@ -58,6 +58,8 @@ public class PetController {
 //        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
 //    }
 
+
+
     //프론트 추가 요구사항 반영
     @GetMapping("")
     public ResponseEntity<BaseResponse<Map<String, Object>>> getAllPets(
@@ -92,4 +94,3 @@ public class PetController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 }
-

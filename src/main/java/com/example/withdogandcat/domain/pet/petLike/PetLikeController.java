@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/pets/{petId}/like")
+@RequestMapping("/api/pets/{petId}")
 public class PetLikeController {
     private final PetLikeService petLikeService;
 
@@ -25,14 +25,14 @@ public class PetLikeController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/unlike")
     public ResponseEntity<BaseResponse<Void>> unlike(@PathVariable Long petId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         petLikeService.deletePetLike(petId, userId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "좋아요 삭제 성공", null));
     }
 
-    @GetMapping
+    @GetMapping("/like")
     public ResponseEntity<BaseResponse<Boolean>> checkPetLikeStatus(@PathVariable("petId") Long petId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         boolean isPetLiked = petLikeService.isPetLiked(userId, petId);

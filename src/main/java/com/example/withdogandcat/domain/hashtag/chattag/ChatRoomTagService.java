@@ -29,7 +29,7 @@ public class ChatRoomTagService {
     private final ChatRoomTagRepository chatRoomTagRepository;
     private final ChatRoomTagMapRepository chatRoomTagMapRepository;
 
-    private final int MAX_TAGS_PER_ROOM = 3;
+    private final int MAX_TAGS_PER_ROOM = 2;
 
     /**
      * 태그 등록
@@ -68,6 +68,8 @@ public class ChatRoomTagService {
         return ChatRoomTagDto.from(tag);
     }
 
+
+
     /**
      * 특정 태그 등록한 모든 채팅방 조회
      */
@@ -88,6 +90,8 @@ public class ChatRoomTagService {
                 })
                 .collect(Collectors.toList());
     }
+
+
 
     /**
      * 태그 삭제

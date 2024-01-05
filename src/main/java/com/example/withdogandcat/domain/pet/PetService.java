@@ -34,7 +34,9 @@ public class PetService {
     private final ImageS3Service imageS3Service;
     private final PetLikeRepository petLikeRepository;
 
-    //펫 생성, 새로 생성된 Pet 객체의 '좋아요' 수 -> 0 설정
+
+
+
     @Transactional
     public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles, User user) throws IOException {
         int currentPetCount = petRepository.countByUser(user);
@@ -47,9 +49,31 @@ public class PetService {
         uploadedImages.forEach(pet::addImage);
         petRepository.save(pet);
 
+        // '좋아요' 수가 0으로 시작하므로 새로운 오버로딩된 메소드 사용
+        PetResponseDto responseDto = PetResponseDto.from(pet); // 오버로딩된 메소드 사용
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet, 0L));
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", responseDto);
     }
+
+
+
+
+    //petresponsedto 수정 이전 코드
+//    @Transactional
+//    public BaseResponse<PetResponseDto> createPet(PetRequestDto petRequestDto, List<MultipartFile> imageFiles, User user) throws IOException {
+//        int currentPetCount = petRepository.countByUser(user);
+//        if (currentPetCount >= MAX_PETS_PER_USER) {
+//            throw new BaseException(BaseResponseStatus.EXCEED_MAX_PET_LIMIT);
+//        }
+//
+//        Pet pet = Pet.of(petRequestDto, user);
+//        List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForPet(imageFiles, pet);
+//        uploadedImages.forEach(pet::addImage);
+//        petRepository.save(pet);
+//
+//
+//        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", PetResponseDto.from(pet, 0L));
+//    }
 
 
 
