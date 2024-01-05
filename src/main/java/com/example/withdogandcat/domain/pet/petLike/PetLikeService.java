@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PetLikeService {
 
-    private final PetLikeRepository petLikeRepository;
-    private final UserRepository userRepository;
     private final PetRepository petRepository;
+    private final UserRepository userRepository;
+    private final PetLikeRepository petLikeRepository;
 
     @Transactional
     public void createPetLike(Long petId, Long userId) {

@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LikeService {
 
-    private final LikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final LikeRepository reviewLikeRepository;
 
     @Transactional
     public void createLike(Long userId, Long reviewId) {
