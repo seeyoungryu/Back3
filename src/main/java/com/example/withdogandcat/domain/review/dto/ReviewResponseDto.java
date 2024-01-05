@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ReviewResponseDto {
 
     private Long reviewId;
@@ -20,5 +17,16 @@ public class ReviewResponseDto {
     private String comment;
     private int likeCount;
     private LocalDateTime createdAt;
-    private boolean isAuthor;
+
+    @Builder
+    public ReviewResponseDto(Long reviewId, Long userId, Long shopId, String nickname,
+                             String comment, int likeCount, LocalDateTime createdAt) {
+        this.reviewId = reviewId;
+        this.userId = userId;
+        this.shopId = shopId;
+        this.nickname = nickname;
+        this.comment = comment;
+        this.likeCount = likeCount;
+        this.createdAt = createdAt;
+    }
 }
