@@ -25,12 +25,13 @@ public class ShopResponseDto {
     private final String shopAddress;
     private final ShopType shopType;
     private final String shopDescribe;
+    private final int reviewCount;
     private final List<String> imageUrls;
 
     @Builder
     public ShopResponseDto(Long shopId, Long userId, String shopName, String shopStartTime,
                            String shopEndTime, String shopTel1, String shopTel2, String shopTel3,
-                           String shopAddress, ShopType shopType, String shopDescribe,
+                           String shopAddress, ShopType shopType, String shopDescribe, int reviewCount,
                            List<String> imageUrls) {
         this.shopId = shopId;
         this.userId = userId;
@@ -43,10 +44,11 @@ public class ShopResponseDto {
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
+        this.reviewCount = reviewCount;
         this.imageUrls = imageUrls;
     }
 
-    public static ShopResponseDto from(Shop shop) {
+    public static ShopResponseDto from(Shop shop, int reviewCount) {
         List<String> imageUrls = shop.getImages().stream()
                 .map(image -> image.getStoredImagePath())
                 .collect(Collectors.toList());
@@ -63,6 +65,7 @@ public class ShopResponseDto {
                 .shopAddress(shop.getShopAddress())
                 .shopType(shop.getShopType())
                 .shopDescribe(shop.getShopDescribe())
+                .reviewCount(reviewCount)
                 .imageUrls(imageUrls)
                 .build();
     }

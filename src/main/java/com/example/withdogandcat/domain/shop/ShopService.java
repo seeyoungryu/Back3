@@ -55,7 +55,8 @@ public class ShopService {
         List<Image> uploadedImages = imageS3Service.uploadMultipleImagesForShop(imageFiles, shop);
         uploadedImages.forEach(shop::addImage);
         shopRepository.save(shop);
-        return ShopResponseDto.from(shop);
+        int reviewCount = reviewRepository.countByShop(shop);
+        return ShopResponseDto.from(shop, reviewCount);
     }
 
     /**
@@ -64,7 +65,10 @@ public class ShopService {
     @Transactional(readOnly = true)
     public BaseResponse<List<ShopResponseDto>> getAllShops() {
         List<ShopResponseDto> shops = shopRepository.findAll().stream()
-                .map(ShopResponseDto::from).collect(Collectors.toList());
+                .map(shop -> {
+                    int reviewCount = reviewRepository.countByShop(shop);
+                    return ShopResponseDto.from(shop, reviewCount);
+                }).collect(Collectors.toList());
 
         if (shops.isEmpty()) {
             return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
@@ -81,6 +85,9 @@ public class ShopService {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.SHOP_NOT_FOUND));
 
+        int reviewCount = reviewRepository.countByShop(shop);
+        ShopResponseDto shopResponse = ShopResponseDto.from(shop, reviewCount);
+
         List<ReviewResponseDto> reviews = reviewRepository.findByShopId(shopId).stream()
                 .map(review -> ReviewResponseDto.builder()
                         .reviewId(review.getReviewId())
@@ -93,7 +100,6 @@ public class ShopService {
                         .build())
                 .collect(Collectors.toList());
 
-        ShopResponseDto shopResponse = ShopResponseDto.from(shop);
         ShopDetailResponseDto detailResponse = ShopDetailResponseDto.builder()
                 .shopResponseDto(shopResponse)
                 .reviews(reviews)
@@ -133,7 +139,8 @@ public class ShopService {
                 shopRequestDto.getShopAddress(),
                 shopRequestDto.getShopDescribe());
         Shop updatedShop = shopRepository.save(shop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop));
+        int reviewCount = reviewRepository.countByShop(updatedShop);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop, reviewCount)); // 리뷰 수 전달
     }
 
     /**
@@ -176,7 +183,12 @@ public class ShopService {
         }
 
         List<ShopResponseDto> shopDtos = shops.stream()
-                .map(ShopResponseDto::from).collect(Collectors.toList());
+                .map(shop -> {
+                    int reviewCount = reviewRepository.countByShop(shop);
+                    return ShopResponseDto.from(shop, reviewCount);
+                })
+                .collect(Collectors.toList());
+
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
@@ -191,7 +203,10 @@ public class ShopService {
         }
 
         List<ShopResponseDto> shopDtos = searchResults.stream()
-                .map(ShopResponseDto::from)
+                .map(shop -> {
+                    int reviewCount = reviewRepository.countByShop(shop);
+                    return ShopResponseDto.from(shop, reviewCount);
+                })
                 .collect(Collectors.toList());
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
