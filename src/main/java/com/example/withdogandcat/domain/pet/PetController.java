@@ -64,7 +64,7 @@ public class PetController {
     @GetMapping("")
     public ResponseEntity<BaseResponse<Map<String, Object>>> getAllPets(
             @RequestParam(required = false) Long lastPetId,
-            @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(defaultValue = "20") int limit) {
         Map<String, Object> pets = petService.getAllPetsSortedByPetLikes(lastPetId, limit).getResult();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
     }
