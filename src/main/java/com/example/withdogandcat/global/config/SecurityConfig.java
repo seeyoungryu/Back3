@@ -37,7 +37,7 @@ public class SecurityConfig {
     };
 
     private static final String[] CHAT_WHITELIST = {
-            "/chat/room/**", "/chat/message", "/chat/rooms/**","/ws/chat/**",
+            "/chat/room/**", "/chat/message", "/chat/rooms/**", "/ws/chat/**",
             "/sub/chat/**", "/pub/chat/**", "/ws/**", "/ws"
     };
 
@@ -79,8 +79,8 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(CHAT_WHITELIST).permitAll()
                         // 가게, 애견 조회
-                        .requestMatchers(HttpMethod.GET,"/api/shops/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/pets/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/shops/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/pets/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers("/api/map").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
@@ -99,10 +99,11 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173","http://localhost:5174",
+                "http://localhost:5173", "http://localhost:5174",
                 "http://war-war.s3-website.ap-northeast-2.amazonaws.com",
-                "https://final-pi-coral.vercel.app",
-                "https://warrwarr.co.kr"));
+                "https://final-eta-lime.vercel.app",
+                "https://warrwarr.co.kr",
+                "https://www.warrwarr.co.kr"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
