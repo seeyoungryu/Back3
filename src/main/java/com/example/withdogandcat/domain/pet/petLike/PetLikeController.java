@@ -17,7 +17,7 @@ public class PetLikeController {
         this.petLikeService = petLikeService;
     }
 
-    @PostMapping
+    @PostMapping("/like")
     public ResponseEntity<BaseResponse<Void>> addLike(@PathVariable Long petId, Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         petLikeService.createPetLike(petId, userId);
