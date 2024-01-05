@@ -93,4 +93,12 @@ public class PetController {
         petService.deletePet(petId, currentUser);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
+
+
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<List<PetResponseDto>>> getAllPetsWithoutLikes() {
+        List<PetResponseDto> pets = petService.getAllPetsWithoutLikes().getResult();
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
+    }
+
 }

@@ -192,4 +192,15 @@ public class PetService {
     }
 
 
+
+    @Transactional
+    public BaseResponse<List<PetResponseDto>> getAllPetsWithoutLikes() {
+        List<Pet> pets = petRepository.findAll();
+        List<PetResponseDto> petResponseDtos = pets.stream()
+                .map(PetResponseDto::from)
+                .collect(Collectors.toList());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", petResponseDtos);
+    }
+
+
 }
