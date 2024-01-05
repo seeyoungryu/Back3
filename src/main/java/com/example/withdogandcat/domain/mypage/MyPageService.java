@@ -11,6 +11,7 @@ import com.example.withdogandcat.domain.hashtag.chattag.ChatRoomTagService;
 import com.example.withdogandcat.domain.pet.PetRepository;
 import com.example.withdogandcat.domain.pet.dto.PetResponseDto;
 import com.example.withdogandcat.domain.pet.entity.Pet;
+import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.shop.repo.ShopRepository;
 import com.example.withdogandcat.domain.shop.dto.ShopResponseDto;
 import com.example.withdogandcat.domain.shop.entity.Shop;
@@ -33,6 +34,7 @@ public class MyPageService {
     private final PetRepository petRepository;
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
     private final ChatRoomTagService chatRoomTagService;
     private final ChatMessageService chatMessageService;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
@@ -48,7 +50,10 @@ public class MyPageService {
         }
 
         List<ShopResponseDto> shopDtos = shops.stream()
-                .map(ShopResponseDto::from).collect(Collectors.toList());
+                .map(shop -> {
+                    int reviewCount = reviewRepository.countByShop(shop);
+                    return ShopResponseDto.from(shop, reviewCount);
+                }).collect(Collectors.toList());
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
