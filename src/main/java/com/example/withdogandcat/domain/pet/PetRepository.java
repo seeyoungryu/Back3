@@ -28,5 +28,9 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Object[]> findPetsAfterCursor(Long lastPetId, Pageable pageable);
 
 
+    @Override
+    List<Pet> findAll();
+
+
 }
 
