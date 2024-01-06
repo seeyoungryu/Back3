@@ -42,25 +42,6 @@ public class PetController {
     }
 
 
-    //nextpage 반영 전 코드
-//    @GetMapping("")
-//    public ResponseEntity<BaseResponse<Page<PetResponseDto>>> getAllPets(Pageable pageable) {
-//        Page<PetResponseDto> pets = petService.getAllPetsSortedByPetLikes(pageable).getResult();
-//        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
-//    }
-
-
-
-//    //페이지네이션 (프론트 요구사항:nextpage 반영)
-//    @GetMapping("")
-//    public ResponseEntity<BaseResponse<Map<String, Object>>> getAllPets(Pageable pageable) {
-//        Map<String, Object> pets = petService.getAllPetsSortedByPetLikes(pageable).getResult();
-//        return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", pets));
-//    }
-
-
-
-    //프론트 추가 요구사항 반영
     @GetMapping("")
     public ResponseEntity<BaseResponse<Map<String, Object>>> getAllPets(
             @RequestParam(required = false) Long lastPetId,
