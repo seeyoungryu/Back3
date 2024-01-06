@@ -137,7 +137,10 @@ public class ShopService {
                 shopRequestDto.getShopTel3(),
                 shopRequestDto.getShopType(),
                 shopRequestDto.getShopAddress(),
-                shopRequestDto.getShopDescribe());
+                shopRequestDto.getShopDescribe(),
+                shopRequestDto.getLatitude(),
+                shopRequestDto.getLongitude()
+        );
         Shop updatedShop = shopRepository.save(shop);
         int reviewCount = reviewRepository.countByShop(updatedShop);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop, reviewCount)); // 리뷰 수 전달

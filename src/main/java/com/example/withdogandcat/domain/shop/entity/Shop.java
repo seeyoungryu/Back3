@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,9 @@ public class Shop {
     private String shopAddress;
     private String shopDescribe;
 
+    private Double latitude;
+    private Double longitude;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -47,7 +49,7 @@ public class Shop {
     @Builder
     public Shop(String shopName, String shopStartTime, String shopEndTime, String shopTel1,
                 String shopTel2, String shopTel3, String shopAddress, ShopType shopType,
-                String shopDescribe, User user, List<Image> images) {
+                String shopDescribe, Double latitude, Double longitude, User user, List<Image> images) {
         this.shopName = shopName;
         this.shopStartTime = shopStartTime;
         this.shopEndTime = shopEndTime;
@@ -59,6 +61,8 @@ public class Shop {
         this.shopDescribe = shopDescribe;
         this.user = user;
         this.images.addAll(images);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public static Shop of(ShopRequestDto shopRequestDto, User user) {
@@ -72,14 +76,17 @@ public class Shop {
                 .shopAddress(shopRequestDto.getShopAddress())
                 .shopType(shopRequestDto.getShopType())
                 .shopDescribe(shopRequestDto.getShopDescribe())
+                .latitude(shopRequestDto.getLatitude())
+                .longitude(shopRequestDto.getLongitude())
                 .user(user)
                 .images(new ArrayList<>())
                 .build();
     }
 
-    public void updateShopDetails(String shopName, String shopStartTime, String shopEndTime, String shopTel1,
-                                  String shopTel2, String shopTel3, ShopType shopType, String shopAddress,
-                                  String shopDescribe) {
+    public void updateShopDetails(String shopName, String shopStartTime, String shopEndTime,
+                                  String shopTel1, String shopTel2, String shopTel3,
+                                  ShopType shopType, String shopAddress,
+                                  String shopDescribe, Double latitude, Double longitude) {
         this.shopName = shopName;
         this.shopStartTime = shopStartTime;
         this.shopEndTime = shopEndTime;
@@ -89,6 +96,8 @@ public class Shop {
         this.shopAddress = shopAddress;
         this.shopType = shopType;
         this.shopDescribe = shopDescribe;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void addImage(Image image) {

@@ -28,11 +28,15 @@ public class ShopResponseDto {
     private final int reviewCount;
     private final List<String> imageUrls;
 
+
+    private final Double latitude;
+    private final Double longitude;
+
     @Builder
     public ShopResponseDto(Long shopId, Long userId, String shopName, String shopStartTime,
                            String shopEndTime, String shopTel1, String shopTel2, String shopTel3,
                            String shopAddress, ShopType shopType, String shopDescribe, int reviewCount,
-                           List<String> imageUrls) {
+                           List<String> imageUrls, double latitude, double longitude) {
         this.shopId = shopId;
         this.userId = userId;
         this.shopName = shopName;
@@ -46,6 +50,8 @@ public class ShopResponseDto {
         this.shopDescribe = shopDescribe;
         this.reviewCount = reviewCount;
         this.imageUrls = imageUrls;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public static ShopResponseDto from(Shop shop, int reviewCount) {
@@ -66,6 +72,8 @@ public class ShopResponseDto {
                 .shopType(shop.getShopType())
                 .shopDescribe(shop.getShopDescribe())
                 .reviewCount(reviewCount)
+                .latitude(shop.getLatitude())
+                .longitude(shop.getLongitude())
                 .imageUrls(imageUrls)
                 .build();
     }
