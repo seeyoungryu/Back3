@@ -19,6 +19,11 @@ public class PetLikeService {
     private final UserRepository userRepository;
     private final PetLikeRepository petLikeRepository;
 
+
+
+    /**
+     * 반려동물 좋아요 등록
+     */
     @Transactional
     public void createPetLike(Long petId, Long userId) {
         User user = userRepository.findById(userId)
@@ -34,6 +39,11 @@ public class PetLikeService {
         petLikeRepository.save(petLike);
     }
 
+
+
+    /**
+     * 반려동물 좋아요 등록취소(삭제)
+     */
     @Transactional
     public void deletePetLike(Long petId, Long userId) {
         User user = userRepository.findById(userId)
@@ -48,6 +58,10 @@ public class PetLikeService {
     }
 
 
+
+    /**
+     * 사용자가 특정 반려동물에 좋아요를 등록했는지 확인
+     */
     @Transactional(readOnly = true)
     public boolean isPetLiked(Long userId, Long petId) {
         User user = userRepository.findById(userId)

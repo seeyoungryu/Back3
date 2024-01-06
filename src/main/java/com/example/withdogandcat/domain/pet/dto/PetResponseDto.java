@@ -36,17 +36,17 @@ public class PetResponseDto {
         this.petLikes = petLikes;
     }
 
-    // 기존 메소드
+
     public static PetResponseDto from(Pet pet, Long petLikes) {
         return createPetResponseDto(pet, petLikes);
     }
 
-    // 새로운 오버로딩된 메소드
+
     public static PetResponseDto from(Pet pet) {
-        return createPetResponseDto(pet, null); // petLikes는 null 또는 기본값(예: 0L)
+        return createPetResponseDto(pet, null);
     }
 
-    // 중복 코드를 분리한 별도의 private 메소드
+
     private static PetResponseDto createPetResponseDto(Pet pet, Long petLikes) {
         List<String> imageUrls = pet.getImages().stream()
                 .map(Image::getStoredImagePath)
@@ -61,7 +61,7 @@ public class PetResponseDto {
                 .petKind(pet.getPetKind().name())
                 .petInfo(pet.getPetInfo())
                 .imageUrls(imageUrls)
-                .petLikes(petLikes != null ? petLikes : 0L) // petLikes가 null인 경우 0L을 기본값으로 사용
+                .petLikes(petLikes != null ? petLikes : 0L)
                 .build();
     }
 }
