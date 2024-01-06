@@ -28,7 +28,6 @@ public class PetRequestDto {
 
     private List<MultipartFile> imageFiles;
 
-
     @Builder
     public PetRequestDto(String petName,
                          PetGender petGender,

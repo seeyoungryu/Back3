@@ -16,21 +16,24 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<Void>> createLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
+    public ResponseEntity<BaseResponse<Void>> createLike(@PathVariable("reviewId") Long reviewId,
+                                                         Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         likeService.createLike(userId, reviewId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<Boolean>> checkLikeStatus(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
+    public ResponseEntity<BaseResponse<Boolean>> checkLikeStatus(@PathVariable("reviewId") Long reviewId,
+                                                                 Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         boolean isLiked = likeService.isLiked(userId, reviewId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", isLiked));
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseResponse<Void>> deleteLike(@PathVariable("reviewId") Long reviewId, Authentication authentication) {
+    public ResponseEntity<BaseResponse<Void>> deleteLike(@PathVariable("reviewId") Long reviewId,
+                                                         Authentication authentication) {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getUserId();
         likeService.deleteLike(userId, reviewId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null));

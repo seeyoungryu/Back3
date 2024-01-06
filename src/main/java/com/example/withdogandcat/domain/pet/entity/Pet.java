@@ -2,7 +2,6 @@ package com.example.withdogandcat.domain.pet.entity;
 
 import com.example.withdogandcat.domain.Image.Image;
 import com.example.withdogandcat.domain.pet.dto.PetRequestDto;
-import com.example.withdogandcat.domain.pet.petLike.PetLike;
 import com.example.withdogandcat.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -41,9 +39,6 @@ public class Pet {
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "pet")
-    private Set<PetLike> petLikes;
 
     @Builder
     public Pet(User user, String petName, PetGender petGender,
