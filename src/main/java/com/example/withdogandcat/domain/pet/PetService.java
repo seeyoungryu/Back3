@@ -112,4 +112,5 @@ public class PetService {
         petRepository.delete(pet);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
+
 }

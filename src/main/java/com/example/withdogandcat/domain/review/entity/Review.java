@@ -53,4 +53,5 @@ public class Review extends Timestamped {
     public int getLikeCount() {
         return likes.size();
     }
+
 }

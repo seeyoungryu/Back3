@@ -29,4 +29,5 @@ public class ReviewResponseDto {
         this.likeCount = likeCount;
         this.createdAt = createdAt;
     }
+
 }

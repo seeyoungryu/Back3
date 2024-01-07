@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         log.info("로그인 실패: {}", failed.getMessage());
 
-        BaseResponse<String> errorResponse = new BaseResponse<>(BaseResponseStatus.LOGIN_FAILURE, "로그인 성공", "로그인 실패");
+        BaseResponse<String> errorResponse = new BaseResponse<>(BaseResponseStatus.LOGIN_FAILURE, "로그인 실패", "로그인 실패");
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

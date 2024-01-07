@@ -35,4 +35,5 @@ public class ExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new BaseResponse<>(false, HttpStatus.BAD_REQUEST.value(), errorMessage, null));
     }
+
 }

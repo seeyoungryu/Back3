@@ -170,10 +170,10 @@ public class JwtUtil {
         response.setHeader(REFRESH_TOKEN_HEADER, refreshToken);
     }
 
-    public String getStoredJtiForUser(String username) {
-        return redisTemplate.opsForValue().get(username + "_access_jti");
-    }
-
+    /**
+     * 로그아웃
+     * 레디스 데이터 삭제
+     */
     public void logout(String username) {
         redisTemplate.delete(username + "_access_jti");
         redisTemplate.delete(username + "_jti");

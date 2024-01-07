@@ -17,4 +17,5 @@ public class ShopDetailResponseDto {
         this.shopResponseDto = shopResponseDto;
         this.reviews = reviews;
     }
+
 }

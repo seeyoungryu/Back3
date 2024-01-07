@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
     private final LikeRepository likeRepository;
+    private final ReviewRepository reviewRepository;
 
     /**
      * 리뷰 등록

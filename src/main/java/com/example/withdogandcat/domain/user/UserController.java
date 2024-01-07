@@ -41,6 +41,9 @@ public class UserController {
                 .body(new BaseResponse<>(BaseResponseStatus.SUCCESS, "회원가입 성공", null));
     }
 
+    /**
+     * 회원탈퇴
+     */
     @DeleteMapping("/delete")
     public ResponseEntity<BaseResponse<Void>> deleteAccount(@RequestBody DeleteRequestDto request,
                                                             Authentication authentication) {

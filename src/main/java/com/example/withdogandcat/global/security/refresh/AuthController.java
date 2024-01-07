@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/user")
 @RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class AuthController {
 
-    private final AuthService authService;
     private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
     @PostMapping("/reissue")
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
@@ -26,4 +26,5 @@ public class AuthController {
 
         response.setStatus(HttpServletResponse.SC_OK);
     }
+
 }

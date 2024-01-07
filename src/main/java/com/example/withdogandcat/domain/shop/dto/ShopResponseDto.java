@@ -77,4 +77,5 @@ public class ShopResponseDto {
                 .imageUrls(imageUrls)
                 .build();
     }
+
 }

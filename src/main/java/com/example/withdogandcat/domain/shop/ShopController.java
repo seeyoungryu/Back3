@@ -107,4 +107,5 @@ public class ShopController {
         BaseResponse<List<ShopResponseDto>> response = shopService.searchShops(keyword);
         return ResponseEntity.ok(response);
     }
+
 }

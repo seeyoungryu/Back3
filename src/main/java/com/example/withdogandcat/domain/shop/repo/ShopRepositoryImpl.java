@@ -21,4 +21,5 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                         .or(shop.shopDescribe.contains(keyword)))
                 .fetch();
     }
+
 }

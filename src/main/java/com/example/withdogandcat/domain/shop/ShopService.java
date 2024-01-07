@@ -143,7 +143,7 @@ public class ShopService {
         );
         Shop updatedShop = shopRepository.save(shop);
         int reviewCount = reviewRepository.countByShop(updatedShop);
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop, reviewCount)); // 리뷰 수 전달
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", ShopResponseDto.from(updatedShop, reviewCount));
     }
 
     /**
@@ -214,4 +214,5 @@ public class ShopService {
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
+
 }

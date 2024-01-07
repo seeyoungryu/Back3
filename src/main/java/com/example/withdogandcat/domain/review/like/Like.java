@@ -28,5 +28,5 @@ public class Like {
         this.user = user;
         this.review = review;
     }
-    //test
+
 }

@@ -65,4 +65,5 @@ public class ShopRequestDto {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
 }
