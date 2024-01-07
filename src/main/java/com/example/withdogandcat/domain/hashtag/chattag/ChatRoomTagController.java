@@ -21,6 +21,9 @@ public class ChatRoomTagController {
 
     private final ChatRoomTagService chatRoomTagService;
 
+    /**
+     * 채팅방 태그 추가
+     */
     @PostMapping("/chatrooms/{roomId}")
     public BaseResponse<List<ChatRoomTagDto>> addTagToChatRoom(@PathVariable("roomId") String roomId,
                                                                @Validated @RequestBody List<String> tags,
@@ -40,6 +43,9 @@ public class ChatRoomTagController {
         }
     }
 
+    /**
+     * 태그로 채팅방 조회
+     */
     @GetMapping("/chatrooms/{tagName}")
     public BaseResponse<List<ChatRoomDto>> getChatRoomsByTag(@PathVariable("tagName") String tagName) {
         try {
@@ -50,6 +56,9 @@ public class ChatRoomTagController {
         }
     }
 
+    /**
+     * 태그 삭제
+     */
     @DeleteMapping("/chatrooms/{roomId}/{tagName}")
     public BaseResponse<Void> removeTagFromChatRoom(@PathVariable("roomId") String roomId,
                                                     @PathVariable("tagName") String tagName,
@@ -66,7 +75,9 @@ public class ChatRoomTagController {
         }
     }
 
-    // 모든 태그 조회
+    /**
+     * 모든 태그 조회
+     */
     @GetMapping("/chatrooms")
     public BaseResponse<List<ChatRoomTagDto>> getAllTags() {
         try {
@@ -77,7 +88,9 @@ public class ChatRoomTagController {
         }
     }
 
-    // 인기 태그 조회
+    /**
+     * 인기 태그 조회
+     */
     @GetMapping("/chatrooms/popular")
     public BaseResponse<List<ChatRoomTagDto>> getPopularTags() {
         try {

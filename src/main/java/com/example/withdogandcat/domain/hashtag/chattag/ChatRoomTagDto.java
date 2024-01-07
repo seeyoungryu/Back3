@@ -25,4 +25,5 @@ public class ChatRoomTagDto implements TagDtoInterface {
     public static ChatRoomTagDto from(ChatRoomTag chatRoomTag) {
         return new ChatRoomTagDto(chatRoomTag.getId(), chatRoomTag.getName());
     }
+
 }

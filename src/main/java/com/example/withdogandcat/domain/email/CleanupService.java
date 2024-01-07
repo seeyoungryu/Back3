@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class CleanupService {
 
-    private final EmailRepository emailRepository;
     private final EmailService emailService;
+    private final EmailRepository emailRepository;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupUnverifiedEmails() {

@@ -19,6 +19,9 @@ public class ShopTagController {
 
     private final ShopTagService shopTagService;
 
+    /**
+     * 가게 태그 추가
+     */
     @PostMapping("/shops/{shopId}")
     public BaseResponse<List<ShopTagDto>> addTagToShop(@PathVariable("shopId") Long shopId,
                                                        @RequestBody List<String> tags,
@@ -38,6 +41,9 @@ public class ShopTagController {
         }
     }
 
+    /**
+     * 태그로 가게 조회
+     */
     @GetMapping("/shops/{tagName}")
     public BaseResponse<List<ShopTagDto>> getShopsByTag(@PathVariable("tagName") String tagName) {
         try {
@@ -48,6 +54,9 @@ public class ShopTagController {
         }
     }
 
+    /**
+     * 가게 태그 삭제
+     */
     @DeleteMapping("/shops/{shopId}/{tagName}")
     public BaseResponse<Void> removeTagFromShop(@PathVariable("shopId") Long shopId,
                                                 @PathVariable("tagName") String tagName,
@@ -64,6 +73,9 @@ public class ShopTagController {
         }
     }
 
+    /**
+     * 모든 태그 조회
+     */
     @GetMapping("/shops")
     public BaseResponse<List<ShopTagDto>> getAllTags() {
         try {
@@ -74,6 +86,9 @@ public class ShopTagController {
         }
     }
 
+    /**
+     * 인기 태그 조회
+     */
     @GetMapping("/shops/popular")
     public BaseResponse<List<ShopTagDto>> getPopularTags() {
         try {

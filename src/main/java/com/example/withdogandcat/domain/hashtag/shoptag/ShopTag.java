@@ -32,4 +32,5 @@ public class ShopTag extends Timestamped {
                 .name(shopTagDto.getName())
                 .build();
     }
+
 }

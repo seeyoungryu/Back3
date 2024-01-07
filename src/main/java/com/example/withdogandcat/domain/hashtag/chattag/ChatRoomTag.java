@@ -31,4 +31,5 @@ public class ChatRoomTag extends Timestamped {
                 .name(chatRoomTagDto.getName())
                 .build();
     }
+
 }

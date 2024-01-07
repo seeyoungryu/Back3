@@ -59,4 +59,5 @@ public class MyPageController {
                     .body(new BaseResponse<>(e.getStatus(), e.getMessage(), null));
         }
     }
+
 }

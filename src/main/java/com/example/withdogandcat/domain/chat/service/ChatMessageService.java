@@ -24,7 +24,9 @@ public class ChatMessageService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-    // 채팅방 메시지 저장
+    /**
+     * 채팅방 메세지 저장
+     */
     @Transactional
     public BaseResponse<Void> saveMessage(String roomId, ChatMessage chatMessage, String userEmail) {
         String redisKey = "chatRoom:" + roomId + ":messages";
@@ -62,7 +64,9 @@ public class ChatMessageService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
 
-    // 채팅방에 저장된 메세지 가져오기
+    /**
+     * 채팅방 저장된 메세지 가져오기
+     */
     public BaseResponse<List<Object>> getMessages(String roomId) {
         String key = "chatRoom:" + roomId + ":messages";
         List<Object> messages = redisTemplate.opsForList().range(key, 0, -1);
@@ -78,7 +82,9 @@ public class ChatMessageService {
                 .build();
     }
 
-    // 각 채팅방의 최신 TALK 메시지를 가져오는 메서드
+    /**
+     * 채팅방 마지막 TALK 메세지 가져오기
+     */
     public ChatMessage getLastTalkMessage(String roomId) {
         ChatMessageEntity messageEntity = chatMessageJpaRepository.findTopByRoomIdAndTypeOrderByIdDesc(roomId, MessageType.TALK);
         if (messageEntity == null) {

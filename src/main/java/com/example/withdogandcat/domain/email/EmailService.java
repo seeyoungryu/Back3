@@ -24,8 +24,8 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender emailSender;
-    private final EmailRepository emailRepository;
     private final UserRepository userRepository;
+    private final EmailRepository emailRepository;
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     /**
@@ -104,4 +104,5 @@ public class EmailService {
             }
         }
     }
+
 }

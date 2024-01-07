@@ -26,4 +26,5 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessageEntit
     List<ChatMessageEntity> findOldestMessages(@Param("roomId") String roomId);
 
     ChatMessageEntity findTopByRoomIdAndTypeOrderByIdDesc(String roomId, MessageType type);
+
 }
