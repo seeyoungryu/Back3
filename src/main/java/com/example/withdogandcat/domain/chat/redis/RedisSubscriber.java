@@ -34,4 +34,5 @@ public class RedisSubscriber implements MessageListener {
             log.error(e.getMessage());
         }
     }
+
 }

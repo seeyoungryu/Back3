@@ -42,7 +42,7 @@ public class BaseResponse<T> {
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
         this.code = status.getCode();
-        this.result = null; // 오류 응답에서는 결과가 없음
+        this.result = null;
     }
 
 }

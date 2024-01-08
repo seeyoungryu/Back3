@@ -104,4 +104,5 @@ public class ReviewService {
         reviewRepository.deleteById(reviewId);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", null);
     }
+
 }

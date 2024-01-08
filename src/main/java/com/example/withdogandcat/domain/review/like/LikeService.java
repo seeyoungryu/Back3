@@ -18,6 +18,10 @@ public class LikeService {
     private final ReviewRepository reviewRepository;
     private final LikeRepository reviewLikeRepository;
 
+    /**
+     * 좋아요 등록
+
+     */
     @Transactional
     public void createLike(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
@@ -31,6 +35,9 @@ public class LikeService {
         reviewLikeRepository.save(new Like(user, review));
     }
 
+    /**
+     * 좋아요 상태 프론트에게 전달
+     */
     @Transactional(readOnly = true)
     public boolean isLiked(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
@@ -41,6 +48,9 @@ public class LikeService {
         return reviewLikeRepository.findByUserAndReview(user, review).isPresent();
     }
 
+    /**
+     * 좋아요 취소
+     */
     @Transactional
     public void deleteLike(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
