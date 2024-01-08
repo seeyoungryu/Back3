@@ -53,15 +53,15 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-
         String sessionId = event.getSessionId();
-        String userEmail = redisTemplate.opsForValue().get("websocket_session:" + sessionId);
-        redisTemplate.delete("websocket_session:" + sessionId);
-        redisTemplate.delete("websocket_session_jti:" + sessionId);
 
-        String activeSession = redisTemplate.opsForValue().get("active_session:" + userEmail);
-        if (activeSession != null && activeSession.equals(sessionId)) {
-            redisTemplate.delete("active_session:" + userEmail);
+        String userEmail = redisTemplate.opsForValue().get("session:userEmail:" + sessionId);
+        if (userEmail != null) {
+            String activeSession = redisTemplate.opsForValue().get("active_session:" + userEmail);
+            if (activeSession != null && activeSession.equals(sessionId)) {
+                redisTemplate.delete("active_session:" + userEmail);
+            }
+            redisTemplate.delete("session:userEmail:" + sessionId);
         }
     }
 

@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
@@ -44,6 +46,8 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
                         if (storedActiveSession != null && !storedActiveSession.equals(headerAccessor.getSessionId())) {
                             throw new IllegalStateException("중복접속으로 새로운 세션으로 업데이트");
                         }
+                        redisTemplate.opsForValue().set("session:userEmail:" + headerAccessor.getSessionId(), userEmail, 24, TimeUnit.HOURS);
+
 
                         headerAccessor.addNativeHeader("User", userEmail);
                     }
@@ -57,4 +61,5 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
 
         return message;
     }
+
 }

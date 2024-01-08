@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -178,7 +179,17 @@ public class JwtUtil {
         redisTemplate.delete(username + "_access_jti");
         redisTemplate.delete(username + "_jti");
         redisTemplate.delete(username + "_refresh");
+
         redisTemplate.delete("active_session:" + username);
+
+        redisTemplate.delete("heartbeat:" + username);
+
+        Set<String> sessionKeys = redisTemplate.keys("session:userEmail:*");
+        for (String key : sessionKeys) {
+            if (redisTemplate.opsForValue().get(key).equals(username)) {
+                redisTemplate.delete(key);
+            }
+        }
     }
 
 }

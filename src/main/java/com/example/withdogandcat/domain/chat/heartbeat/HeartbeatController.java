@@ -5,6 +5,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.concurrent.TimeUnit;
+
 @Controller
 public class HeartbeatController {
 
@@ -19,7 +21,8 @@ public class HeartbeatController {
     public void receiveHeartbeat(HeartbeatMessage message) {
         String userEmail = message.getUserEmail();
         long currentTime = System.currentTimeMillis();
-        redisTemplate.opsForValue().set("heartbeat:" + userEmail, String.valueOf(currentTime));
+
+        redisTemplate.opsForValue().set("heartbeat:" + userEmail, String.valueOf(currentTime), 300, TimeUnit.SECONDS);
     }
 
 }
