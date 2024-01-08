@@ -64,4 +64,22 @@ public class ChatRoomMapper {
                 .build();
     }
 
+    public static ChatRoomDto toDtoWithTags(ChatRoomEntity chatRoomEntity, List<PetResponseDto> petDtos, List<ChatRoomTagDto> tagDtos) {
+        CreatorDto creatorDto = CreatorDto.builder()
+                .userId(chatRoomEntity.getCreatorId().getUserId())
+                .email(chatRoomEntity.getCreatorId().getEmail())
+                .nickname(chatRoomEntity.getCreatorId().getNickname())
+                .pets(petDtos)
+                .build();
+
+        return ChatRoomDto.builder()
+                .id(chatRoomEntity.getId())
+                .roomId(chatRoomEntity.getRoomId())
+                .name(chatRoomEntity.getName())
+                .createdAt(chatRoomEntity.getCreatedAt())
+                .creator(creatorDto)
+                .tags(tagDtos)
+                .build();
+    }
+
 }

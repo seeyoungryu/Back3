@@ -7,6 +7,7 @@ import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,57 +23,36 @@ public class ChatRoomTagController {
     private final ChatRoomTagService chatRoomTagService;
 
     /**
-     * 채팅방 태그 추가
+     * 태그 등록
      */
     @PostMapping("/chatrooms/{roomId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public BaseResponse<List<ChatRoomTagDto>> addTagToChatRoom(@PathVariable("roomId") String roomId,
                                                                @Validated @RequestBody List<String> tags,
                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        try {
-            List<ChatRoomTagDto> addedTags = tags.stream()
-                    .map(tag -> chatRoomTagService.addTagToChatRoom(roomId, tag, userDetails.getUser().getUserId()))
-                    .map(tag -> ChatRoomTagDto.from(ChatRoomTag.from(tag)))
-                    .collect(Collectors.toList());
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "태그가 추가되었습니다.", addedTags);
-        } catch (EntityNotFoundException e) {
-            return new BaseResponse<>(BaseResponseStatus.CHATROOM_NOT_FOUND);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        } catch (Exception e) {
-            return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
-        }
+        List<ChatRoomTagDto> addedTags = chatRoomTagService.addTagToChatRoom(roomId, tags, userDetails.getUser().getUserId());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "태그가 추가되었습니다.", addedTags);
     }
 
     /**
-     * 태그로 채팅방 조회
+     * 특정 태그 등록한 모든 채팅방 조회
      */
     @GetMapping("/chatrooms/{tagName}")
     public BaseResponse<List<ChatRoomDto>> getChatRoomsByTag(@PathVariable("tagName") String tagName) {
-        try {
-            List<ChatRoomDto> chatRooms = chatRoomTagService.getChatRoomsByTag(tagName);
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "조회 성공", chatRooms);
-        } catch (Exception e) {
-            return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
-        }
+        List<ChatRoomDto> chatRooms = chatRoomTagService.getChatRoomsByTag(tagName);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "조회 성공", chatRooms);
     }
 
     /**
      * 태그 삭제
      */
     @DeleteMapping("/chatrooms/{roomId}/{tagName}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public BaseResponse<Void> removeTagFromChatRoom(@PathVariable("roomId") String roomId,
                                                     @PathVariable("tagName") String tagName,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        try {
-            chatRoomTagService.removeTagFromChatRoom(roomId, tagName, userDetails.getUser().getUserId());
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
-        } catch (EntityNotFoundException e) {
-            return new BaseResponse<>(BaseResponseStatus.CHATROOM_NOT_FOUND);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        } catch (Exception e) {
-            return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
-        }
+        chatRoomTagService.removeTagFromChatRoom(roomId, tagName, userDetails.getUser().getUserId());
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
     }
 
     /**
@@ -80,12 +60,8 @@ public class ChatRoomTagController {
      */
     @GetMapping("/chatrooms")
     public BaseResponse<List<ChatRoomTagDto>> getAllTags() {
-        try {
-            List<ChatRoomTagDto> allTags = chatRoomTagService.getAllTags();
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "모든 태그 조회 성공", allTags);
-        } catch (Exception e) {
-            return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
-        }
+        List<ChatRoomTagDto> allTags = chatRoomTagService.getAllTags();
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "모든 태그 조회 성공", allTags);
     }
 
     /**
@@ -93,12 +69,8 @@ public class ChatRoomTagController {
      */
     @GetMapping("/chatrooms/popular")
     public BaseResponse<List<ChatRoomTagDto>> getPopularTags() {
-        try {
-            List<ChatRoomTagDto> popularTags = chatRoomTagService.getPopularChatRoomTags(7);
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS, "인기 태그 조회 성공", popularTags);
-        } catch (Exception e) {
-            return new BaseResponse<>(BaseResponseStatus.SERVER_ERROR);
-        }
+        List<ChatRoomTagDto> popularTags = chatRoomTagService.getPopularChatRoomTags(7);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "인기 태그 조회 성공", popularTags);
     }
 
 }

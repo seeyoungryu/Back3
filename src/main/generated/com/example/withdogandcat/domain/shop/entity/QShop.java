@@ -24,6 +24,10 @@ public class QShop extends EntityPathBase<Shop> {
 
     public final ListPath<com.example.withdogandcat.domain.Image.Image, com.example.withdogandcat.domain.Image.QImage> images = this.<com.example.withdogandcat.domain.Image.Image, com.example.withdogandcat.domain.Image.QImage>createList("images", com.example.withdogandcat.domain.Image.Image.class, com.example.withdogandcat.domain.Image.QImage.class, PathInits.DIRECT2);
 
+    public final NumberPath<Double> latitude = createNumber("latitude", Double.class);
+
+    public final NumberPath<Double> longitude = createNumber("longitude", Double.class);
+
     public final StringPath shopAddress = createString("shopAddress");
 
     public final StringPath shopDescribe = createString("shopDescribe");

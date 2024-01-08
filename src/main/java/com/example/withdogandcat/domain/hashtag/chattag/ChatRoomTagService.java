@@ -35,40 +35,40 @@ public class ChatRoomTagService {
      * 태그 등록
      */
     @Transactional
-    public ChatRoomTagDto addTagToChatRoom(String roomId, String tagName, Long userId) {
-        if (tagName == null || tagName.trim().isEmpty()) {
-            throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
-        }
+    public List<ChatRoomTagDto> addTagToChatRoom(String roomId, List<String> tags, Long userId) {
+        return tags.stream().map(tagName -> {
+            if (tagName == null || tagName.trim().isEmpty()) {
+                throw new BaseException(BaseResponseStatus.ELEMENTS_IS_REQUIRED);
+            }
 
-        ChatRoomEntity chatRoom = chatRoomRepository.findByRoomId(roomId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND));
+            ChatRoomEntity chatRoom = chatRoomRepository.findByRoomId(roomId)
+                    .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_NOT_FOUND));
 
-        if (!chatRoom.getCreatorId().getUserId().equals(userId)) {
-            throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
-        }
+            if (!chatRoom.getCreatorId().getUserId().equals(userId)) {
+                throw new BaseException(BaseResponseStatus.ACCESS_DENIED);
+            }
 
-        long currentTagCount = chatRoomTagMapRepository.countByChatRoom(chatRoom);
-        if (currentTagCount >= MAX_TAGS_PER_ROOM) {
-            throw new BaseException(BaseResponseStatus.EXCEED_MAX_TAG_LIMIT);
-        }
+            long currentTagCount = chatRoomTagMapRepository.countByChatRoom(chatRoom);
+            if (currentTagCount >= MAX_TAGS_PER_ROOM) {
+                throw new BaseException(BaseResponseStatus.EXCEED_MAX_TAG_LIMIT);
+            }
 
-        ChatRoomTag tag = chatRoomTagRepository.findByName(tagName)
-                .orElseGet(() -> chatRoomTagRepository.save(new ChatRoomTag(null, tagName)));
+            ChatRoomTag tag = chatRoomTagRepository.findByName(tagName)
+                    .orElseGet(() -> chatRoomTagRepository.save(new ChatRoomTag(null, tagName)));
 
-        if (chatRoomTagMapRepository.findByChatRoomAndChatRoomTag(chatRoom, tag).isPresent()) {
-            throw new BaseException(BaseResponseStatus.ALREADY_EXISTS);
-        }
+            if (chatRoomTagMapRepository.findByChatRoomAndChatRoomTag(chatRoom, tag).isPresent()) {
+                throw new BaseException(BaseResponseStatus.ALREADY_EXISTS);
+            }
 
-        ChatRoomTagMap chatRoomTagMap = ChatRoomTagMap.builder()
-                .chatRoom(chatRoom)
-                .chatRoomTag(tag)
-                .build();
-        chatRoomTagMapRepository.save(chatRoomTagMap);
+            ChatRoomTagMap chatRoomTagMap = ChatRoomTagMap.builder()
+                    .chatRoom(chatRoom)
+                    .chatRoomTag(tag)
+                    .build();
+            chatRoomTagMapRepository.save(chatRoomTagMap);
 
-        return ChatRoomTagDto.from(tag);
+            return ChatRoomTagDto.from(tag);
+        }).collect(Collectors.toList());
     }
-
-
 
     /**
      * 특정 태그 등록한 모든 채팅방 조회
@@ -86,11 +86,15 @@ public class ChatRoomTagService {
                     List<PetResponseDto> petDtos = pets.stream()
                             .map(PetResponseDto::from)
                             .collect(Collectors.toList());
-                    return ChatRoomMapper.toDto(chatRoom, petDtos);
-                })
-                .collect(Collectors.toList());
-    }
 
+                    List<ChatRoomTagDto> chatRoomTags = chatRoomTagMapRepository.findByChatRoom(chatRoom).stream()
+                            .map(ChatRoomTagMap::getChatRoomTag)
+                            .map(ChatRoomTagDto::from)
+                            .collect(Collectors.toList());
+
+                    return ChatRoomMapper.toDtoWithTags(chatRoom, petDtos, chatRoomTags);
+                }).collect(Collectors.toList());
+    }
 
 
     /**

@@ -1,6 +1,6 @@
 package com.example.withdogandcat.domain.hashtag.shoptag;
 
-import com.example.withdogandcat.domain.hashtag.chattag.TagDtoInterface;
+import com.example.withdogandcat.domain.hashtag.TagDtoInterface;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

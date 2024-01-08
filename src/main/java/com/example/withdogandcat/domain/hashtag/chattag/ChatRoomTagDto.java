@@ -1,5 +1,6 @@
 package com.example.withdogandcat.domain.hashtag.chattag;
 
+import com.example.withdogandcat.domain.hashtag.TagDtoInterface;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;

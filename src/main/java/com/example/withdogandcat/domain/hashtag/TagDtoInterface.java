@@ -1,4 +1,4 @@
-package com.example.withdogandcat.domain.hashtag.chattag;
+package com.example.withdogandcat.domain.hashtag;
 
 public interface TagDtoInterface {
     Long getId();
