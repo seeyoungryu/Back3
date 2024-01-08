@@ -12,6 +12,9 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    /**
+     * 키워드 검색
+     */
     @Override
     public List<Shop> searchShops(String keyword) {
         QShop shop = QShop.shop;

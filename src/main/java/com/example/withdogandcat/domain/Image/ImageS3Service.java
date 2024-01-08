@@ -27,14 +27,23 @@ public class ImageS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    /**
+     * 가게 이미지
+     */
     public List<Image> uploadMultipleImagesForShop(List<MultipartFile> multipartFiles, Shop shop) throws IOException {
         return uploadMultipleImages(multipartFiles, shop, null);
     }
 
+    /**
+     * 펫 이미지
+     */
     public List<Image> uploadMultipleImagesForPet(List<MultipartFile> multipartFiles, Pet pet) throws IOException {
         return uploadMultipleImages(multipartFiles, null, pet);
     }
 
+    /**
+     * 이미지 등록
+     */
     private List<Image> uploadMultipleImages(List<MultipartFile> multipartFiles, Shop shop, Pet pet) throws IOException {
         if (multipartFiles == null || multipartFiles.isEmpty()) {
             return Collections.emptyList();
@@ -80,6 +89,9 @@ public class ImageS3Service {
         return amazonS3.getUrl(bucketName, changedName).toString();
     }
 
+    /**
+     * 이미지 삭제
+     */
     public void deleteImages(List<Image> images) {
         if (images != null) {
             images.stream()
@@ -91,6 +103,9 @@ public class ImageS3Service {
         }
     }
 
+    /**
+     * 이미지 URL 관련
+     */
     private String extractFileName(String fileUrl) {
         return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
     }
