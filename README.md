@@ -47,7 +47,7 @@
 <details>
   <summary>User Flow</summary> 
   
-![image](https://github.com/engelhyunji/final/assets/147478174/0e154dda-eccb-4c9c-9b7c-6f6a30f021ac)
+![image](https://github.com/team3pet/Back3/assets/147483798/56994965-6126-4a52-ab88-d52fdbe55848)
 </details>
 
 
@@ -55,7 +55,7 @@
 <details>
   <summary>ERD</summary> 
   
-![image](https://github.com/engelhyunji/final/assets/147478174/55a967b4-e915-4395-998a-69bcb91b4dd7)
+![image](https://github.com/team3pet/Back3/assets/147483798/980ba0cb-69bc-4c79-bb79-34218d160dc7)
 </details>
 
 # 🐾 주요기능
