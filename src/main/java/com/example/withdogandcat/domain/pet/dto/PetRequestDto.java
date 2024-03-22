@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Builder
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PetRequestDto {
 
@@ -28,16 +30,16 @@ public class PetRequestDto {
 
     private List<MultipartFile> imageFiles;
 
-    @Builder
-    public PetRequestDto(String petName,
-                         PetGender petGender,
-                         PetKind petKind,
-                         String petInfo,
-                         List<MultipartFile> imageFiles) {
-        this.petName = petName;
-        this.petGender = petGender;
-        this.petKind = petKind;
-        this.petInfo = petInfo;
-        this.imageFiles = imageFiles;
-    }
+    // @Builder
+    // public PetRequestDto(String petName,
+    //                      PetGender petGender,
+    //                      PetKind petKind,
+    //                      String petInfo,
+    //                      List<MultipartFile> imageFiles) {
+    //     this.petName = petName;
+    //     this.petGender = petGender;
+    //     this.petKind = petKind;
+    //     this.petInfo = petInfo;
+    //     this.imageFiles = imageFiles;
+    // }
 }
