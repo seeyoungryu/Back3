@@ -40,12 +40,13 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
      */
     Shop findByShopNameAndAddress(String shopName, String address);
 
+
+
     /**
      * 주어진 키워드에 따라 Shop을 검색
      * @param keyword 검색 키워드
      * @return Shop 목록
      */
-//    List<Shop> findByShopNameContainingOrShopAddressContaining(String keyword);
-
+    List<Shop> findByShopNameOrShopAddress(String keyword);
 
 }
