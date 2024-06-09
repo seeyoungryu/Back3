@@ -1,9 +1,7 @@
 package com.example.withdogandcat.domain.map;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.withdogandcat.domain.shop.entity.Shop;
+import jakarta.persistence.*;
 
 @Entity
 public class Place {
@@ -16,14 +14,21 @@ public class Place {
     private double latitude;
     private double longitude;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
+
     public Place() {
     }
 
-    public Place(String address, double latitude, double longitude) {
+    public Place(String address, double latitude, double longitude, Shop shop) {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.shop = shop;
     }
+
+
 
     public Long getId() {
         return id;
