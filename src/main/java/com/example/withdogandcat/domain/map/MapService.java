@@ -16,13 +16,19 @@ public class MapService {
         this.placeRepository = placeRepository;
     }
 
+    /**
+     * Place를 저장합니다.
+     * @param place 저장할 Place
+     */
     @Transactional
-    public void savePlaces(List<Place> places) {
-        for (Place place : places) {
-            placeRepository.save(place);
-        }
+    public void savePlace(Place place) {
+        placeRepository.save(place);
     }
 
+    /**
+     * 모든 Place를 반환합니다.
+     * @return List of Place
+     */
     @Transactional(readOnly = true)
     public List<Place> getAllPlaces() {
         return placeRepository.findAll();

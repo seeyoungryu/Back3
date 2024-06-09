@@ -215,4 +215,24 @@ public class ShopService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
+
+    /**
+     * 주어진 이름과 주소에 해당하는 Shop을 찾거나, 없으면 새로 생성합니다.
+     * @param shopName 상점 이름
+     * @param geoLocation GeoLocation 객체 (위도, 경도, 주소)
+     * @return Shop 객체
+     */
+    public Shop findOrCreateShop(String shopName, GeoLocation geoLocation) {
+        Shop shop = shopRepository.findByShopNameAndAddress(shopName, geoLocation.getAddress());
+        if (shop == null) {
+            shop = new Shop();
+            shop.setShopName(shopName);
+            shop.setShopAddress(geoLocation.getAddress());
+            shop.setLatitude(geoLocation.getLatitude());
+            shop.setLongitude(geoLocation.getLongitude());
+            shopRepository.save(shop);
+        }
+        return shop;
+    }
+
 }

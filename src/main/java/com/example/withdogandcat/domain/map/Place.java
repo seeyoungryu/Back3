@@ -28,8 +28,6 @@ public class Place {
         this.shop = shop;
     }
 
-
-
     public Long getId() {
         return id;
     }
@@ -60,5 +58,13 @@ public class Place {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 }

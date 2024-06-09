@@ -64,5 +64,19 @@ class PlaceRequest {
     private String address;
     private String shopName;
 
-    // getters and setters
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
 }
