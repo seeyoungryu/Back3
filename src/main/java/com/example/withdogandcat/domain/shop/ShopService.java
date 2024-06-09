@@ -196,25 +196,6 @@ public class ShopService {
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
 
-    /**
-     * 가게 검색
-     */
-    @Transactional(readOnly = true)
-    public BaseResponse<List<ShopResponseDto>> searchShops(String keyword) {
-        List<Shop> searchResults = shopRepository.searchShops(keyword);
-        if (searchResults.isEmpty()) {
-            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
-        }
-
-        List<ShopResponseDto> shopDtos = searchResults.stream()
-                .map(shop -> {
-                    int reviewCount = reviewRepository.countByShop(shop);
-                    return ShopResponseDto.from(shop, reviewCount);
-                })
-                .collect(Collectors.toList());
-
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
-    }
 
 
     /**
@@ -260,5 +241,27 @@ public class ShopService {
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
     }
+
+
+    /**
+     * 가게 검색 :custom method (현재 프로젝트에서 실제 사용하는 코드)
+     */
+    @Transactional(readOnly = true)
+    public BaseResponse<List<ShopResponseDto>> searchShops(String keyword) {
+        List<Shop> searchResults = shopRepository.searchShops(keyword);
+        if (searchResults.isEmpty()) {
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
+        }
+
+        List<ShopResponseDto> shopDtos = searchResults.stream()
+                .map(shop -> {
+                    int reviewCount = reviewRepository.countByShop(shop);
+                    return ShopResponseDto.from(shop, reviewCount);
+                })
+                .collect(Collectors.toList());
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
+    }
+
 
 }
