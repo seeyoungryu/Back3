@@ -7,6 +7,7 @@ import com.example.withdogandcat.domain.shop.entity.ShopType;
 import com.example.withdogandcat.domain.user.entity.User;
 import com.example.withdogandcat.global.common.BaseResponse;
 import com.example.withdogandcat.global.common.LoginAccount;
+import com.example.withdogandcat.global.exception.BaseException;
 import com.example.withdogandcat.global.exception.BaseResponseStatus;
 import com.example.withdogandcat.global.security.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -106,6 +107,21 @@ public class ShopController {
     public ResponseEntity<BaseResponse<List<ShopResponseDto>>> searchShops(@RequestParam(name = "keyword") String keyword) {
         BaseResponse<List<ShopResponseDto>> response = shopService.searchShops(keyword);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 주어진 키워드에 따라 Shop을 검색
+     * @param keyword 검색 키워드
+     * @return 검색 결과
+     */
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<List<ShopResponseDto>>> searchShopsByKeyword(@RequestParam String keyword) {
+        try {
+            BaseResponse<List<ShopResponseDto>> response = shopService.searchShops(keyword);
+            return ResponseEntity.ok(response);
+        } catch (BaseException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(e.getStatus()));
+        }
     }
 
 }
