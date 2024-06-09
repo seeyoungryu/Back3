@@ -6,6 +6,7 @@ import com.example.withdogandcat.domain.hashtag.shoptag.ShopTag;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMap;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagMapRepository;
 import com.example.withdogandcat.domain.hashtag.shoptag.ShopTagRepository;
+import com.example.withdogandcat.domain.map.GeoLocationService;
 import com.example.withdogandcat.domain.review.ReviewRepository;
 import com.example.withdogandcat.domain.review.dto.ReviewResponseDto;
 import com.example.withdogandcat.domain.shop.dto.ShopDetailResponseDto;
@@ -222,7 +223,7 @@ public class ShopService {
      * @param geoLocation GeoLocation 객체 (위도, 경도, 주소)
      * @return Shop 객체
      */
-    public Shop findOrCreateShop(String shopName, GeoLocation geoLocation) {
+    public Shop findOrCreateShop(String shopName, GeoLocationService.GeoLocation geoLocation) {
         Shop shop = shopRepository.findByShopNameAndAddress(shopName, geoLocation.getAddress());
         if (shop == null) {
             shop = new Shop();

@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "shops")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC) // 접근 수준을 PUBLIC으로 변경
 public class Shop {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -107,5 +107,22 @@ public class Shop {
 
     public void clearImages() {
         this.images.clear();
+    }
+
+    // 추가된 setter 메서드
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }
