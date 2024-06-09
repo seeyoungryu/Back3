@@ -17,6 +17,11 @@ public class GeoLocationService {
 
     private static final String API_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
+    /**
+     * 주소를 받아 카카오 API를 통해 위도와 경도로 변환
+     * @param address 변환할 주소
+     * @return GeoLocation 객체 (위도, 경도, 주소)
+     */
     public GeoLocation getGeoLocationFromAddress(String address) {
         try {
             HttpClient client = HttpClient.newHttpClient();
