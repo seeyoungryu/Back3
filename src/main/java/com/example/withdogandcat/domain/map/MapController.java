@@ -80,3 +80,6 @@ class PlaceRequest {
         this.shopName = shopName;
     }
 }
+
+
+// test
