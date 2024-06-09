@@ -17,7 +17,7 @@ public class MapService {
     }
 
     /**
-     * Place를 저장합니다.
+     * Place를 저장
      * @param place 저장할 Place
      */
     @Transactional
@@ -26,7 +26,7 @@ public class MapService {
     }
 
     /**
-     * 모든 Place를 반환합니다.
+     * 모든 Place를 반환
      * @return List of Place
      */
     @Transactional(readOnly = true)

@@ -68,15 +68,16 @@ class PlaceRequest {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
 
     public String getShopName() {
         return shopName;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
+//    public void setShopName(String shopName) {
+//        this.shopName = shopName;
+//    }
+
 }
