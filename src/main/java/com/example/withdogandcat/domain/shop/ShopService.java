@@ -236,4 +236,29 @@ public class ShopService {
         return shop;
     }
 
+
+    //ShopRepository - findByShopNameOrShopAddres 사용 메서드 추가
+
+    /**
+     * 주어진 키워드에 따라 Shop을 검색
+     * @param keyword 검색 키워드
+     * @return Shop 목록
+     */
+    @Transactional(readOnly = true)
+    public BaseResponse<List<ShopResponseDto>> searchShopsbyKeyword(String keyword) {
+        List<Shop> searchResults = shopRepository.findByShopNameOrShopAddress(keyword);
+        if (searchResults.isEmpty()) {
+            return new BaseResponse<>(BaseResponseStatus.SHOP_NOT_FOUND);
+        }
+
+        List<ShopResponseDto> shopDtos = searchResults.stream()
+                .map(shop -> {
+                    int reviewCount = reviewRepository.countByShop(shop);
+                    return ShopResponseDto.from(shop, reviewCount);
+                })
+                .collect(Collectors.toList());
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, "성공", shopDtos);
+    }
+
 }
