@@ -45,5 +45,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
      * @param keyword 검색 키워드
      * @return Shop 목록
      */
-    List<Shop> findByShopNameContainingOrShopAddressContaining(String keyword);
+//    List<Shop> findByShopNameContainingOrShopAddressContaining(String keyword);
+
+
 }
